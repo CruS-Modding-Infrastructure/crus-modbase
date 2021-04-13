@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://MOD_CONTENT/CruS Mod Base/ShowMods.gd" type="Script" id=1]
+
+[node name="ShowMods" type="Button"]
+margin_top = 136.0
+margin_right = 344.0
+margin_bottom = 162.0
+text = "Show Loaded Mods"
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+[connection signal="pressed" from="." to="." method="_on_ShowMods_pressed"]
