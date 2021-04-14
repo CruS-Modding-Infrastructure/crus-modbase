@@ -27,4 +27,4 @@ Uggo for the Sin Space Extended sample map
 
 Consumer Softproducts for granting me express permission to distribute the game's source code in these mods for non-commercial use
 
-GDAudioScriptImport.gd script by https://github.com/Gianclgar/
+https://github.com/Gianclgar/ for the GDAudioScriptImport.gd script 
