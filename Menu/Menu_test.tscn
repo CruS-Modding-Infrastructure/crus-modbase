@@ -111,7 +111,6 @@ visible = false
 margin_right = 720.0
 margin_bottom = 166.0
 script = ExtResource( 2 )
-x_size = 880
 
 [node name="GridContainer" type="GridContainer" parent="Settings"]
 margin_left = 3.0
@@ -888,7 +887,6 @@ texture_normal = ExtResource( 26 )
 texture_hover = ExtResource( 14 )
 expand = true
 script = ExtResource( 30 )
-override_name = "Next Mission"
 
 [node name="Retry" type="TextureButton" parent="Level_End_Grid/Level_Info_Vbox"]
 margin_left = 45.0
@@ -899,7 +897,6 @@ texture_normal = ExtResource( 20 )
 texture_hover = ExtResource( 14 )
 expand = true
 script = ExtResource( 30 )
-override_name = "Retry"
 
 [node name="Level_Select" type="TextureButton" parent="Level_End_Grid/Level_Info_Vbox"]
 margin_left = 90.0
@@ -910,7 +907,6 @@ texture_normal = ExtResource( 17 )
 texture_hover = ExtResource( 14 )
 expand = true
 script = ExtResource( 30 )
-override_name = "Level Select"
 
 [node name="Exit_Main_Menu" type="TextureButton" parent="Level_End_Grid/Level_Info_Vbox"]
 margin_left = 135.0
@@ -921,7 +917,6 @@ texture_normal = ExtResource( 18 )
 texture_hover = ExtResource( 14 )
 expand = true
 script = ExtResource( 30 )
-override_name = "Title Screen"
 
 [node name="Quit" type="TextureButton" parent="Level_End_Grid/Level_Info_Vbox"]
 margin_left = 180.0
@@ -932,7 +927,6 @@ texture_normal = ExtResource( 11 )
 texture_hover = ExtResource( 14 )
 expand = true
 script = ExtResource( 30 )
-override_name = "Quit to OS"
 
 [node name="GridContainer" type="GridContainer" parent="Level_End_Grid/Level_Info_Vbox"]
 margin_left = 225.0
@@ -993,7 +987,6 @@ margin_bottom = 40.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = SubResource( 2 )
-in_game = false
 
 [node name="Character_Menu" type="PanelContainer" parent="."]
 visible = false
@@ -1228,7 +1221,6 @@ own_world = true
 transparent_bg = true
 render_target_v_flip = true
 script = ExtResource( 59 )
-offset = 90
 
 [node name="Camera" type="Camera" parent="Weapon2_Viewport"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.909632 )
