@@ -174,10 +174,8 @@ func handle_level_data(lvl: Dictionary) -> bool:
 				err = "file isn't an array"
 			G_Steam.mod_log("Failed to parse dialogue file!" + " (line: " + str(json.error_line) + ", error: " + json.error_string + ")", MOD_NAME)
 			
-	else:
-		G_Steam.mod_log("Failed to open dialogue file at: " + lvl["dialogue"], MOD_NAME)
-	if !dialogue_init:
-		G_Steam.mod_log("WARNING: Couldn't add dialogue, this level will have no NPC dialogue", MOD_NAME)
+	if !dialogue_init and dialogue_path != "":
+		G_Steam.mod_log("WARNING: Couldn't add dialogue or none found, this level will have no NPC dialogue", MOD_NAME)
 	f.close()
 
 	# pad fish tickers to 4 characters (for those 3 letter ticker fish)
@@ -191,16 +189,17 @@ func handle_level_data(lvl: Dictionary) -> bool:
 				lvl["fish"][i] = "%-4s" % lvl["fish"][i]
 	
 	# correct ranks
-	if lvl.has("ranks"):
+	if lvl.has("ranks") and (lvl.get("ranks").get("normal") or lvl.get("ranks").get("hell")):
+		print(typeof(lvl.get("ranks")), " ", lvl["ranks"])
 		var ranks = lvl["ranks"]
 		var arrs = ["normal", "hell"]
 		for a in arrs:
 			if ranks.has(a):
-				if not (ranks[a] is Array) or (len(ranks[a]) == 3):
-					G_Steam.mod_log("WARNING: rank times for" + a + "are not an array of three numbers, defaulting them to 0", MOD_NAME)
+				if !(ranks[a] is Array) or !(len(ranks[a]) == 3):
+					G_Steam.mod_log("WARNING: Rank times for " + a + " are not a valid array of three numbers, defaulting them to 0", MOD_NAME)
 					ranks[a] = [0, 0, 0]
-				if !int(ranks[a][0]) or !int(ranks[a][1]) or !int(ranks[a][2]):
-					G_Steam.mod_log("WARNING: One or more " + a + " rank times are not numbers, defaulting all " + a + " times to 0", MOD_NAME)
+				elif !int(ranks[a][0]) or !int(ranks[a][1]) or !int(ranks[a][2]):
+					G_Steam.mod_log("WARNING: One or more " + a + " rank times are invalid, defaulting all " + a + " times to 0", MOD_NAME)
 					ranks[a] = [0, 0, 0]
 			else:
 				G_Steam.mod_log("WARNING: Missing " + a + " rank times, defaulting them to 0", MOD_NAME)

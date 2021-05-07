@@ -6,7 +6,7 @@ var confirmed = false
 var cancel = false
 enum {B_START, B_SETTINGS, B_QUIT, B_LEVEL, B_MISSION_START, 
 	B_WEAPON_1, B_WEAPON_2, B_CHARACTER, B_STOCKS, B_W_PISTOL, B_W_SMG, B_W_SHOTGUN, B_W_RL, B_W_SNIPER, B_W_AR, B_W_S_SMG, B_W_NAMBU, 
-	B_W_GAS_LAUNCHER, B_W_MG3, B_W_AUTOSHOTGUN, B_W_MAUSER, B_W_BORE, B_W_MKR, B_W_RADGUN, B_W_TRANQ, B_W_BLACKJACK, B_W_FLASHLIGHT, B_W_ZIPPY, B_W_AN94, B_W_VAG72, B_W_STEYR, B_W_CANCER, B_W_ROD, B_W_FLAMETHROWER, B_W_SKS, B_W_NAILER, B_EX_MENU, B_EX_LEVEL_SELECT, B_RETURN, B_RETRY, B_BONUS,
+	B_W_GAS_LAUNCHER, B_W_MG3, B_W_AUTOSHOTGUN, B_W_MAUSER, B_W_BORE, B_W_MKR, B_W_RADGUN, B_W_TRANQ, B_W_BLACKJACK, B_W_FLASHLIGHT, B_W_ZIPPY, B_W_AN94, B_W_VAG72, B_W_STEYR, B_W_CANCER, B_W_ROD, B_W_FLAMETHROWER, B_W_SKS, B_W_NAILER, B_W_SHOCK, B_EX_MENU, B_EX_LEVEL_SELECT, B_RETURN, B_RETRY, B_BONUS,
 	B_PREV_LEVELS, B_NEXT_LEVELS}
 const BUTTON_TEXTURES:Array = [preload("res://Textures/Menu/start_normal.png"), 
 									preload("res://Textures/Menu/settings_normal.png"), 
@@ -44,6 +44,7 @@ const BUTTON_TEXTURES:Array = [preload("res://Textures/Menu/start_normal.png"),
 								preload("res://Textures/Menu/Weapon_Buttons/flamethrower.png"), 
 								preload("res://Textures/Menu/Weapon_Buttons/SKS.png"), 
 								preload("res://Textures/Menu/Weapon_Buttons/nailer.png"), 
+								preload("res://Textures/Menu/Weapon_Buttons/shockwave.png"), 
 									preload("res://Textures/Menu/exit_menu_normal.png"), 
 									preload("res://Textures/Menu/exit_level_normal.png"), 
 									preload("res://Textures/Menu/return_normal.png"), 
@@ -99,14 +100,14 @@ const BUTTON_TEXTURES_D:Array = [preload("res://Textures/Menu/Disabled_Button/1.
 								preload("res://Textures/Menu/Disabled_Button/3.png"), 
 								preload("res://Textures/Menu/Disabled_Button/4.png")]
 const MYSTERY = preload("res://Textures/Menu/mystery.png")
-enum {W_PISTOL, W_SMG, W_TRANQ, W_BLACKJACK, W_SHOTGUN, W_RL, W_SNIPER, W_AR, W_S_SMG, W_NAMBU, W_GAS_LAUNCHER, W_MG3, W_AUTOSHOTGUN, W_MAUSER, W_BORE, W_MKR, W_RADIATOR, W_FLASHLIGHT, W_ZIPPY, W_AN94, W_VAG72, W_STEYR, W_CANCER, W_ROD, W_FLAMETHROWER, W_SKS, W_NAILER}
+enum {W_PISTOL, W_SMG, W_TRANQ, W_BLACKJACK, W_SHOTGUN, W_RL, W_SNIPER, W_AR, W_S_SMG, W_NAMBU, W_GAS_LAUNCHER, W_MG3, W_AUTOSHOTGUN, W_MAUSER, W_BORE, W_MKR, W_RADIATOR, W_FLASHLIGHT, W_ZIPPY, W_AN94, W_VAG72, W_STEYR, W_CANCER, W_ROD, W_FLAMETHROWER, W_SKS, W_NAILER, W_SHOCK}
 const RESOLUTIONS:Array = [Vector2(1920, 1080), Vector2(1600, 900), Vector2(1366, 768), Vector2(1280, 720), Vector2(3840, 2160), Vector2(2560, 1440), Vector2(3840, 2400), Vector2(2560, 1600), Vector2(1920, 1200), Vector2(1680, 1050), Vector2(1440, 900), Vector2(3440, 1440), Vector2(2880, 1200), Vector2(2560, 1080), Vector2(1920, 800), Vector2(1600, 1200), Vector2(1440, 1080), Vector2(1024, 768), Vector2(800, 600), Vector2(640, 480), Vector2(1080, 1080)]
 const RANK_LETTERS:Array = [preload("res://Textures/rank_letters/C.png"), 
 preload("res://Textures/rank_letters/B.png"), 
 preload("res://Textures/rank_letters/A.png"), 
 preload("res://Textures/rank_letters/S.png"), 
 preload("res://Textures/rank_letters/N.png")]
-var LEVEL_NAMES:Array = ["Training Facility", "Headquarters", "Suburb", "Spaceport", "PD", "Mall", "Apartment", "Ship", "Swamp", "Casino", "Castle", "Office", "Archon Grid", "POOPER", "POOPITY", "BOOBBEBR", "PEEPEEEEE"]
+var LEVEL_NAMES:Array = ["Training Facility", "Headquarters", "Suburb", "Spaceport", "PD", "Mall", "Apartment", "Ship", "Swamp", "Casino", "Castle", "Office", "Archon Grid", "NEED", "HELP", "END", "PAIN", "NOW"]
 
 const HANDLER_FRAMES:Array = [preload("res://Textures/Menu/Handler/1.png"), 
 								preload("res://Textures/Menu/Handler/2.png"), 
@@ -232,7 +233,7 @@ func get_scancodes():
 	get_key_index(InputMap.get_action_list("Stocks")[0])]
 	return key_scancodes
 
-	# custom stuff
+# custom stuff
 const MAX_PAGE_SIZE = 19
 var CUSTOM_BTN_TEXTURES = [preload("res://MOD_CONTENT/CruS Mod Base/prev.png"),
 						   preload("res://MOD_CONTENT/CruS Mod Base/next.png")]
@@ -241,6 +242,7 @@ var custom_levels = []
 var level_btn_index = 0
 var page_btns = []
 var next_page_size = MAX_PAGE_SIZE
+var last_tooltip = ""
 
 func update_level_page_buttons(init=false):
 	var begin_index = clamp(level_btn_index, 0, all_level_buttons.size())
@@ -297,6 +299,7 @@ func update_level_buttons(init=false):
 				all_level_buttons[i].show()
 			menu_index += 1
 
+	$Hover_Panel.hide()
 	update_level_page_buttons(init)
 	button_state()
 
@@ -321,22 +324,25 @@ func add_level_ranks(level: Dictionary):
 		{ "prefix": "hell", "ranks": [G.HELL_RANK_S, G.HELL_RANK_A, G.HELL_RANK_B, G.HELL_SRANK_S] }]
 	var ranks_dict = level.get("ranks") if level.has("ranks") else null
 	
-	if !ranks_dict: G_Steam.mod_log("WARNING: Level \"" + level.name + "\"" + "has no ranks", "CruS Mod Base")
 	for type in types:
-		var rank_time = null
-		var arr_valid = true
-		var stock_valid = true
-		if !(ranks_dict.get(type.prefix) is Array) or ranks_dict.get(type.prefix).size() != 3:
-			arr_valid = false
-			G_Steam.mod_log("WARNING: \"" + type.prefix + "\" in \"ranks\" of \"" + level.name + "\" level.json is not a valid array of three positive numbers, defaulting to 0", "CruS Mod Base")
-		if !ranks_dict.get(type.prefix + "_stock_s") or ranks_dict.get(type.prefix + "_stock_s") <= 0:
-			stock_valid = false
-			G_Steam.mod_log("WARNING: \"" + type.prefix + "_stock_s\" in \"ranks\" of \"" + level.name + "\" level.json is not a positive number, defaulting to 0", "CruS Mod Base")
-		for i in range(3):
-			rank_time = ranks_dict.get(type.prefix)[i] if ranks_dict and arr_valid else 0
-			type.ranks[i].append(rank_time if rank_time and rank_time > 0 else 0)
-		rank_time = ranks_dict.get(type.prefix + "_stock_s") if ranks_dict and stock_valid else 0
-		type.ranks[3].append(rank_time if rank_time and rank_time > 0 else 0)
+		if ranks_dict:
+			var rank_time = null
+			var arr_valid = true
+			var stock_valid = true
+			if !(ranks_dict.get(type.prefix) is Array) or ranks_dict.get(type.prefix).size() != 3:
+				arr_valid = false
+				G_Steam.mod_log("WARNING: \"" + type.prefix + "\" in \"ranks\" of \"" + level.name + "\" level.json is not a valid array of three positive numbers, defaulting to 0", "CruS Mod Base")
+			if !ranks_dict.get(type.prefix + "_stock_s") or ranks_dict.get(type.prefix + "_stock_s") <= 0:
+				stock_valid = false
+				G_Steam.mod_log("WARNING: \"" + type.prefix + "_stock_s\" in \"ranks\" of \"" + level.name + "\" level.json is not a positive number, defaulting to 0", "CruS Mod Base")
+			for i in range(3):
+				rank_time = ranks_dict.get(type.prefix)[i] if ranks_dict and arr_valid else 0
+				type.ranks[i].append(rank_time if rank_time and rank_time > 0 else 0)
+			rank_time = ranks_dict.get(type.prefix + "_stock_s") if ranks_dict and stock_valid else 0
+			type.ranks[3].append(rank_time if rank_time and rank_time > 0 else 0)
+		else:
+			for i in range(4):
+				type.ranks[i].append(0)
 
 	Global.level_ranks.append("N")
 	Global.level_stock_ranks.append("N")
@@ -375,7 +381,7 @@ func add_custom_levels():
 		Global.LEVEL_IMAGES.append(level.get("image") if level.get("image") else RANK_LETTERS.back())
 		Global.LEVEL_SONGS.append(level.get("music"))
 		Global.LEVEL_AMBIENCE.append(level.get("ambience"))
-		Global.LEVEL_REWARDS.append(level.get("reward"))
+		Global.LEVEL_REWARDS.append(level.get("reward") if level.get("reward") else 0)
 		Global.DIALOGUE.DIALOGUE.append(dialogue)
 		Global.LEVEL_PUNISHED.append(false)
 		Global.LEVEL_TIMES.append("N/A")
@@ -386,6 +392,7 @@ func add_custom_levels():
 		Global.HELL_TIMES_RAW.append(99999999)
 		Global.HELL_STIMES.append("N/A")
 		Global.HELL_STIMES_RAW.append(99999999)
+		Global.STOCKS.POSSIBLE_FISH.append(level.get("fish") if level.get("fish") else ["FISH", "DEAD"])
 		add_level_ranks(level)
 	Global.load_game()
 
@@ -586,11 +593,11 @@ func _ready():
 	menu[LEVEL_SELECT].buttons = [B_RETURN, B_CHARACTER, B_STOCKS, B_WEAPON_1, B_WEAPON_2, B_MISSION_START]
 	for level in Global.LEVELS:
 		menu[LEVEL_SELECT].buttons.append(B_LEVEL)
-	
+
 	add_custom_levels()
-	load_custom_levels_data()
+	load_custom_levels_data()	
 		
-	menu[WEAPON_SELECT].buttons = [B_RETURN, B_W_PISTOL, B_W_SMG, B_W_TRANQ, B_W_BLACKJACK, B_W_SHOTGUN, B_W_RL, B_W_SNIPER, B_W_AR, B_W_S_SMG, B_W_NAMBU, B_W_GAS_LAUNCHER, B_W_MG3, B_W_AUTOSHOTGUN, B_W_MAUSER, B_W_BORE, B_W_MKR, B_W_RADGUN, B_W_FLASHLIGHT, B_W_ZIPPY, B_W_AN94, B_W_VAG72, B_W_STEYR, B_W_CANCER, B_W_ROD, B_W_FLAMETHROWER, B_W_SKS, B_W_NAILER]
+	menu[WEAPON_SELECT].buttons = [B_RETURN, B_W_PISTOL, B_W_SMG, B_W_TRANQ, B_W_BLACKJACK, B_W_SHOTGUN, B_W_RL, B_W_SNIPER, B_W_AR, B_W_S_SMG, B_W_NAMBU, B_W_GAS_LAUNCHER, B_W_MG3, B_W_AUTOSHOTGUN, B_W_MAUSER, B_W_BORE, B_W_MKR, B_W_RADGUN, B_W_FLASHLIGHT, B_W_ZIPPY, B_W_AN94, B_W_VAG72, B_W_STEYR, B_W_CANCER, B_W_ROD, B_W_FLAMETHROWER, B_W_SKS, B_W_NAILER, B_W_SHOCK]
 	menu[CHARACTER].buttons = [B_RETURN]
 	menu[STOCKS].buttons = [B_RETURN]
 	
@@ -750,6 +757,9 @@ func create_buttons(m:int):
 			B_W_NAILER:
 				var wep = create_button(m, "Parasonic MP-1 Nailer", "_on_Nailer_Pressed", menu[m].buttons[i])
 				wep.hint_tooltip = "Parasonic's new personal defense weapon provides never before seen firepower in a compact form factor. Fires ultra high velocity depleted uranium nails from a high-capacity helical magazine."
+			B_W_SHOCK:
+				var wep = create_button(m, "Raymond Shocktroop Tactical", "_on_Shock_Pressed", menu[m].buttons[i])
+				wep.hint_tooltip = "A compact but powerful semi-automatic shotgun, popular in the law enforcement business for clearing out regenerative art communes."
 			B_MISSION_START:
 				create_button(m, "Start Mission", "_on_Mission_Start_Pressed", menu[m].buttons[i])
 			_:
@@ -769,7 +779,7 @@ func create_button(m:int, n:String, connection:String, b:int):
 	new_button.texture_hover = BUTTON_TEXTURES_H[0]
 	new_button.texture_disabled = BUTTON_TEXTURES_D[randi() % 3]
 
-	if b == B_LEVEL:        
+	if b == B_LEVEL:
 		var level_index = level_buttons.size()
 		if level_index > Global.L_PUNISHMENT:
 			new_button.texture_disabled = MYSTERY
@@ -918,6 +928,10 @@ func _on_S_SMG_Pressed(m:int, button_id:TextureButton):
 	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
 func _on_Shotgun_Pressed(m:int, button_id:TextureButton):
 	set_weapon(W_SHOTGUN)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+func _on_Shock_Pressed(m:int, button_id:TextureButton):
+	set_weapon(W_SHOCK)
 	go_back(m, button_id)
 	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
 func _on_RL_Pressed(m:int, button_id:TextureButton):
@@ -1198,6 +1212,7 @@ func goto_menu(from_menu:int, to_menu:int, b:TextureButton):
 		child.show()
 		var to_pos = b_position
 		button_state()
+		$Hover_Panel.hide()
 		while ( not child.rect_position.is_equal_approx(to_pos)):
 			child.disabled = true
 			child.set_position(lerp(child.rect_position, to_pos, 1))
