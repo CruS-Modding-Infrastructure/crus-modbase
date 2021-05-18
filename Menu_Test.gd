@@ -107,7 +107,7 @@ preload("res://Textures/rank_letters/B.png"),
 preload("res://Textures/rank_letters/A.png"), 
 preload("res://Textures/rank_letters/S.png"), 
 preload("res://Textures/rank_letters/N.png")]
-var LEVEL_NAMES:Array = ["Training Facility", "Headquarters", "Suburb", "Spaceport", "PD", "Mall", "Apartment", "Ship", "Swamp", "Casino", "Castle", "Office", "Archon Grid", "NEED", "HELP", "END", "PAIN", "NOW"]
+var LEVEL_NAMES:Array = ["Training Facility", "Headquarters", "Suburb", "Spaceport", "PD", "Mall", "Apartment", "Ship", "Swamp", "Casino", "Castle", "Office", "Archon Grid", "NEED", "HELP", "END", "PAIN", "NOW", "AAAAAA"]
 
 const HANDLER_FRAMES:Array = [preload("res://Textures/Menu/Handler/1.png"), 
 								preload("res://Textures/Menu/Handler/2.png"), 
@@ -234,7 +234,7 @@ func get_scancodes():
 	return key_scancodes
 
 # custom stuff
-const MAX_PAGE_SIZE = 19
+const MAX_PAGE_SIZE = 20
 var CUSTOM_BTN_TEXTURES = [preload("res://MOD_CONTENT/CruS Mod Base/prev.png"),
 						   preload("res://MOD_CONTENT/CruS Mod Base/next.png")]
 var all_level_buttons = null
@@ -331,10 +331,10 @@ func add_level_ranks(level: Dictionary):
 			var stock_valid = true
 			if !(ranks_dict.get(type.prefix) is Array) or ranks_dict.get(type.prefix).size() != 3:
 				arr_valid = false
-				G_Steam.mod_log("WARNING: \"" + type.prefix + "\" in \"ranks\" of \"" + level.name + "\" level.json is not a valid array of three positive numbers, defaulting to 0", "CruS Mod Base")
+				Global.mod_log("WARNING: \"" + type.prefix + "\" in \"ranks\" of \"" + level.name + "\" level.json is not a valid array of three positive numbers, defaulting to 0", "CruS Mod Base")
 			if !ranks_dict.get(type.prefix + "_stock_s") or ranks_dict.get(type.prefix + "_stock_s") <= 0:
 				stock_valid = false
-				G_Steam.mod_log("WARNING: \"" + type.prefix + "_stock_s\" in \"ranks\" of \"" + level.name + "\" level.json is not a positive number, defaulting to 0", "CruS Mod Base")
+				Global.mod_log("WARNING: \"" + type.prefix + "_stock_s\" in \"ranks\" of \"" + level.name + "\" level.json is not a positive number, defaulting to 0", "CruS Mod Base")
 			for i in range(3):
 				rank_time = ranks_dict.get(type.prefix)[i] if ranks_dict and arr_valid else 0
 				type.ranks[i].append(rank_time if rank_time and rank_time > 0 else 0)
@@ -476,7 +476,7 @@ func load_custom_levels_data():
 	save_game.close()
 
 func _ready():
-	custom_levels = G_Steam.MOD_DATA["CruS Mod Base"].levels
+	custom_levels = Global.MOD_DATA["CruS Mod Base"].levels
 
 	$Settings / GridContainer / PanelContainer6 / VBoxContainer3 / Highperformance.pressed = Global.high_performance
 	Global.screenmat.set_shader_param("gamma", Global.gamma)
@@ -593,7 +593,7 @@ func _ready():
 	menu[LEVEL_SELECT].buttons = [B_RETURN, B_CHARACTER, B_STOCKS, B_WEAPON_1, B_WEAPON_2, B_MISSION_START]
 	for level in Global.LEVELS:
 		menu[LEVEL_SELECT].buttons.append(B_LEVEL)
-
+	
 	add_custom_levels()
 	load_custom_levels_data()	
 		
@@ -1068,13 +1068,13 @@ func _on_Level_Pressed(m:int, button_id:TextureButton):
 			level_buttons[button].disabled = false
 		if button_actual > Global.L_PUNISHMENT:
 			if button_actual <= Global.L_PUNISHMENT + Global.BONUS_LEVELS.size():
-				if Global.BONUS_UNLOCK.find(Global.BONUS_LEVELS[button - Global.L_PUNISHMENT - 1]) != - 1 and button != Global.CURRENT_LEVEL:
+				if Global.BONUS_UNLOCK.find(Global.BONUS_LEVELS[button_actual - Global.L_PUNISHMENT - 1]) != - 1 and button != Global.CURRENT_LEVEL:
 					level_buttons[button].show()
 					level_buttons[button].texture_disabled = BUTTON_TEXTURES_D[0]
 					level_buttons[button].disabled = false
 				else :
 					level_buttons[button].show()
-					if Global.BONUS_UNLOCK.find(Global.BONUS_LEVELS[button - Global.L_PUNISHMENT - 1]) != - 1:
+					if Global.BONUS_UNLOCK.find(Global.BONUS_LEVELS[button_actual - Global.L_PUNISHMENT - 1]) != - 1:
 						level_buttons[button].texture_disabled = BUTTON_TEXTURES_D[0]
 					else :
 						level_buttons[button].texture_disabled = MYSTERY
@@ -1274,12 +1274,12 @@ func button_state():
 				if button >= Global.LEVELS.size():
 					level_buttons[button].show()
 				if button_actual <= Global.L_PUNISHMENT + Global.BONUS_LEVELS.size():
-					if Global.BONUS_UNLOCK.find(Global.BONUS_LEVELS[button - Global.L_PUNISHMENT - 1]) != - 1 and button != Global.CURRENT_LEVEL:
+					if Global.BONUS_UNLOCK.find(Global.BONUS_LEVELS[button_actual - Global.L_PUNISHMENT - 1]) != - 1 and button != Global.CURRENT_LEVEL:
 						level_buttons[button].show()
 						level_buttons[button].texture_disabled = BUTTON_TEXTURES_D[0]
 					else :
 						level_buttons[button].show()
-						if Global.BONUS_UNLOCK.find(Global.BONUS_LEVELS[button - Global.L_PUNISHMENT - 1]) != - 1:
+						if Global.BONUS_UNLOCK.find(Global.BONUS_LEVELS[button_actual - Global.L_PUNISHMENT - 1]) != - 1:
 							level_buttons[button].texture_disabled = BUTTON_TEXTURES_D[0]
 						else :
 							level_buttons[button].texture_disabled = MYSTERY

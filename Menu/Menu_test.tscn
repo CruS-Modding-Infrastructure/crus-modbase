@@ -111,12 +111,13 @@ visible = false
 margin_right = 720.0
 margin_bottom = 166.0
 script = ExtResource( 2 )
+x_size = 880
 
 [node name="GridContainer" type="GridContainer" parent="Settings"]
 margin_left = 3.0
 margin_top = 3.0
-margin_right = 773.0
-margin_bottom = 462.0
+margin_right = 896.0
+margin_bottom = 316.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 columns = 3
@@ -125,44 +126,44 @@ __meta__ = {
 }
 
 [node name="PanelContainer5" type="VBoxContainer" parent="Settings/GridContainer"]
-margin_right = 200.0
-margin_bottom = 213.0
+margin_right = 297.0
+margin_bottom = 145.0
 
 [node name="CheckBox" type="CheckBox" parent="Settings/GridContainer/PanelContainer5"]
-margin_right = 200.0
+margin_right = 297.0
 margin_bottom = 26.0
 text = "Full Screen"
 
 [node name="Resolution_List" type="ItemList" parent="Settings/GridContainer/PanelContainer5"]
 margin_top = 26.0
-margin_right = 200.0
-margin_bottom = 213.0
+margin_right = 297.0
+margin_bottom = 145.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="PanelContainer" type="PanelContainer" parent="Settings/GridContainer"]
-margin_left = 200.0
-margin_right = 420.0
-margin_bottom = 213.0
+margin_left = 297.0
+margin_right = 594.0
+margin_bottom = 145.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="Settings/GridContainer/PanelContainer"]
 margin_left = 3.0
 margin_top = 3.0
-margin_right = 217.0
-margin_bottom = 210.0
+margin_right = 294.0
+margin_bottom = 142.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="GAMMALABEL" type="Label" parent="Settings/GridContainer/PanelContainer/VBoxContainer"]
-margin_right = 214.0
+margin_right = 291.0
 margin_bottom = 26.0
 text = "FOV"
 
 [node name="GAMMA" type="HSlider" parent="Settings/GridContainer/PanelContainer/VBoxContainer"]
 margin_top = 26.0
-margin_right = 214.0
+margin_right = 291.0
 margin_bottom = 42.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -175,15 +176,14 @@ __meta__ = {
 }
 
 [node name="FOVLABEL" type="Label" parent="Settings/GridContainer/PanelContainer/VBoxContainer"]
-margin_top = 42.0
-margin_right = 214.0
-margin_bottom = 68.0
+margin_right = 291.0
+margin_bottom = 26.0
 text = "FOV"
 
 [node name="FOV" type="HSlider" parent="Settings/GridContainer/PanelContainer/VBoxContainer"]
-margin_top = 68.0
-margin_right = 214.0
-margin_bottom = 84.0
+margin_top = 26.0
+margin_right = 291.0
+margin_bottom = 42.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 min_value = 60.0
@@ -193,16 +193,16 @@ __meta__ = {
 }
 
 [node name="Label2" type="Label" parent="Settings/GridContainer/PanelContainer/VBoxContainer"]
-margin_top = 84.0
-margin_right = 214.0
-margin_bottom = 139.0
+margin_top = 42.0
+margin_right = 291.0
+margin_bottom = 97.0
 text = "Mouse
 Sensitivity"
 
 [node name="M_Sensitivity" type="HSlider" parent="Settings/GridContainer/PanelContainer/VBoxContainer"]
-margin_top = 139.0
-margin_right = 214.0
-margin_bottom = 155.0
+margin_top = 97.0
+margin_right = 291.0
+margin_bottom = 113.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 __meta__ = {
@@ -210,64 +210,64 @@ __meta__ = {
 }
 
 [node name="InvertYAxis" type="CheckBox" parent="Settings/GridContainer/PanelContainer/VBoxContainer"]
-margin_top = 155.0
-margin_right = 214.0
-margin_bottom = 181.0
+margin_top = 113.0
+margin_right = 291.0
+margin_bottom = 139.0
 text = "Invert Y Axis"
 
 [node name="Camera Sway" type="CheckBox" parent="Settings/GridContainer/PanelContainer/VBoxContainer"]
-margin_top = 181.0
-margin_right = 214.0
-margin_bottom = 207.0
+margin_top = 113.0
+margin_right = 291.0
+margin_bottom = 139.0
 pressed = true
 text = "Camera Sway"
 
 [node name="PanelContainer2" type="PanelContainer" parent="Settings/GridContainer"]
-margin_left = 420.0
-margin_right = 770.0
-margin_bottom = 213.0
+margin_left = 594.0
+margin_right = 891.0
+margin_bottom = 145.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="VBoxContainer4" type="VBoxContainer" parent="Settings/GridContainer/PanelContainer2"]
 margin_left = 3.0
 margin_top = 3.0
-margin_right = 347.0
-margin_bottom = 210.0
+margin_right = 294.0
+margin_bottom = 142.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Key_List" type="ItemList" parent="Settings/GridContainer/PanelContainer2/VBoxContainer4"]
-margin_right = 344.0
-margin_bottom = 207.0
+margin_right = 291.0
+margin_bottom = 139.0
 focus_mode = 1
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="PanelContainer3" type="PanelContainer" parent="Settings/GridContainer"]
-margin_top = 213.0
-margin_right = 200.0
-margin_bottom = 459.0
+margin_top = 145.0
+margin_right = 297.0
+margin_bottom = 313.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="Settings/GridContainer/PanelContainer3"]
 margin_left = 3.0
 margin_top = 3.0
-margin_right = 197.0
-margin_bottom = 243.0
+margin_right = 294.0
+margin_bottom = 165.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Label2" type="Label" parent="Settings/GridContainer/PanelContainer3/VBoxContainer2"]
-margin_right = 194.0
+margin_right = 291.0
 margin_bottom = 26.0
 text = "Master Volume"
 
 [node name="Master_Volume" type="HSlider" parent="Settings/GridContainer/PanelContainer3/VBoxContainer2"]
 margin_top = 26.0
-margin_right = 194.0
-margin_bottom = 120.0
+margin_right = 291.0
+margin_bottom = 81.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 min_value = 50.0
@@ -277,15 +277,15 @@ __meta__ = {
 }
 
 [node name="Label3" type="Label" parent="Settings/GridContainer/PanelContainer3/VBoxContainer2"]
-margin_top = 120.0
-margin_right = 194.0
-margin_bottom = 146.0
+margin_top = 81.0
+margin_right = 291.0
+margin_bottom = 107.0
 text = "Music Volume"
 
 [node name="Music_Volume" type="HSlider" parent="Settings/GridContainer/PanelContainer3/VBoxContainer2"]
-margin_top = 146.0
-margin_right = 194.0
-margin_bottom = 240.0
+margin_top = 107.0
+margin_right = 291.0
+margin_bottom = 162.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 min_value = 50.0
@@ -297,50 +297,50 @@ __meta__ = {
 }
 
 [node name="PanelContainer4" type="PanelContainer" parent="Settings/GridContainer"]
-margin_left = 200.0
-margin_top = 213.0
-margin_right = 420.0
-margin_bottom = 459.0
+margin_left = 297.0
+margin_top = 145.0
+margin_right = 594.0
+margin_bottom = 313.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="VBoxContainer3" type="VBoxContainer" parent="Settings/GridContainer/PanelContainer4"]
 margin_left = 3.0
 margin_top = 3.0
-margin_right = 217.0
-margin_bottom = 243.0
+margin_right = 294.0
+margin_bottom = 165.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Label2" type="Label" parent="Settings/GridContainer/PanelContainer4/VBoxContainer3"]
-margin_right = 214.0
+margin_right = 291.0
 margin_bottom = 26.0
 text = "Blood Color"
 
 [node name="Blood_Color_Rect" type="ColorRect" parent="Settings/GridContainer/PanelContainer4/VBoxContainer3"]
 margin_top = 26.0
-margin_right = 214.0
-margin_bottom = 41.0
+margin_right = 291.0
+margin_bottom = 36.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 0.32
 color = Color( 1, 0, 0, 1 )
 
 [node name="HBoxContainer" type="HBoxContainer" parent="Settings/GridContainer/PanelContainer4/VBoxContainer3"]
-margin_top = 41.0
-margin_right = 214.0
-margin_bottom = 91.0
+margin_top = 36.0
+margin_right = 291.0
+margin_bottom = 67.0
 size_flags_vertical = 3
 
 [node name="Label" type="Label" parent="Settings/GridContainer/PanelContainer4/VBoxContainer3/HBoxContainer"]
-margin_top = 12.0
+margin_top = 2.0
 margin_right = 14.0
-margin_bottom = 38.0
+margin_bottom = 28.0
 text = "R"
 
 [node name="R" type="HSlider" parent="Settings/GridContainer/PanelContainer4/VBoxContainer3/HBoxContainer"]
 margin_left = 14.0
-margin_right = 214.0
+margin_right = 291.0
 margin_bottom = 16.0
 size_flags_horizontal = 3
 max_value = 1.0
@@ -348,60 +348,60 @@ step = 0.01
 value = 1.0
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="Settings/GridContainer/PanelContainer4/VBoxContainer3"]
-margin_top = 91.0
-margin_right = 214.0
-margin_bottom = 140.0
+margin_top = 67.0
+margin_right = 291.0
+margin_bottom = 98.0
 size_flags_vertical = 3
 
 [node name="Label2" type="Label" parent="Settings/GridContainer/PanelContainer4/VBoxContainer3/HBoxContainer2"]
-margin_top = 11.0
+margin_top = 2.0
 margin_right = 14.0
-margin_bottom = 37.0
+margin_bottom = 28.0
 text = "G"
 
 [node name="G" type="HSlider" parent="Settings/GridContainer/PanelContainer4/VBoxContainer3/HBoxContainer2"]
 margin_left = 14.0
-margin_right = 214.0
+margin_right = 291.0
 margin_bottom = 16.0
 size_flags_horizontal = 3
 max_value = 1.0
 step = 0.01
 
 [node name="HBoxContainer3" type="HBoxContainer" parent="Settings/GridContainer/PanelContainer4/VBoxContainer3"]
-margin_top = 140.0
-margin_right = 214.0
-margin_bottom = 190.0
+margin_top = 98.0
+margin_right = 291.0
+margin_bottom = 129.0
 size_flags_vertical = 3
 
 [node name="Label3" type="Label" parent="Settings/GridContainer/PanelContainer4/VBoxContainer3/HBoxContainer3"]
-margin_top = 12.0
+margin_top = 2.0
 margin_right = 14.0
-margin_bottom = 38.0
+margin_bottom = 28.0
 text = "B"
 
 [node name="B" type="HSlider" parent="Settings/GridContainer/PanelContainer4/VBoxContainer3/HBoxContainer3"]
 margin_left = 14.0
-margin_right = 214.0
+margin_right = 291.0
 margin_bottom = 16.0
 size_flags_horizontal = 3
 max_value = 1.0
 step = 0.01
 
 [node name="HBoxContainer4" type="HBoxContainer" parent="Settings/GridContainer/PanelContainer4/VBoxContainer3"]
-margin_top = 190.0
-margin_right = 214.0
-margin_bottom = 240.0
+margin_top = 129.0
+margin_right = 291.0
+margin_bottom = 162.0
 size_flags_vertical = 3
 
 [node name="Label4" type="Label" parent="Settings/GridContainer/PanelContainer4/VBoxContainer3/HBoxContainer4"]
-margin_top = 12.0
+margin_top = 3.0
 margin_right = 14.0
-margin_bottom = 38.0
+margin_bottom = 29.0
 text = "A"
 
 [node name="A" type="HSlider" parent="Settings/GridContainer/PanelContainer4/VBoxContainer3/HBoxContainer4"]
 margin_left = 14.0
-margin_right = 214.0
+margin_right = 291.0
 margin_bottom = 16.0
 size_flags_horizontal = 3
 max_value = 1.0
@@ -409,50 +409,50 @@ step = 0.01
 value = 1.0
 
 [node name="PanelContainer6" type="PanelContainer" parent="Settings/GridContainer"]
-margin_left = 420.0
-margin_top = 213.0
-margin_right = 770.0
-margin_bottom = 459.0
+margin_left = 594.0
+margin_top = 145.0
+margin_right = 891.0
+margin_bottom = 313.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="VBoxContainer3" type="VBoxContainer" parent="Settings/GridContainer/PanelContainer6"]
 margin_left = 3.0
 margin_top = 3.0
-margin_right = 347.0
-margin_bottom = 243.0
+margin_right = 294.0
+margin_bottom = 165.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="SkipIntro" type="CheckBox" parent="Settings/GridContainer/PanelContainer6/VBoxContainer3"]
-margin_right = 344.0
+margin_right = 291.0
 margin_bottom = 26.0
 text = "Skip Intro"
 
 [node name="Reflections" type="CheckBox" parent="Settings/GridContainer/PanelContainer6/VBoxContainer3"]
 margin_top = 26.0
-margin_right = 344.0
+margin_right = 291.0
 margin_bottom = 52.0
 pressed = true
 text = "Reflections"
 
 [node name="Highperformance" type="CheckBox" parent="Settings/GridContainer/PanelContainer6/VBoxContainer3"]
-margin_top = 52.0
-margin_right = 344.0
-margin_bottom = 78.0
+margin_top = 26.0
+margin_right = 291.0
+margin_bottom = 52.0
 pressed = true
 text = "High Performance Mode"
 
 [node name="Civcount_Label" type="Label" parent="Settings/GridContainer/PanelContainer6/VBoxContainer3"]
-margin_top = 78.0
-margin_right = 344.0
-margin_bottom = 104.0
+margin_top = 52.0
+margin_right = 291.0
+margin_bottom = 78.0
 text = "Civilians"
 
 [node name="Civslider" type="HSlider" parent="Settings/GridContainer/PanelContainer6/VBoxContainer3"]
-margin_top = 104.0
-margin_right = 344.0
-margin_bottom = 120.0
+margin_top = 78.0
+margin_right = 291.0
+margin_bottom = 94.0
 min_value = 1.0
 max_value = 101.0
 value = 101.0
@@ -461,15 +461,15 @@ __meta__ = {
 }
 
 [node name="Draw_Label" type="Label" parent="Settings/GridContainer/PanelContainer6/VBoxContainer3"]
-margin_top = 120.0
-margin_right = 344.0
-margin_bottom = 146.0
+margin_top = 94.0
+margin_right = 291.0
+margin_bottom = 120.0
 text = "Draw distance"
 
 [node name="Drawslider" type="HSlider" parent="Settings/GridContainer/PanelContainer6/VBoxContainer3"]
-margin_top = 146.0
-margin_right = 344.0
-margin_bottom = 162.0
+margin_top = 120.0
+margin_right = 291.0
+margin_bottom = 136.0
 min_value = 20.0
 max_value = 500.0
 value = 500.0
@@ -478,28 +478,26 @@ __meta__ = {
 }
 
 [node name="CenterContainer" type="ColorRect" parent="Settings/GridContainer/PanelContainer6/VBoxContainer3"]
-margin_top = 162.0
-margin_right = 344.0
-margin_bottom = 162.0
+margin_top = 136.0
+margin_right = 291.0
+margin_bottom = 136.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 size_flags_stretch_ratio = 2.18
 color = Color( 1, 1, 1, 0 )
 
 [node name="ShowMods" parent="Settings/GridContainer/PanelContainer6/VBoxContainer3" instance=ExtResource( 36 )]
-margin_top = 162.0
-margin_bottom = 188.0
 
 [node name="ResetLevels" type="Button" parent="Settings/GridContainer/PanelContainer6/VBoxContainer3"]
-margin_top = 188.0
-margin_right = 344.0
-margin_bottom = 214.0
+margin_top = 136.0
+margin_right = 291.0
+margin_bottom = 162.0
 text = "Reset Level Progression"
 
 [node name="ClearSave" type="Button" parent="Settings/GridContainer/PanelContainer6/VBoxContainer3"]
-margin_top = 214.0
-margin_right = 344.0
-margin_bottom = 240.0
+margin_top = 136.0
+margin_right = 291.0
+margin_bottom = 162.0
 text = "Clear Save Data"
 
 [node name="MyWork" type="TextureRect" parent="."]
@@ -887,6 +885,7 @@ texture_normal = ExtResource( 26 )
 texture_hover = ExtResource( 14 )
 expand = true
 script = ExtResource( 30 )
+override_name = "Next Mission"
 
 [node name="Retry" type="TextureButton" parent="Level_End_Grid/Level_Info_Vbox"]
 margin_left = 45.0
@@ -897,6 +896,7 @@ texture_normal = ExtResource( 20 )
 texture_hover = ExtResource( 14 )
 expand = true
 script = ExtResource( 30 )
+override_name = "Retry"
 
 [node name="Level_Select" type="TextureButton" parent="Level_End_Grid/Level_Info_Vbox"]
 margin_left = 90.0
@@ -907,6 +907,7 @@ texture_normal = ExtResource( 17 )
 texture_hover = ExtResource( 14 )
 expand = true
 script = ExtResource( 30 )
+override_name = "Level Select"
 
 [node name="Exit_Main_Menu" type="TextureButton" parent="Level_End_Grid/Level_Info_Vbox"]
 margin_left = 135.0
@@ -917,6 +918,7 @@ texture_normal = ExtResource( 18 )
 texture_hover = ExtResource( 14 )
 expand = true
 script = ExtResource( 30 )
+override_name = "Title Screen"
 
 [node name="Quit" type="TextureButton" parent="Level_End_Grid/Level_Info_Vbox"]
 margin_left = 180.0
@@ -927,6 +929,7 @@ texture_normal = ExtResource( 11 )
 texture_hover = ExtResource( 14 )
 expand = true
 script = ExtResource( 30 )
+override_name = "Quit to OS"
 
 [node name="GridContainer" type="GridContainer" parent="Level_End_Grid/Level_Info_Vbox"]
 margin_left = 225.0
@@ -987,6 +990,7 @@ margin_bottom = 40.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = SubResource( 2 )
+in_game = false
 
 [node name="Character_Menu" type="PanelContainer" parent="."]
 visible = false
@@ -1221,6 +1225,7 @@ own_world = true
 transparent_bg = true
 render_target_v_flip = true
 script = ExtResource( 59 )
+offset = 90
 
 [node name="Camera" type="Camera" parent="Weapon2_Viewport"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.909632 )
@@ -1254,6 +1259,7 @@ margin_right = 302.0
 margin_bottom = 76.0
 window_title = ""
 dialog_text = "This will remove all of your progress. Are you Sure?"
+
 [connection signal="toggled" from="Settings/GridContainer/PanelContainer5/CheckBox" to="." method="_on_Full_Screen_toggled"]
 [connection signal="item_activated" from="Settings/GridContainer/PanelContainer5/Resolution_List" to="." method="_on_Resolution_List_item_activated"]
 [connection signal="value_changed" from="Settings/GridContainer/PanelContainer/VBoxContainer/GAMMA" to="." method="_on_Gamma_value_changed"]

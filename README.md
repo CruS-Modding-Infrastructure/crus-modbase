@@ -1,7 +1,6 @@
 # CruS Mod Base
-Adds useful modding things (in the future) and custom level support.
 
-Requires the [CRUELTY SQUAD MOD LOADER](https://github.com/crustyrashky/crus-modloader)
+Adds useful modding things (in the future) and custom level support.
 
 ## Features
 
@@ -10,12 +9,14 @@ Requires the [CRUELTY SQUAD MOD LOADER](https://github.com/crustyrashky/crus-mod
 
 ## Install
 
-1. Download the [latest release](https://github.com/crustyrashky/crus-modbase/releases/download/0.1.1/crus-modbase.zip)
-2. Extract the `Crus Mod Base` folder to  `%appdata%\Godot\app_userdata\Cruelty Squad\mods`
+1. Download the [latest release](https://github.com/crustyrashky/crus-modbase/releases/download/standalone-for-may11/crus-modbase.zip)
+2. Extract it to where your game is installed (Properties > Local Files > Browse in Steam)
+3. Go into the `crus-modbase-standalone` folder, run `install.bat` and wait for it to complete
+4. Your game is now patched, feel free to delete the installation files if you want
 
 ## Adding custom levels
 
-1. Download a level, like [this one](https://github.com/crustyrashky/crus-modbase/releases/download/0.1.1/SinSpaceExtended.zip)
+1. Download a level, like [this one](https://github.com/crustyrashky/crus-modbase/releases/download/standalone-for-may11/SinSpaceExtended.zip)
 2. Extract its folder to `%appdata%\Godot\app_userdata\Cruelty Squad\levels`
    - This folder is created automatically if you run the game with the mod installed, or you can create it yourself
 
