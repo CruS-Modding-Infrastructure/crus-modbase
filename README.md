@@ -9,7 +9,7 @@ Adds useful modding things (in the future) and custom level support.
 
 ## Install
 
-1. Download the [latest release](https://github.com/crustyrashky/crus-modbase/releases/download/standalone-for-may11/crus-modbase.zip)
+1. Download the [latest release](https://github.com/crustyrashky/crus-modbase/releases/download/standalone-for-may11/crus-modbase-standalone.zip)
 2. Extract it to where your game is installed (Properties > Local Files > Browse in Steam)
 3. Go into the `crus-modbase-standalone` folder, run `install.bat` and wait for it to complete
 4. Your game is now patched, feel free to delete the installation files if you want
