@@ -2,6 +2,9 @@
 
 Adds useful modding things (in the future) and custom level support.
 
+<s>Requires the [CRUELTY SQUAD MOD LOADER](https://github.com/crustyrashky/crus-modloader)</s>
+**NOTE:** Due to code changes in the game's May 11 update, this mod is standalone for the time being.
+
 ## Features
 
 - Custom level support
@@ -9,16 +12,23 @@ Adds useful modding things (in the future) and custom level support.
 
 ## Install
 
-1. Download the [latest release](https://github.com/crustyrashky/crus-modbase/releases/download/standalone-for-may11/crus-modbase-standalone.zip)
+1. Download the [latest release](https://github.com/crustyrashky/crus-modbase/releases/download/beta-may-21/crus-modbase-standalone.zip)
 2. Extract it to where your game is installed (Properties > Local Files > Browse in Steam)
 3. Go into the `crus-modbase-standalone` folder, run `install.bat` and wait for it to complete
 4. Your game is now patched, feel free to delete the installation files if you want
 
 ## Adding custom levels
 
-1. Download a level, like [this one](https://github.com/crustyrashky/crus-modbase/releases/download/standalone-for-may11/SinSpaceExtended.zip)
+1. Download a level
 2. Extract its folder to `%appdata%\Godot\app_userdata\Cruelty Squad\levels`
    - This folder is created automatically if you run the game with the mod installed, or you can create it yourself
+
+## List of released levels
+
+Check out [this guide](https://hackmd.io/@OsM6oUcXSwG3mLNvTlPMZg/SkYQwbONu) if you want to make your own
+
+- [Sin Space Extended](https://github.com/crustyrashky/crus-modbase/files/6559547/SinSpaceExtended.zip) by Uggo and Consumer Softproducts
+- [Belgha Festival](https://github.com/crustyrashky/crus-modbase/files/6559533/Belgha_Festival_V1.0.zip) by oldmankai
 
 ## Level config JSON properties
 
