@@ -1038,7 +1038,7 @@ func _on_Return_Button_Pressed(m:int, button_id:TextureButton):
 		$Level_Info_Grid / HBoxContainer / Description_Scroll / Description.speech_break = true
 
 func _on_Mission_Start_Pressed(m:int, button_id:TextureButton):
-	Global.STOCKS.save_stocks()
+	Global.STOCKS.save_stocks("user://stocks.save")
 	goto_menu(m, START, button_id)
 	toggle_menu()
 	show_buttons(menu[START], 2, 4)
@@ -1134,7 +1134,7 @@ func go_back(m:int, b_id:TextureButton):
 	
 
 func goto_menu(from_menu:int, to_menu:int, b:TextureButton):
-	Global.STOCKS.save_stocks()
+	Global.STOCKS.save_stocks("user://stocks.save")
 	if Global.LEVEL_PUNISHED[Global.CURRENT_LEVEL]:
 		$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / Punishment_Image.modulate = Color(1, 1, 1, 1)
 	else :
@@ -1549,7 +1549,7 @@ func _on_qb():
 	_on_Quit_Button_Pressed(START, menu[START].get_child(0))
 
 func _on_Retry_Button_Pressed(m:int, b:TextureButton):
-	Global.STOCKS.save_stocks()
+	Global.STOCKS.save_stocks("user://stocks.save")
 	$Hover_Panel.hide()
 	get_node("Soul_Rended").hide()
 	if active_element == $Level_End_Grid:
@@ -1718,6 +1718,7 @@ func _on_ClearSave_pressed():
 	Global.LEVEL_PUNISHED = []
 	Global.DEAD_CIVS = []
 	Global.ending_1 = false
+	Global.ending_3 = false
 	Global.hope_discarded = false
 	Global.hell_discovered = false
 	Global.ending_2 = false
@@ -1755,7 +1756,7 @@ func _on_ClearSave_pressed():
 		stock.owned = 0
 	Global.MONEY_ITEMS = []
 	Global.STOCKS.FISH_FOUND = []
-	Global.STOCKS.save_stocks()
+	Global.STOCKS.save_stocks("user://stocks.save")
 	Global.save_game()
 
 
