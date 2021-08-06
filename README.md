@@ -28,7 +28,7 @@ Adds useful modding things (in the future) and custom level support.
 Check out [this guide](https://hackmd.io/@OsM6oUcXSwG3mLNvTlPMZg/SkYQwbONu) if you want to make your own
 
 - [Sin Space Extended](https://github.com/crustyrashky/crus-modbase/files/6559547/SinSpaceExtended.zip) by Uggo and Consumer Softproducts
-- [Belgha Festival](https://github.com/crustyrashky/crus-modbase/files/6595422/Belgha_Festival_V1.3.zip) by oldmankai
+- [Belgha Festival](https://github.com/crustyrashky/crus-modbase/files/6595422/Belgha_Festival_V1.3.zip) by oldmankai and Just_Matt
 
 ## Level config JSON properties
 
