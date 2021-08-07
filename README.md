@@ -29,7 +29,8 @@ Check out [this guide](https://hackmd.io/@OsM6oUcXSwG3mLNvTlPMZg/SkYQwbONu) if y
 
 - [Sin Space Extended](https://github.com/crustyrashky/crus-modbase/files/6559547/SinSpaceExtended.zip) by Uggo and Consumer Softproducts
 - [Belgha Festival](https://github.com/crustyrashky/crus-modbase/files/6595422/Belgha_Festival_V1.3.zip) by oldmankai and Just_Matt
-- [McMansion Estate](https://github.com/crustyrashky/crus-modbase/files/6948573/McMansion_Estate_V1.0.zip) by Oskodos and voxelectrica
+- [McMansion Estate](https://github.com/crustyrashky/crus-modbase/files/6949799/McMansion_Estate_V1.1.zip)
+ by Oskodos and voxelectrica
 
 
 ## Level config JSON properties
