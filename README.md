@@ -31,6 +31,8 @@ Check out [this guide](https://hackmd.io/@OsM6oUcXSwG3mLNvTlPMZg/SkYQwbONu) if y
 - [Belgha Festival](https://github.com/crustyrashky/crus-modbase/files/6595422/Belgha_Festival_V1.3.zip) by oldmankai and Just_Matt
 - [McMansion Estate](https://github.com/crustyrashky/crus-modbase/files/6949799/McMansion_Estate_V1.1.zip)
  by Oskodos and voxelectrica
+- [Church Schizm](https://github.com/crustyrashky/crus-modbase/files/6985599/Church_Schizm_V1.0.zip) by Oskodos
+
 
 
 ## Level config JSON properties
