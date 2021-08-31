@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://MOD_CONTENT/CruS Mod Base/scripts/Night_Cycle.gd" type="Script" id=1]
+
+[node name="Global_Light" type="DirectionalLight"]
+transform = Transform( 0.826393, -0.406003, -0.390174, 0, -0.692911, 0.721023, -0.563093, -0.595848, -0.572617, 0, 3.92309, 0 )
+light_energy = 1.72
+light_bake_mode = 0
+script = ExtResource( 1 )

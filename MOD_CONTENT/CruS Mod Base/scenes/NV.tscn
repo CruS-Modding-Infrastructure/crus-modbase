@@ -1,0 +1,7 @@
+[gd_scene format=2]
+
+[node name="NV" type="OmniLight"]
+transform = Transform( -1, -5.29396e-23, -3.25841e-07, -5.88004e-09, 0.999837, 0.0180457, 3.25788e-07, 0.0180457, -0.999837, 0, 1.81149, 0 )
+visible = false
+light_energy = 2.0
+omni_range = 500.0

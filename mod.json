@@ -1,7 +1,7 @@
 {
     "name": "CruS Mod Base",
-    "author": "trashski#6540 on discord",
-    "version": "0.1.1",
-    "description": "Adds useful modding things. Currently only adds custom map support.",
+    "author": "crustyrashky",
+    "version": "0.3.0",
+    "description": "Adds useful modding things, custom map support and more.",
     "init": "res://MOD_CONTENT/CruS Mod Base/init.gd"
 }

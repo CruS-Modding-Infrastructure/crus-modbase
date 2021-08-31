@@ -6,7 +6,7 @@ var confirmed = false
 var cancel = false
 enum {B_START, B_SETTINGS, B_QUIT, B_LEVEL, B_MISSION_START, 
 	B_WEAPON_1, B_WEAPON_2, B_CHARACTER, B_STOCKS, B_W_PISTOL, B_W_SMG, B_W_SHOTGUN, B_W_RL, B_W_SNIPER, B_W_AR, B_W_S_SMG, B_W_NAMBU, 
-	B_W_GAS_LAUNCHER, B_W_MG3, B_W_AUTOSHOTGUN, B_W_MAUSER, B_W_BORE, B_W_MKR, B_W_RADGUN, B_W_TRANQ, B_W_BLACKJACK, B_W_FLASHLIGHT, B_W_ZIPPY, B_W_AN94, B_W_VAG72, B_W_STEYR, B_W_CANCER, B_W_ROD, B_W_FLAMETHROWER, B_W_SKS, B_W_NAILER, B_W_SHOCK, B_EX_MENU, B_EX_LEVEL_SELECT, B_RETURN, B_RETRY, B_BONUS,
+	B_W_GAS_LAUNCHER, B_W_MG3, B_W_AUTOSHOTGUN, B_W_MAUSER, B_W_BORE, B_W_MKR, B_W_RADGUN, B_W_TRANQ, B_W_BLACKJACK, B_W_FLASHLIGHT, B_W_ZIPPY, B_W_AN94, B_W_VAG72, B_W_STEYR, B_W_CANCER, B_W_ROD, B_W_FLAMETHROWER, B_W_SKS, B_W_NAILER, B_W_SHOCK, B_W_LIGHT, B_EX_MENU, B_EX_LEVEL_SELECT, B_RETURN, B_RETRY, B_BONUS,
 	B_PREV_LEVELS, B_NEXT_LEVELS}
 const BUTTON_TEXTURES:Array = [preload("res://Textures/Menu/start_normal.png"), 
 									preload("res://Textures/Menu/settings_normal.png"), 
@@ -45,6 +45,7 @@ const BUTTON_TEXTURES:Array = [preload("res://Textures/Menu/start_normal.png"),
 								preload("res://Textures/Menu/Weapon_Buttons/SKS.png"), 
 								preload("res://Textures/Menu/Weapon_Buttons/nailer.png"), 
 								preload("res://Textures/Menu/Weapon_Buttons/shockwave.png"), 
+								preload("res://Textures/Menu/Weapon_Buttons/light.png"), 
 									preload("res://Textures/Menu/exit_menu_normal.png"), 
 									preload("res://Textures/Menu/exit_level_normal.png"), 
 									preload("res://Textures/Menu/return_normal.png"), 
@@ -100,14 +101,14 @@ const BUTTON_TEXTURES_D:Array = [preload("res://Textures/Menu/Disabled_Button/1.
 								preload("res://Textures/Menu/Disabled_Button/3.png"), 
 								preload("res://Textures/Menu/Disabled_Button/4.png")]
 const MYSTERY = preload("res://Textures/Menu/mystery.png")
-enum {W_PISTOL, W_SMG, W_TRANQ, W_BLACKJACK, W_SHOTGUN, W_RL, W_SNIPER, W_AR, W_S_SMG, W_NAMBU, W_GAS_LAUNCHER, W_MG3, W_AUTOSHOTGUN, W_MAUSER, W_BORE, W_MKR, W_RADIATOR, W_FLASHLIGHT, W_ZIPPY, W_AN94, W_VAG72, W_STEYR, W_CANCER, W_ROD, W_FLAMETHROWER, W_SKS, W_NAILER, W_SHOCK}
+enum {W_PISTOL, W_SMG, W_TRANQ, W_BLACKJACK, W_SHOTGUN, W_RL, W_SNIPER, W_AR, W_S_SMG, W_NAMBU, W_GAS_LAUNCHER, W_MG3, W_AUTOSHOTGUN, W_MAUSER, W_BORE, W_MKR, W_RADIATOR, W_FLASHLIGHT, W_ZIPPY, W_AN94, W_VAG72, W_STEYR, W_CANCER, W_ROD, W_FLAMETHROWER, W_SKS, W_NAILER, W_SHOCK, W_LIGHT}
 const RESOLUTIONS:Array = [Vector2(1920, 1080), Vector2(1600, 900), Vector2(1366, 768), Vector2(1280, 720), Vector2(3840, 2160), Vector2(2560, 1440), Vector2(3840, 2400), Vector2(2560, 1600), Vector2(1920, 1200), Vector2(1680, 1050), Vector2(1440, 900), Vector2(3440, 1440), Vector2(2880, 1200), Vector2(2560, 1080), Vector2(1920, 800), Vector2(1600, 1200), Vector2(1440, 1080), Vector2(1024, 768), Vector2(800, 600), Vector2(640, 480), Vector2(1080, 1080)]
 const RANK_LETTERS:Array = [preload("res://Textures/rank_letters/C.png"), 
 preload("res://Textures/rank_letters/B.png"), 
 preload("res://Textures/rank_letters/A.png"), 
 preload("res://Textures/rank_letters/S.png"), 
 preload("res://Textures/rank_letters/N.png")]
-var LEVEL_NAMES:Array = ["Training Facility", "Headquarters", "Suburb", "Spaceport", "PD", "Mall", "Apartment", "Ship", "Swamp", "Casino", "Castle", "Office", "Archon Grid", "NEED", "HELP", "END", "PAIN", "NOW"]
+var LEVEL_NAMES:Array = ["Training Facility", "Headquarters", "Suburb", "Spaceport", "PD", "Mall", "Apartment", "Ship", "Swamp", "Casino", "Castle", "Office", "Archon Grid", "NEED", "HELP", "END", "PAIN", "NOW", "AAAAAA"]
 
 const HANDLER_FRAMES:Array = [preload("res://Textures/Menu/Handler/1.png"), 
 								preload("res://Textures/Menu/Handler/2.png"), 
@@ -234,9 +235,9 @@ func get_scancodes():
 	return key_scancodes
 
 # custom stuff
-const MAX_PAGE_SIZE = 19
-var CUSTOM_BTN_TEXTURES = [preload("res://MOD_CONTENT/CruS Mod Base/prev.png"),
-						   preload("res://MOD_CONTENT/CruS Mod Base/next.png")]
+const MAX_PAGE_SIZE = 20
+var CUSTOM_BTN_TEXTURES = [preload("res://MOD_CONTENT/CruS Mod Base/assets/prev.png"),
+						   preload("res://MOD_CONTENT/CruS Mod Base/assets/next.png")]
 var all_level_buttons = null
 var custom_levels = []
 var level_btn_index = 0
@@ -291,7 +292,8 @@ func update_level_buttons(init=false):
 			menu[LEVEL_SELECT].remove_child(level_buttons.back())
 			level_buttons.pop_back()
 		else:
-			menu[LEVEL_SELECT].add_child(all_level_buttons[i])
+			if all_level_buttons[i].get_parent() != menu[LEVEL_SELECT]:
+				menu[LEVEL_SELECT].add_child(all_level_buttons[i])
 			menu[LEVEL_SELECT].buttons.append(B_LEVEL)
 			all_level_buttons[i].disabled = false
 			if !init:
@@ -324,25 +326,27 @@ func add_level_ranks(level: Dictionary):
 		{ "prefix": "hell", "ranks": [G.HELL_RANK_S, G.HELL_RANK_A, G.HELL_RANK_B, G.HELL_SRANK_S] }]
 	var ranks_dict = level.get("ranks") if level.has("ranks") else null
 	
-	for type in types:
+	for t in types:
 		if ranks_dict:
 			var rank_time = null
 			var arr_valid = true
 			var stock_valid = true
-			if !(ranks_dict.get(type.prefix) is Array) or ranks_dict.get(type.prefix).size() != 3:
+			if !(ranks_dict.get(t.prefix) is Array) or ranks_dict.get(t.prefix).size() != 3:
 				arr_valid = false
-				G_Steam.mod_log("WARNING: \"" + type.prefix + "\" in \"ranks\" of \"" + level.name + "\" level.json is not a valid array of three positive numbers, defaulting to 0", "CruS Mod Base")
-			if !ranks_dict.get(type.prefix + "_stock_s") or ranks_dict.get(type.prefix + "_stock_s") <= 0:
+				Mod.mod_log("WARNING: \"" + t.prefix + "\" in \"ranks\" of \"" + level.name + "\" level.json is not a valid array of three positive numbers, defaulting to 0", "CruS Mod Base")
+			if !((t.prefix + "_stock_s") in ranks_dict) or ranks_dict.get(t.prefix + "_stock_s") < 0:
+				print(!((t.prefix + "_stock_s") in ranks_dict))
+				print(ranks_dict.get(t.prefix + "_stock_s") < 0)
 				stock_valid = false
-				G_Steam.mod_log("WARNING: \"" + type.prefix + "_stock_s\" in \"ranks\" of \"" + level.name + "\" level.json is not a positive number, defaulting to 0", "CruS Mod Base")
+				Mod.mod_log("WARNING: \"" + t.prefix + "_stock_s\" in \"ranks\" of \"" + level.name + "\" level.json is not a positive number, defaulting to 0", "CruS Mod Base")
 			for i in range(3):
-				rank_time = ranks_dict.get(type.prefix)[i] if ranks_dict and arr_valid else 0
-				type.ranks[i].append(rank_time if rank_time and rank_time > 0 else 0)
-			rank_time = ranks_dict.get(type.prefix + "_stock_s") if ranks_dict and stock_valid else 0
-			type.ranks[3].append(rank_time if rank_time and rank_time > 0 else 0)
+				rank_time = ranks_dict.get(t.prefix)[i] if ranks_dict and arr_valid else 0
+				t.ranks[i].append(rank_time if rank_time and rank_time > 0 else 0)
+			rank_time = ranks_dict.get(t.prefix + "_stock_s") if ranks_dict and stock_valid else 0
+			t.ranks[3].append(rank_time if rank_time and rank_time > 0 else 0)
 		else:
 			for i in range(4):
-				type.ranks[i].append(0)
+				t.ranks[i].append(0)
 
 	Global.level_ranks.append("N")
 	Global.level_stock_ranks.append("N")
@@ -411,7 +415,7 @@ func save_custom_levels_data():
 		save_dict[level_name + "_hell_string_time"] = Global.HELL_TIMES[level]
 		save_dict[level_name + "_punished"] = Global.LEVEL_PUNISHED[level]
 	var save_file = File.new()
-	if save_file.open("user:///custom_level_times.save", File.WRITE) == OK:
+	if save_file.open("user://custom_level_times.save", File.WRITE) == OK:
 		save_file.store_line(to_json(save_dict))
 	save_file.close()
 
@@ -476,8 +480,17 @@ func load_custom_levels_data():
 	save_game.close()
 
 func _ready():
-	custom_levels = G_Steam.MOD_DATA["CruS Mod Base"].levels
-
+	var cmb = Mod.get_node("CruS Mod Base")
+	if "debug_level" in cmb.data:
+		custom_levels = [cmb.data.debug_level]
+	else:
+		custom_levels = cmb.data.levels
+	
+	if Global.ending_3:
+		$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / Chaos_Mode.show()
+	else :
+		$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / Chaos_Mode.hide()
+	$Settings / GridContainer / PanelContainer6 / VBoxContainer3 / Timer.pressed = Global.timer
 	$Settings / GridContainer / PanelContainer6 / VBoxContainer3 / Highperformance.pressed = Global.high_performance
 	Global.screenmat.set_shader_param("gamma", Global.gamma)
 	$Settings / GridContainer / PanelContainer / VBoxContainer / GAMMALABEL.text = "Gamma: " + str(Global.gamma)
@@ -498,7 +511,7 @@ func _ready():
 			meta_file.close()
 		else:
 			LEVEL_NAMES[level] = Global.LEVEL_META[level].get("name")
-	
+
 	$Settings / GridContainer / PanelContainer6 / VBoxContainer3 / Reflections.pressed = Global.reflections
 	$Settings / GridContainer / PanelContainer6 / VBoxContainer3 / Draw_Label.text = "Draw Distance:\n" + str(Global.draw_distance)
 	$Settings / GridContainer / PanelContainer6 / VBoxContainer3 / Drawslider.value = Global.draw_distance
@@ -593,11 +606,14 @@ func _ready():
 	menu[LEVEL_SELECT].buttons = [B_RETURN, B_CHARACTER, B_STOCKS, B_WEAPON_1, B_WEAPON_2, B_MISSION_START]
 	for level in Global.LEVELS:
 		menu[LEVEL_SELECT].buttons.append(B_LEVEL)
-
+	
 	add_custom_levels()
-	load_custom_levels_data()	
+	load_custom_levels_data()
+	
+	if "debug_level" in cmb.data:
+		Global.CURRENT_LEVEL = Global.LEVEL_META.size() - 1
 		
-	menu[WEAPON_SELECT].buttons = [B_RETURN, B_W_PISTOL, B_W_SMG, B_W_TRANQ, B_W_BLACKJACK, B_W_SHOTGUN, B_W_RL, B_W_SNIPER, B_W_AR, B_W_S_SMG, B_W_NAMBU, B_W_GAS_LAUNCHER, B_W_MG3, B_W_AUTOSHOTGUN, B_W_MAUSER, B_W_BORE, B_W_MKR, B_W_RADGUN, B_W_FLASHLIGHT, B_W_ZIPPY, B_W_AN94, B_W_VAG72, B_W_STEYR, B_W_CANCER, B_W_ROD, B_W_FLAMETHROWER, B_W_SKS, B_W_NAILER, B_W_SHOCK]
+	menu[WEAPON_SELECT].buttons = [B_RETURN, B_W_PISTOL, B_W_SMG, B_W_TRANQ, B_W_BLACKJACK, B_W_SHOTGUN, B_W_RL, B_W_SNIPER, B_W_AR, B_W_S_SMG, B_W_NAMBU, B_W_GAS_LAUNCHER, B_W_MG3, B_W_AUTOSHOTGUN, B_W_MAUSER, B_W_BORE, B_W_MKR, B_W_RADGUN, B_W_FLASHLIGHT, B_W_ZIPPY, B_W_AN94, B_W_VAG72, B_W_STEYR, B_W_CANCER, B_W_ROD, B_W_FLAMETHROWER, B_W_SKS, B_W_NAILER, B_W_SHOCK, B_W_LIGHT]
 	menu[CHARACTER].buttons = [B_RETURN]
 	menu[STOCKS].buttons = [B_RETURN]
 	
@@ -760,6 +776,9 @@ func create_buttons(m:int):
 			B_W_SHOCK:
 				var wep = create_button(m, "Raymond Shocktroop Tactical", "_on_Shock_Pressed", menu[m].buttons[i])
 				wep.hint_tooltip = "A compact but powerful semi-automatic shotgun, popular in the law enforcement business for clearing out regenerative art communes."
+			B_W_LIGHT:
+				var wep = create_button(m, "Abscess Ironworks Lux ff374f727ce9d6d6e93be0793733c321", "_on_Light_Pressed", menu[m].buttons[i])
+				wep.hint_tooltip = "Bask in the golden light of your radiant path."
 			B_MISSION_START:
 				create_button(m, "Start Mission", "_on_Mission_Start_Pressed", menu[m].buttons[i])
 			_:
@@ -869,6 +888,7 @@ func _on_Start_Button_Pressed(m:int, button_id:TextureButton):
 func _on_Settings_Button_Pressed(m:int, button_id:TextureButton):
 	goto_menu(m, SETTINGS, button_id)
 	active_element = $Settings
+	$Settings / GridContainer / PanelContainer6 / VBoxContainer3 / PlayTime.text = "Active Play Time:\n" + Global.time2str(Global.play_time)
 	$Settings.rect_position.x = 320
 	$Settings.raise()
 	$Settings.come()
@@ -1010,7 +1030,10 @@ func _on_FT_Pressed(m:int, button_id:TextureButton):
 	set_weapon(W_FLAMETHROWER)
 	go_back(m, button_id)
 	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-
+func _on_Light_Pressed(m:int, button_id:TextureButton):
+	set_weapon(W_LIGHT)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
 
 func set_weapon(w_index:int):
 	match current_weapon_select:
@@ -1038,7 +1061,7 @@ func _on_Return_Button_Pressed(m:int, button_id:TextureButton):
 		$Level_Info_Grid / HBoxContainer / Description_Scroll / Description.speech_break = true
 
 func _on_Mission_Start_Pressed(m:int, button_id:TextureButton):
-	Global.STOCKS.save_stocks()
+	Global.STOCKS.save_stocks("user://stocks.save")
 	goto_menu(m, START, button_id)
 	toggle_menu()
 	show_buttons(menu[START], 2, 4)
@@ -1068,13 +1091,13 @@ func _on_Level_Pressed(m:int, button_id:TextureButton):
 			level_buttons[button].disabled = false
 		if button_actual > Global.L_PUNISHMENT:
 			if button_actual <= Global.L_PUNISHMENT + Global.BONUS_LEVELS.size():
-				if Global.BONUS_UNLOCK.find(Global.BONUS_LEVELS[button - Global.L_PUNISHMENT - 1]) != - 1 and button != Global.CURRENT_LEVEL:
+				if Global.BONUS_UNLOCK.find(Global.BONUS_LEVELS[button_actual - Global.L_PUNISHMENT - 1]) != - 1 and button != Global.CURRENT_LEVEL:
 					level_buttons[button].show()
 					level_buttons[button].texture_disabled = BUTTON_TEXTURES_D[0]
 					level_buttons[button].disabled = false
 				else :
 					level_buttons[button].show()
-					if Global.BONUS_UNLOCK.find(Global.BONUS_LEVELS[button - Global.L_PUNISHMENT - 1]) != - 1:
+					if Global.BONUS_UNLOCK.find(Global.BONUS_LEVELS[button_actual - Global.L_PUNISHMENT - 1]) != - 1:
 						level_buttons[button].texture_disabled = BUTTON_TEXTURES_D[0]
 					else :
 						level_buttons[button].texture_disabled = MYSTERY
@@ -1091,7 +1114,7 @@ func _on_Level_Pressed(m:int, button_id:TextureButton):
 
 func go_back(m:int, b_id:TextureButton):
 	
-	Global.STOCKS.save_stocks()
+	Global.STOCKS.save_stocks("user://stocks.save")
 	var counter = 0
 	menu_changing = true
 	for child in active_menus[active_menus.size() - 1].get_children():
@@ -1134,7 +1157,7 @@ func go_back(m:int, b_id:TextureButton):
 	
 
 func goto_menu(from_menu:int, to_menu:int, b:TextureButton):
-	Global.STOCKS.save_stocks()
+	Global.STOCKS.save_stocks("user://stocks.save")
 	if Global.LEVEL_PUNISHED[Global.CURRENT_LEVEL]:
 		$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / Punishment_Image.modulate = Color(1, 1, 1, 1)
 	else :
@@ -1244,7 +1267,7 @@ func _input(event):
 			if in_game:
 				if is_instance_valid(Global.player):
 					if Global.player.died:
-						return 
+						return
 			if (active_menus.size() != 1):
 				if active_menus.size() > 0:
 					
@@ -1274,12 +1297,12 @@ func button_state():
 				if button >= Global.LEVELS.size():
 					level_buttons[button].show()
 				if button_actual <= Global.L_PUNISHMENT + Global.BONUS_LEVELS.size():
-					if Global.BONUS_UNLOCK.find(Global.BONUS_LEVELS[button - Global.L_PUNISHMENT - 1]) != - 1 and button != Global.CURRENT_LEVEL:
+					if Global.BONUS_UNLOCK.find(Global.BONUS_LEVELS[button_actual - Global.L_PUNISHMENT - 1]) != - 1 and button != Global.CURRENT_LEVEL:
 						level_buttons[button].show()
 						level_buttons[button].texture_disabled = BUTTON_TEXTURES_D[0]
 					else :
 						level_buttons[button].show()
-						if Global.BONUS_UNLOCK.find(Global.BONUS_LEVELS[button - Global.L_PUNISHMENT - 1]) != - 1:
+						if Global.BONUS_UNLOCK.find(Global.BONUS_LEVELS[button_actual - Global.L_PUNISHMENT - 1]) != - 1:
 							level_buttons[button].texture_disabled = BUTTON_TEXTURES_D[0]
 						else :
 							level_buttons[button].texture_disabled = MYSTERY
@@ -1367,6 +1390,10 @@ func update_level_info()->void :
 	var level_stime = $Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / Best_STime
 	var level_hell_time = $Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / Best_Hell_Time
 	var level_hell_stime = $Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / Best_Hell_STime
+	if Global.ending_3:
+		$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / Chaos_Mode.show()
+	else :
+		$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / Chaos_Mode.hide()
 	if not Global.hell_discovered:
 		$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / HellRank_Image.hide()
 		$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / HellSRank_Image.hide()
@@ -1378,6 +1405,7 @@ func update_level_info()->void :
 		$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / HellSRank_Image.show()
 		level_hell_time.show()
 		level_hell_stime.show()
+
 	if Global.LEVEL_TIMES[Global.CURRENT_LEVEL] != null:
 		level_time.text = Global.LEVEL_TIMES[Global.CURRENT_LEVEL]
 		level_stime.text = Global.LEVEL_STIMES[Global.CURRENT_LEVEL]
@@ -1407,9 +1435,6 @@ func update_level_info()->void :
 
 	if Global.HELL_STIMES[Global.CURRENT_LEVEL] != null:
 		level_hell_stime.text = Global.HELL_STIMES[Global.CURRENT_LEVEL]
-		
-			
-		
 		if Global.HELL_STIMES_RAW[Global.CURRENT_LEVEL] < Global.HELL_SRANK_S[Global.CURRENT_LEVEL]:
 			$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / HellSRank_Image.texture = RANK_LETTERS[3]
 		elif Global.HELL_STIMES_RAW[Global.CURRENT_LEVEL] < Global.HELL_RANK_A[Global.CURRENT_LEVEL]:
@@ -1420,7 +1445,6 @@ func update_level_info()->void :
 			$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / HellSRank_Image.texture = RANK_LETTERS[0]
 		else :
 			$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / HellSRank_Image.texture = RANK_LETTERS[4]
-
 
 	if Global.LEVEL_STIMES[Global.CURRENT_LEVEL] != null:
 		if Global.LEVEL_STIMES_RAW[Global.CURRENT_LEVEL] < Global.LEVEL_TIMES_RAW[Global.CURRENT_LEVEL]:
@@ -1459,13 +1483,13 @@ func toggle_menu():
 
 
 func _on_Master_Volume_value_changed(value):
-	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), value - 105)
-	Global.master_volume = value - 105
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), value)
+	Global.master_volume = value
 
 
 func _on_Music_Volume_value_changed(value):
-	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Music"), value - 105)
-	Global.music_volume = value - 105
+	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Music"), value)
+	Global.music_volume = value
 
 
 func _on_M_Sensitivity_value_changed(value):
@@ -1549,7 +1573,7 @@ func _on_qb():
 	_on_Quit_Button_Pressed(START, menu[START].get_child(0))
 
 func _on_Retry_Button_Pressed(m:int, b:TextureButton):
-	Global.STOCKS.save_stocks()
+	Global.STOCKS.save_stocks("user://stocks.save")
 	$Hover_Panel.hide()
 	get_node("Soul_Rended").hide()
 	if active_element == $Level_End_Grid:
@@ -1704,6 +1728,8 @@ func _on_ClearSave_pressed():
 		cancel = false
 		return 
 	Global.money = 0
+	Global.play_time = 0
+	$Settings / GridContainer / PanelContainer6 / VBoxContainer3 / PlayTime.text = "Active Play Time:\n0.0.0"
 	Global.BONUS_UNLOCK = []
 	Global.implants.purchased_implants = []
 	$Character_Menu / Character_Container.clear_equips()
@@ -1718,10 +1744,14 @@ func _on_ClearSave_pressed():
 	Global.LEVEL_PUNISHED = []
 	Global.DEAD_CIVS = []
 	Global.ending_1 = false
+	Global.ending_3 = false
 	Global.hope_discarded = false
 	Global.hell_discovered = false
 	Global.ending_2 = false
+	Global.ending_2 = false
 	Global.death = false
+	Global.water_material.set_shader_param("albedoTex", Global.blue_water)
+	Global.character_mat.set_shader_param("albedoTex", load("res://Textures/Misc/mainguy_clothes.png"))
 	$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / HellRank_Image.hide()
 	$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / HellSRank_Image.hide()
 	$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / Best_Hell_Time.hide()
@@ -1755,7 +1785,8 @@ func _on_ClearSave_pressed():
 		stock.owned = 0
 	Global.MONEY_ITEMS = []
 	Global.STOCKS.FISH_FOUND = []
-	Global.STOCKS.save_stocks()
+	Global.STOCKS.ORGANS_FOUND = []
+	Global.STOCKS.save_stocks("user://stocks.save")
 	Global.save_game()
 
 
@@ -1782,6 +1813,15 @@ func _on_Hiperf_toggled(value):
 	else :
 		Engine.iterations_per_second = 30
 
+
+func _on_Timer_toggled(value):
+	Global.timer = value
+
+
+func _on_ResetTimer_pressed():
+	Global.play_time = 0
+	$Settings / GridContainer / PanelContainer6 / VBoxContainer3 / PlayTime.text = "Active Play Time:\n0.0.0"
+
 func _on_Next_Levels_Button_Pressed(m:int, b:TextureButton):
 	level_btn_index = clamp(level_btn_index + next_page_size, 0, all_level_buttons.size())
 	$SFX / Close.pitch_scale = 1 + rand_range( -0.3, 0.3)
@@ -1793,3 +1833,4 @@ func _on_Prev_Levels_Button_Pressed(m:int, b:TextureButton):
 	$SFX / Close.pitch_scale = 1 + rand_range( -0.3, 0.3)
 	$SFX / Close.play()
 	update_level_buttons()
+

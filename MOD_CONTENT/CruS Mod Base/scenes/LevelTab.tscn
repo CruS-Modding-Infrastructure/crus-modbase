@@ -1,0 +1,574 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://Menu/menu_theme.tres" type="Theme" id=1]
+[ext_resource path="res://Fonts/mingliutsmall.tres" type="DynamicFont" id=2]
+[ext_resource path="res://MOD_CONTENT/CruS Mod Base/assets/new_styleboxtexture.tres" type="StyleBox" id=3]
+[ext_resource path="res://MOD_CONTENT/CruS Mod Base/scripts/level_menu.gd" type="Script" id=4]
+[ext_resource path="res://MOD_CONTENT/CruS Mod Base/assets/menu_theme_menubtn.tres" type="Theme" id=5]
+[ext_resource path="res://Sfx/WeaponsPickups/Sniper/screamsplosion.wav" type="AudioStream" id=6]
+[ext_resource path="res://MOD_CONTENT/CruS Mod Base/scripts/Preview_Box.gd" type="Script" id=7]
+[ext_resource path="res://Fonts/mingliut.tres" type="DynamicFont" id=8]
+
+[sub_resource type="StyleBoxFlat" id=1]
+bg_color = Color( 0, 0.815686, 0.0862745, 1 )
+border_width_top = 1
+border_width_bottom = 1
+border_color = Color( 0, 1, 0.101961, 1 )
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0.258824, 0, 0, 1 )
+
+[node name="Level" type="ScrollContainer"]
+pause_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 1 )
+custom_styles/bg = ExtResource( 3 )
+script = ExtResource( 4 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+margin_left = 3.0
+margin_top = 3.0
+margin_right = 308.0
+margin_bottom = 541.0
+custom_constants/margin_right = 5
+custom_constants/margin_left = 5
+custom_constants/margin_bottom = 0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+margin_left = 5.0
+margin_right = 300.0
+margin_bottom = 538.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label4" type="Label" parent="MarginContainer/VBoxContainer"]
+margin_right = 295.0
+margin_bottom = 55.0
+text = "Enable level 
+special effects"
+
+[node name="Toggle_Night_Cycle" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+margin_top = 55.0
+margin_right = 295.0
+margin_bottom = 102.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/margin_top = 5
+custom_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Toggle_Night_Cycle"]
+margin_top = 5.0
+margin_right = 295.0
+margin_bottom = 37.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CheckButton" type="CheckButton" parent="MarginContainer/VBoxContainer/Toggle_Night_Cycle/HBoxContainer"]
+margin_right = 64.0
+margin_bottom = 32.0
+focus_mode = 0
+pressed = true
+enabled_focus_mode = 0
+
+[node name="Global_Light_Settings" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+margin_top = 102.0
+margin_right = 295.0
+margin_bottom = 316.0
+custom_constants/margin_left = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Global_Light_Settings"]
+margin_left = 10.0
+margin_right = 295.0
+margin_bottom = 214.0
+
+[node name="Border_Warning" type="MarginContainer" parent="MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer"]
+margin_right = 285.0
+margin_bottom = 94.0
+custom_constants/margin_bottom = 10
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer/Border_Warning"]
+margin_right = 285.0
+margin_bottom = 84.0
+custom_colors/font_color = Color( 1, 1, 0, 1 )
+text = "Change your border
+to see level effect
+changes properly!"
+
+[node name="Darkness_Label" type="Label" parent="MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer"]
+margin_top = 94.0
+margin_right = 285.0
+margin_bottom = 120.0
+text = "Darkness below Y=0"
+
+[node name="Toggle_Darkness" type="MarginContainer" parent="MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer"]
+margin_top = 120.0
+margin_right = 285.0
+margin_bottom = 162.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer/Toggle_Darkness"]
+margin_right = 285.0
+margin_bottom = 32.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CheckButton" type="CheckButton" parent="MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer/Toggle_Darkness/HBoxContainer"]
+margin_right = 64.0
+margin_bottom = 32.0
+focus_mode = 0
+enabled_focus_mode = 0
+
+[node name="Permanight_Label" type="Label" parent="MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer"]
+visible = false
+margin_top = 191.0
+margin_right = 285.0
+margin_bottom = 217.0
+text = "Permanight"
+
+[node name="Toggle_Permanight" type="MarginContainer" parent="MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer"]
+visible = false
+margin_top = 191.0
+margin_right = 285.0
+margin_bottom = 233.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/margin_bottom = 10
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer/Toggle_Permanight"]
+margin_right = 285.0
+margin_bottom = 32.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="CheckButton" type="CheckButton" parent="MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer/Toggle_Permanight/HBoxContainer"]
+margin_right = 64.0
+margin_bottom = 32.0
+focus_mode = 0
+enabled_focus_mode = 0
+
+[node name="GL_Brightness_Label" type="Label" parent="MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer"]
+margin_top = 162.0
+margin_right = 285.0
+margin_bottom = 188.0
+text = "Global light energy"
+
+[node name="GL_Brightness_Slider" type="MarginContainer" parent="MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer"]
+margin_top = 188.0
+margin_right = 285.0
+margin_bottom = 214.0
+custom_constants/margin_bottom = 10
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer/GL_Brightness_Slider"]
+margin_right = 285.0
+margin_bottom = 16.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_styles/slider = SubResource( 1 )
+max_value = 16.0
+step = 0.01
+
+[node name="Toggle_Skybox_Settings" type="Button" parent="MarginContainer/VBoxContainer"]
+margin_top = 316.0
+margin_right = 295.0
+margin_bottom = 342.0
+focus_mode = 0
+toggle_mode = true
+enabled_focus_mode = 0
+text = "Edit skybox"
+
+[node name="Skybox_Settings" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+visible = false
+margin_top = 342.0
+margin_right = 295.0
+margin_bottom = 388.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/margin_top = 5
+custom_constants/margin_left = 10
+custom_constants/margin_bottom = 10
+
+[node name="File" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Skybox_Settings"]
+margin_left = 10.0
+margin_top = 5.0
+margin_right = 295.0
+margin_bottom = 36.0
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Skybox_Settings/File"]
+margin_right = 285.0
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Skybox_Settings/File"]
+margin_right = 285.0
+margin_bottom = 31.0
+custom_constants/margin_top = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Skybox_Settings/File/MarginContainer"]
+margin_top = 5.0
+margin_right = 285.0
+margin_bottom = 31.0
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/Skybox_Settings/File/MarginContainer/HBoxContainer"]
+margin_right = 226.0
+margin_bottom = 26.0
+focus_mode = 0
+size_flags_horizontal = 7
+size_flags_vertical = 7
+theme = ExtResource( 5 )
+custom_fonts/font = ExtResource( 2 )
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+toggle_mode = true
+enabled_focus_mode = 0
+clip_text = true
+
+[node name="Open_Skybox_File" type="Button" parent="MarginContainer/VBoxContainer/Skybox_Settings/File/MarginContainer/HBoxContainer"]
+margin_left = 226.0
+margin_right = 285.0
+margin_bottom = 26.0
+focus_mode = 0
+size_flags_vertical = 7
+custom_colors/font_color = Color( 1, 1, 1, 1 )
+enabled_focus_mode = 0
+text = " ..."
+
+[node name="Toggle_Fog_Settings" type="Button" parent="MarginContainer/VBoxContainer"]
+margin_top = 342.0
+margin_right = 295.0
+margin_bottom = 368.0
+focus_mode = 0
+toggle_mode = true
+enabled_focus_mode = 0
+text = "Edit fog"
+
+[node name="Fog_Settings" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+visible = false
+margin_top = 414.0
+margin_right = 295.0
+margin_bottom = 585.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/margin_top = 5
+custom_constants/margin_left = 10
+custom_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Fog_Settings"]
+margin_left = 10.0
+margin_top = 5.0
+margin_right = 295.0
+margin_bottom = 161.0
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer"]
+margin_right = 285.0
+margin_bottom = 26.0
+text = "Height"
+
+[node name="Height_Min" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer"]
+margin_top = 26.0
+margin_right = 285.0
+margin_bottom = 52.0
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Height_Min"]
+margin_right = 60.0
+margin_bottom = 26.0
+text = "Min "
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Height_Min"]
+margin_left = 60.0
+margin_right = 285.0
+margin_bottom = 16.0
+size_flags_horizontal = 3
+custom_styles/slider = SubResource( 1 )
+max_value = 4000.0
+
+[node name="Height_Max" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer"]
+margin_top = 52.0
+margin_right = 285.0
+margin_bottom = 78.0
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Height_Max"]
+margin_right = 60.0
+margin_bottom = 26.0
+text = "Max "
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Height_Max"]
+margin_left = 60.0
+margin_right = 285.0
+margin_bottom = 16.0
+size_flags_horizontal = 3
+custom_styles/slider = SubResource( 1 )
+max_value = 4000.0
+
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer"]
+margin_top = 78.0
+margin_right = 285.0
+margin_bottom = 104.0
+text = "Depth"
+
+[node name="Depth_Begin" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer"]
+margin_top = 104.0
+margin_right = 285.0
+margin_bottom = 130.0
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Depth_Begin"]
+margin_right = 90.0
+margin_bottom = 26.0
+text = "Begin "
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Depth_Begin"]
+margin_left = 90.0
+margin_right = 285.0
+margin_bottom = 16.0
+size_flags_horizontal = 3
+custom_styles/slider = SubResource( 1 )
+min_value = -4000.0
+max_value = 4000.0
+
+[node name="Depth_End" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer"]
+margin_top = 130.0
+margin_right = 285.0
+margin_bottom = 156.0
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Depth_End"]
+margin_right = 60.0
+margin_bottom = 26.0
+text = "End "
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Depth_End"]
+margin_left = 60.0
+margin_right = 285.0
+margin_bottom = 16.0
+size_flags_horizontal = 3
+custom_styles/slider = SubResource( 1 )
+min_value = -4000.0
+max_value = 4000.0
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+margin_top = 368.0
+margin_right = 295.0
+margin_bottom = 399.0
+custom_constants/margin_top = 5
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Preview_Label" type="Label" parent="MarginContainer/VBoxContainer/MarginContainer"]
+margin_top = 5.0
+margin_right = 295.0
+margin_bottom = 31.0
+text = "Preview image"
+
+[node name="Preview_Image" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+margin_top = 399.0
+margin_right = 295.0
+margin_bottom = 440.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/margin_bottom = 10
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Preview_Image"]
+margin_right = 295.0
+margin_bottom = 31.0
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer/Preview_Image/VBoxContainer"]
+margin_right = 295.0
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Preview_Image/VBoxContainer"]
+margin_right = 295.0
+margin_bottom = 31.0
+custom_constants/margin_top = 5
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/Preview_Image/VBoxContainer/MarginContainer"]
+margin_top = 5.0
+margin_right = 295.0
+margin_bottom = 31.0
+focus_mode = 0
+enabled_focus_mode = 0
+text = "Take new image"
+
+[node name="Reload_Mapfile" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+margin_top = 440.0
+margin_right = 295.0
+margin_bottom = 471.0
+custom_constants/margin_bottom = 5
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/Reload_Mapfile"]
+margin_right = 295.0
+margin_bottom = 26.0
+text = "Reload"
+
+[node name="Reload_Loading" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+visible = false
+margin_top = 414.0
+margin_right = 295.0
+margin_bottom = 469.0
+custom_constants/margin_bottom = 5
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Reload_Loading"]
+margin_right = 295.0
+margin_bottom = 50.0
+custom_constants/margin_right = 10
+custom_constants/margin_left = 10
+custom_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/VBoxContainer/Reload_Loading/MarginContainer"]
+margin_left = 10.0
+margin_right = 285.0
+margin_bottom = 45.0
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Reload_Loading/MarginContainer/VBoxContainer"]
+margin_right = 275.0
+margin_bottom = 19.0
+custom_fonts/font = ExtResource( 2 )
+text = "Reloading..."
+
+[node name="ProgressBar" type="ProgressBar" parent="MarginContainer/VBoxContainer/Reload_Loading/MarginContainer/VBoxContainer"]
+margin_top = 19.0
+margin_right = 275.0
+margin_bottom = 45.0
+custom_styles/bg = SubResource( 2 )
+
+[node name="Save_Level" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+margin_top = 471.0
+margin_right = 295.0
+margin_bottom = 502.0
+custom_constants/margin_bottom = 5
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/Save_Level"]
+margin_right = 295.0
+margin_bottom = 26.0
+focus_mode = 0
+enabled_focus_mode = 0
+text = "Save"
+
+[node name="Export_Level" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+margin_top = 502.0
+margin_right = 295.0
+margin_bottom = 538.0
+custom_constants/margin_bottom = 10
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/Export_Level"]
+margin_right = 295.0
+margin_bottom = 26.0
+focus_mode = 1
+enabled_focus_mode = 1
+text = "Export"
+
+[node name="Reset_All" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+visible = false
+margin_top = 481.0
+margin_right = 295.0
+margin_bottom = 512.0
+custom_constants/margin_bottom = 5
+
+[node name="Button" type="Button" parent="MarginContainer/VBoxContainer/Reset_All"]
+margin_right = 295.0
+margin_bottom = 26.0
+focus_mode = 1
+enabled_focus_mode = 1
+text = "Reset all"
+
+[node name="Preview_Box" type="Control" parent="MarginContainer"]
+visible = false
+margin_left = 5.0
+margin_right = 300.0
+margin_bottom = 538.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 7 )
+offset_width = 100
+
+[node name="Label" type="Label" parent="MarginContainer/Preview_Box"]
+anchor_left = 0.99
+anchor_top = 0.333
+anchor_right = 0.99
+anchor_bottom = 0.333
+margin_left = -304.0
+margin_top = -38.0
+margin_bottom = 38.0
+custom_fonts/font = ExtResource( 8 )
+custom_colors/font_color = Color( 1, 1, 1, 0.662745 )
+custom_constants/line_spacing = 2
+custom_constants/shadow_as_outline = 2
+text = "Left Mouse: Capture
+
+Right Mouse: Cancel
+
+N: Toggle noclip
+
+Shift-scroll: Change fly speed (noclip)
+
+Space/Ctrl: Fly up/down (noclip)"
+align = 2
+valign = 1
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Skybox_Popup" type="PopupMenu" parent="MarginContainer"]
+margin_left = 5.0
+margin_right = 300.0
+margin_bottom = 538.0
+theme = ExtResource( 5 )
+
+[node name="Skybox_FileDialog" type="FileDialog" parent="MarginContainer"]
+margin_left = 5.0
+margin_right = 441.0
+margin_bottom = 538.0
+theme = ExtResource( 5 )
+window_title = "Open File(s)"
+resizable = true
+mode = 1
+access = 1
+filters = PoolStringArray( "*.png ; PNG image", "*.jpg, *.jpeg ; JPG image", "*.bmp ; BMP image", "*.exr ; OpenEXR", "*.hdr ; Radiance HDR", "*.tga ; TGA image", "*.dds ; DirectDraw Surface", "*.svg, *.svgz ; SVG image", "*.webp ; WebP image" )
+show_hidden_files = true
+current_dir = "user://E:/stuff/gamdev/crus modding/Crusproj 3.3"
+current_path = "user://E:/stuff/gamdev/crus modding/Crusproj 3.3/"
+
+[node name="Export_ConfirmationDialog" type="ConfirmationDialog" parent="MarginContainer"]
+margin_left = -178.0
+margin_top = 231.0
+margin_right = 482.0
+margin_bottom = 307.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+window_title = "Confirm level export"
+resizable = true
+dialog_text = "Are you sure you want to export your level?"
+
+[node name="Preview_Shutter" type="AudioStreamPlayer" parent="."]
+pause_mode = 2
+stream = ExtResource( 6 )
+volume_db = -8.0
+
+[connection signal="visibility_changed" from="." to="." method="_on_Level_visibility_changed"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/Toggle_Night_Cycle/HBoxContainer/CheckButton" to="." method="_on_Night_Cycle_Toggle_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer/Toggle_Darkness/HBoxContainer/CheckButton" to="." method="_on_Darkness_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer/Toggle_Permanight/HBoxContainer/CheckButton" to="." method="_on_Permanight_toggled"]
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer/GL_Brightness_Slider/HSlider" to="." method="_on_GL_Brightness_value_changed"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/Toggle_Skybox_Settings" to="." method="_on_Toggle_Skybox_Settings_toggled"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/Skybox_Settings/File/MarginContainer/HBoxContainer/Button" to="." method="_on_Skybox_File_Dropdown_toggled"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Skybox_Settings/File/MarginContainer/HBoxContainer/Open_Skybox_File" to="." method="_on_Open_Skybox_File_pressed"]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/Toggle_Fog_Settings" to="." method="_on_Toggle_Fog_Settings_toggled"]
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Height_Min/HSlider" to="." method="_on_Fog_Slider_value_changed" binds= [ "height", "min" ]]
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Height_Max/HSlider" to="." method="_on_Fog_Slider_value_changed" binds= [ "height", "max" ]]
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Depth_Begin/HSlider" to="." method="_on_Fog_Slider_value_changed" binds= [ "depth", "begin" ]]
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Depth_End/HSlider" to="." method="_on_Fog_Slider_value_changed" binds= [ "depth", "end" ]]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Preview_Image/VBoxContainer/MarginContainer/Button" to="." method="_on_Take_Preview_Image_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Reload_Mapfile/Button" to="." method="_on_Reload_From_TB_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Save_Level/Button" to="." method="_on_Save_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Export_Level/Button" to="." method="_on_Export_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/Reset_All/Button" to="." method="_on_Reset_All_pressed"]
+[connection signal="id_pressed" from="MarginContainer/Skybox_Popup" to="." method="_on_Skybox_Popup_id_pressed"]
+[connection signal="popup_hide" from="MarginContainer/Skybox_Popup" to="." method="_on_Skybox_Popup_popup_hide"]
+[connection signal="files_selected" from="MarginContainer/Skybox_FileDialog" to="." method="_on_Skybox_FileDialog_files_selected"]
+[connection signal="confirmed" from="MarginContainer/Export_ConfirmationDialog" to="." method="_on_Export_ConfirmationDialog_confirmed"]
+[connection signal="finished" from="Preview_Shutter" to="." method="_on_Preview_Shutter_finished"]

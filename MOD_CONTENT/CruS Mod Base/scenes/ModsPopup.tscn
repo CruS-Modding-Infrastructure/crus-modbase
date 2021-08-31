@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=2]
 
-[ext_resource path="res://MOD_CONTENT/CruS Mod Base/menu_theme_menubtn.tres" type="Theme" id=1]
+[ext_resource path="res://MOD_CONTENT/CruS Mod Base/assets/menu_theme_menubtn.tres" type="Theme" id=1]
 
 [node name="ModsPopup" type="WindowDialog"]
 margin_right = 600.0

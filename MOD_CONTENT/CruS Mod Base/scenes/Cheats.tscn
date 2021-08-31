@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://MOD_CONTENT/CruS Mod Base/scripts/cheats.gd" type="Script" id=1]
+
+[node name="Cheats" type="Spatial"]
+script = ExtResource( 1 )
