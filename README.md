@@ -35,6 +35,8 @@ Check out [this guide](https://hackmd.io/@OsM6oUcXSwG3mLNvTlPMZg/SkYQwbONu) if y
 
 ## Cheats
 
+When in-game, type CEOMINDSET and hit enter to activate the cheat prompt, which can be activated by pressing `/~.
+
 `NOCLIP` - Enable noclip
 
 - Shift-N to toggle noclip, Ctrl to fly downwards, Space to fly upwards, Shift-scroll to change flyspeed
