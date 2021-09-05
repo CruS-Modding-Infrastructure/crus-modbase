@@ -1,21 +1,21 @@
 # CruS Mod Base
 
-Adds useful modding things (in the future) and custom level support.
+Adds useful modding things (in the future), custom level support and more.
 
-<s>Requires the [CRUELTY SQUAD MOD LOADER](https://github.com/crustyrashky/crus-modloader)</s>
-**NOTE:** Due to code changes in the game's May 11 update, this mod is standalone for the time being.
+Requires the [CRUELTY SQUAD MOD LOADER](https://github.com/crustyrashky/crus-modloader)
 
 ## Features
 
 - Custom level support
 - Button in settings that tells you what mods you have installed
+- Build custom levels right from TrenchBroom with minimal Godot use
+- Cheats
+- Take fun little snapshots of levels
 
 ## Install
 
-1. Download the [latest release](https://github.com/crustyrashky/crus-modbase/releases/download/beta-may-21/crus-modbase-standalone.zip)
-2. Extract it to where your game is installed (Properties > Local Files > Browse in Steam)
-3. Go into the `crus-modbase-standalone` folder, run `install.bat` and wait for it to complete
-4. Your game is now patched, feel free to delete the installation files if you want
+1. Download the [latest release](https://github.com/crustyrashky/crus-modbase/releases/download/0.3.0/crus-modbase-0.3.0.zip)
+2. Extract the `CruS Mod Base` folder to  `%appdata%\Godot\app_userdata\Cruelty Squad\mods`
 
 ## Adding custom levels
 
@@ -33,7 +33,29 @@ Check out [this guide](https://hackmd.io/@OsM6oUcXSwG3mLNvTlPMZg/SkYQwbONu) if y
  by Oskodos and voxelectrica
 - [Church Schizm](https://github.com/crustyrashky/crus-modbase/files/6985599/Church_Schizm_V1.0.zip) by Oskodos
 
+## Cheats
 
+`NOCLIP` - Enable noclip
+
+- Shift-N to toggle noclip, Ctrl to fly downwards, Space to fly upwards, Shift-scroll to change flyspeed
+
+`ZOMBIE` - Zombie mode (no longer lose health when hit)
+
+`PSYCHOPASS` - Hostile enemies will no longer target and/or damage you
+
+`MAGPUMP` - Infinite magazine
+
+`HOPTOIT` - Infinite gunkboost jumps, whether you have them equipped or not
+
+`KITTED` - Infinite arm implant uses
+
+`LIGHTSOUT` - Toggle AI on/off 
+
+`SOULSWAP` - Toggle life/death health
+
+`FRIDAY` - Toggle hostile AI going berserk
+
+`PLEROMA` - Enable level debug menu
 
 ## Level config JSON properties
 
