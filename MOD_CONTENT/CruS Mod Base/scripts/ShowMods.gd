@@ -10,4 +10,4 @@ func _on_ShowMods_pressed():
 		conf_dialog.dialog_text = "Modloader version: " + Mod.MODLOADER_VERSION + "\n"
 		conf_dialog.dialog_text += "Installed mods:\n"
 		for mod in Mod.MODS:
-			conf_dialog.dialog_text += mod["name"] + "\n"
+			conf_dialog.dialog_text += mod["name"] + " " + mod["version"] + "\n"

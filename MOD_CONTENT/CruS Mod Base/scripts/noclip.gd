@@ -67,7 +67,9 @@ func player_exit(show_nodes=true):
 		Global.player.get_parent().get_node("Position3D/Rotation_Helper/Camera").transform.basis = $Pivot / Camera.transform.basis
 		in_use = false
 		Global.player.crush_check.disabled = false
-		if show_nodes:
+		var preview_box = Global.get_node("BorderContainer").get_node("Preview_Box")
+		var preview_off = !preview_box or (preview_box and !preview_box.visible)
+		if show_nodes and preview_off:
 			Global.UI.show()
 			Global.border.show()
 			Global.player.get_parent().show()

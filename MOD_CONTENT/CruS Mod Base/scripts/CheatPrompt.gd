@@ -20,7 +20,7 @@ func _input(ev):
 				self.hide()
 				match text.substr(2):
 					"NOCLIP":
-						Global.player.UI.notify("Noclip activated, press Shift-N to toggle", Color(1, 0, 1))
+						Global.player.UI.notify("Noclip activated, press Shift-N to toggle", Color(1, 1, 1))
 						cheats.enabled.append("noclip")
 						cheats.reset_noclip()
 					"ZOMBIE":

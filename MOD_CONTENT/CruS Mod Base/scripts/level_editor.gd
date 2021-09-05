@@ -9,8 +9,9 @@ signal map_build_over()
 	
 func _process(delta):
 	# Inject the debug and level tabs into the in-game stock menu
-	if "debug_level" in CMB.data and is_instance_valid(Global.player) and Global.player.get_parent().get_node_or_null("Stock_Menu"):
-		add_debug_menus()
+	if "debug_level" in CMB.data:
+		if !debug_tab_initialized and is_instance_valid(Global.player) and Global.player.get_parent().get_node_or_null("Stock_Menu"):
+			add_debug_menus()
 
 func add_debug_menus():
 	var stabs = Global.player.get_parent().get_node("Stock_Menu/Character_Container/TabContainer")
@@ -88,6 +89,7 @@ func rebuild_qodotmap(qmap: QodotMap, caller=null, progress_func_name="", ignore
 	qmap.connect("build_complete", self, "_on_map_build_succeed")
 	if is_instance_valid(caller) and caller.has_method(progress_func_name):
 		qmap.connect("build_progress", caller, progress_func_name)
+	map_built = false
 	qmap.verify_and_build(null, ignore_list)
 
 	if map_built:
@@ -138,9 +140,10 @@ func convert_map_to_tscn(map_ospath, out_folder="user://levels/_debug", export_m
 	qmap.external_texture_dict = get_custom_texture_dict(out_folder + "/textures")
 	qmap.connect("build_failed", self, "_on_map_build_fail")
 	qmap.connect("build_complete", self, "_on_map_build_succeed")
-	#qmap.connect("build_progress", self, "_on_map_build_progress")
+	# qmap.connect("build_progress", self, "_on_map_build_progress")
+	map_built = false
 	qmap.verify_and_build(level_root)
-	
+
 	if "debug_level" in CMB.data and "_debug" in CMB.data.debug_level:
 		var dbg = CMB.data.debug_level._debug
 		g_light.visible = dbg["g_light_enabled"]
@@ -273,8 +276,9 @@ func _on_map_build_fail():
 	emit_signal("map_build_over")
 
 func _on_map_build_progress(build_step, percent):
-	print("Build progressing, step: ", build_step, " (", percent * 100, "%)")
+	Mod.mod_log(str("Build progressing, step: ", build_step, " (", percent * 100, "%)"), CMB)
 
 func _on_map_build_succeed():
 	map_built = true
+	Mod.mod_log("Map successfully built", CMB)
 	emit_signal("map_build_over")

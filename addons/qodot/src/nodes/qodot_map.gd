@@ -124,7 +124,6 @@ func _get_property_list() -> Array:
 func verify_and_build(level_root=null, ignore_names=[]):
 	if is_instance_valid(level_root):
 		owner_node = level_root
-	
 	ignored_entity_names = ignore_names
 
 	if verify_parameters():
@@ -225,7 +224,7 @@ func add_child_editor(parent, node, below = null) -> void:
 	set_owner_array.append(node)
 
 func set_owner_editor(node):
-	var tree := get_tree()
+	var tree := get_tree() if !owner_node else null
 
 	if not tree:
 		return
@@ -259,7 +258,7 @@ func run_build_steps(post_attach := false) -> void:
 		emit_signal("build_progress", build_step[0], float(build_step_index + 1) / float(build_step_count))
 		build_step_index += 1
 
-		var scene_tree := get_tree()
+		var scene_tree := get_tree() if !owner_node else null
 		if scene_tree and not block_until_complete:
 			yield(scene_tree.create_timer(YIELD_DURATION), YIELD_SIGNAL)
 
@@ -417,7 +416,6 @@ func build_libmap_worldspawn_layers(worldspawn_layers: Array) -> Array:
 
 func build_entity_nodes() -> Array:
 	var entity_nodes := []
-
 	for entity_idx in range(0, entity_dicts.size()):
 		var entity_dict := entity_dicts[entity_idx] as Dictionary
 		var properties := entity_dict['properties'] as Dictionary
@@ -426,7 +424,6 @@ func build_entity_nodes() -> Array:
 		var node_name = "entity_%s" % entity_idx
 
 		var should_add_child = should_add_children
-
 		if 'classname' in properties:
 			var classname = properties['classname']
 			node_name += "_" + classname
@@ -445,7 +442,8 @@ func build_entity_nodes() -> Array:
 						node = ClassDB.instance(entity_definition.node_class)
 				elif entity_definition is QodotFGDPointClass:
 					if entity_definition.scene_file:
-						node = entity_definition.scene_file.instance(PackedScene.GEN_EDIT_STATE_INSTANCE)
+						# GEN_EDIT_STATE_INSTANCE can crash exported builds
+						node = entity_definition.scene_file.instance(PackedScene.GEN_EDIT_STATE_DISABLED if OS.has_feature("standalone") else PackedScene.GEN_EDIT_STATE_INSTANCE)
 
 				if entity_definition.script_class:
 					node.set_script(entity_definition.script_class)
@@ -459,7 +457,6 @@ func build_entity_nodes() -> Array:
 		else:
 			if entity_idx != 0:
 				node.translation = entity_dict['center'] / inverse_scale_factor
-
 		entity_nodes.append(node)
 
 		if should_add_child:
@@ -819,8 +816,6 @@ func build_entity_mesh_dict() -> Dictionary:
 		var texture_surfaces := qodot.fetch_surfaces(inverse_scale_factor) as Array
 
 		for entity_idx in range(0, texture_surfaces.size()):
-			#if entity_idx >= entity_dicts.size():
-			#	continue
 			var entity_dict := entity_dicts[entity_idx] as Dictionary
 			var properties = entity_dict['properties']
 
@@ -965,7 +960,7 @@ func add_children() -> void:
 				add_children_complete()
 				return
 
-		var scene_tree := get_tree()
+		var scene_tree := get_tree() if !owner_node else null
 		if scene_tree and not block_until_complete:
 			yield(scene_tree.create_timer(YIELD_DURATION), YIELD_SIGNAL)
 
@@ -991,7 +986,7 @@ func set_owners():
 				set_owners_complete()
 				return
 
-		var scene_tree := get_tree()
+		var scene_tree := get_tree() if !owner_node else null
 		if scene_tree and not block_until_complete:
 			yield(scene_tree.create_timer(YIELD_DURATION), YIELD_SIGNAL)
 

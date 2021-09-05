@@ -34,13 +34,13 @@ func _ready():
 	Global.border.hide()
 	CAMERAS = $Cameras.get_children()
 	
-	
-	if introskip and Global.skip_intro:
+	var cmb = Mod.get_node("CruS Mod Base")
+	var load_debug_lvl = cmb and "debug_level" in cmb.data
+	if introskip or Global.skip_intro or load_debug_lvl:
 		Global.cutscene = false
 		Global.border.show()
-		var cmb = Mod.get_node("CruS Mod Base")
 		var scn = "res://Menu/Main_Menu.tscn"
-		if "debug_level" in cmb.data:
+		if load_debug_lvl:
 			Mod.mod_log("Debug level detected, loading debug level", cmb)
 			var m = Global.menu
 			#m.goto_menu(m.current_menu, m.START, 0)

@@ -114,13 +114,9 @@ func load_texture(texture_name: String) -> Texture:
 	# Load albedo texture if it exists
 	for texture_extension in texture_extensions:
 		var texture_path := "%s/%s.%s" % [base_texture_path, texture_name, texture_extension]
-		if OS.has_feature("standalone"): # workaround for ProjectSettings.load_resource_pack() overwriting res:// when in-editor
-			if(directory.file_exists(texture_path)):
-				return load(texture_path) as Texture
-		else:
-			var texture = load(texture_path)
-			if texture:
-				return texture as Texture
+		var texture = load(texture_path)
+		if texture:
+			return texture as Texture
 
 	var texture_name_lower : String = texture_name.to_lower()
 	for texture_wad in texture_wad_resources:

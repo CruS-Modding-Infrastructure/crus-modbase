@@ -68,7 +68,10 @@ func _input(ev):
 				if len(last_keys) == MAX_LAST_KEYS_SIZE:
 					last_keys = last_keys.substr(1)
 				last_keys += key
-		if ev is InputEventWithModifiers && ev.get_scancode() == KEY_N && ev.shift && enabled.has("noclip"):
+		if (ev is InputEventWithModifiers &&
+			(enabled.has("noclip") or enabled.has("debug")) &&
+			ev.get_scancode() == KEY_N && 
+			ev.shift):
 			toggle_noclip()
 
 func _exit_tree():

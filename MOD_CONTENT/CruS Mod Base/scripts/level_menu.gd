@@ -19,7 +19,7 @@ onready var border_warn = get_node("MarginContainer/VBoxContainer/Global_Light_S
 onready var reload_container = get_node("MarginContainer/VBoxContainer/Reload_Loading")
 onready var reload_bar = get_node("MarginContainer/VBoxContainer/Reload_Loading/MarginContainer/VBoxContainer/ProgressBar")
 onready var export_btn = get_node("MarginContainer/VBoxContainer/Export_Level/Button")
-# disabled until i figure out exactly what the point of it is
+# disabled until i figure out exactly what the point of permanight is
 onready var gl_permn_btn = get_node("MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer/Toggle_Permanight/HBoxContainer/CheckButton")
 onready var fog_container = get_node("MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer")
 onready var skybox_file_btn = get_node("MarginContainer/VBoxContainer/Skybox_Settings/File/MarginContainer/HBoxContainer/Button")
@@ -53,6 +53,8 @@ var in_debug_lvl
 signal settings_changed
 
 func _ready():
+	if cheats:
+		cheats.enabled.append("debug")
 	var skybox_path = ""
 	var cur_lvl_data = Global.LEVEL_META[Global.CURRENT_LEVEL]
 	in_debug_lvl = "level_scene" in cur_lvl_data and debug_lvl_data and debug_lvl_data.level_scene == cur_lvl_data.level_scene
@@ -138,11 +140,13 @@ func _input(ev):
 			elif ev.button_index == BUTTON_RIGHT:
 				taking_preview_image = false
 				finish_preview_image()
-		if ev is InputEventKey and ev.is_pressed() and ev.get_scancode() == KEY_N:
-			if cheats.in_noclip():
-				cheats.exit_noclip(false)
-			else:
-				cheats.enter_noclip(false)
+	if in_debug_lvl and ev is InputEventKey and ev.pressed:
+		if ev.get_scancode() == KEY_S and ev.control:
+			_on_Save_pressed()
+		elif (ev.get_scancode() == KEY_R and
+			(ev.alt or ev.meta) and
+			ev.shift):
+			_on_Reload_From_TB_pressed()
 
 func _process(delta):
 	if reloading_map:
@@ -209,27 +213,26 @@ func take_preview_image():
 	var tex = ImageTexture.new()
 	tex.create_from_image(img)
 	last_img = img
-	if !in_debug_lvl:
-		var dir = Directory.new()
-		if !dir.dir_exists("user://snapshots"):
-			dir.make_dir("user://snapshots")
-		if dir.open("user://snapshots") == OK:
-			var lvl = Global.LEVEL_META[Global.CURRENT_LEVEL]
-			var lvl_name = "Level"
-			if lvl is String:
-				var json = File.new()
-				if json.open(lvl, File.READ) == OK:
-					lvl = parse_json(json.get_as_text())
-					json.close()
-			if "name" in lvl:
-				lvl_name = lvl.name
-			var t = OS.get_datetime()
-			var filepath = str("user://snapshots/", lvl_name, "_", 
-							 t.year, "-", t.month, "-", t.day, "_", 
-							 t.hour, "_", t.minute, "_", t.second, ".png")
-			img.save_png(filepath)
-			Global.player.UI.notify("Image saved to " + filepath, Color(0.8, 0.8, 0.8))
-			Mod.mod_log("Took a level preview snapshot and saved it to " + filepath, CMB)
+	var dir = Directory.new()
+	if !dir.dir_exists("user://snapshots"):
+		dir.make_dir("user://snapshots")
+	if dir.open("user://snapshots") == OK:
+		var lvl = Global.LEVEL_META[Global.CURRENT_LEVEL]
+		var lvl_name = "Level"
+		if lvl is String:
+			var json = File.new()
+			if json.open(lvl, File.READ) == OK:
+				lvl = parse_json(json.get_as_text())
+				json.close()
+		if "name" in lvl:
+			lvl_name = lvl.name
+		var t = OS.get_datetime()
+		var filepath = str("user://snapshots/", lvl_name, "_", 
+						 t.year, "-", t.month, "-", t.day, "_", 
+						 t.hour, "_", t.minute, "_", t.second, ".png")
+		img.save_png(filepath)
+		Global.player.UI.notify("Image saved to " + filepath, Color(0.8, 0.8, 0.8))
+		Mod.mod_log("Took a level preview snapshot and saved it to " + filepath, CMB)
 	preview_image.texture = tex
 
 func finish_preview_image():
@@ -274,17 +277,20 @@ func _on_GL_Brightness_value_changed(value):
 	emit_signal("settings_changed")
 
 func _on_Reload_From_TB_pressed():
-	reload_bar.value = 0
-	reload_container.show()
-	if !cheats.in_noclip():
-		cheats.enter_noclip()
-	reloading_map = true
-	var qmap = get_tree().root.get_node("Level/QodotMap")
-	print(Global.player.get_parent().name)
-	if Global.player.get_parent().get_parent() == qmap:
-		qmap.remove_child(Global.player.get_parent())
-		qmap.get_parent().add_child(Global.player.get_parent())
-	level_editor.rebuild_qodotmap(qmap, self, "_on_Reload_Progress", ["Player"])
+	if level_editor.map_built:
+		reload_bar.value = 0
+		reload_container.show()
+		if !cheats.in_noclip():
+			cheats.enter_noclip()
+		reloading_map = true
+		var qmap = get_tree().root.get_node("Level/QodotMap")
+		print(Global.player.get_parent().name)
+		if Global.player.get_parent().get_parent() == qmap:
+			qmap.remove_child(Global.player.get_parent())
+			qmap.get_parent().add_child(Global.player.get_parent())
+		level_editor.rebuild_qodotmap(qmap, self, "_on_Reload_Progress", ["Player"])
+	else:
+		Global.player.UI.notify("Level is still loading, please wait...", Color(1, 0.1, 0.1))
 	
 
 func _on_Reload_Progress(build_step, percent):
@@ -319,6 +325,8 @@ func _on_Reload_Progress(build_step, percent):
 func _on_Save_pressed():
 	save_level_settings()
 	get_node("MarginContainer/VBoxContainer/Save_Level/Button").text = "Save"
+	Global.player.UI.notify("Saved level changes", Color(0.1, 0.1, 1))
+	
 
 func _on_Export_pressed():
 	var dir = Directory.new()
@@ -332,11 +340,13 @@ func _on_Export_pressed():
 	else:
 		_on_Save_pressed()
 		level_editor.export_debug_level(qmap.map_file)
+		Global.player.UI.notify("Finished exporting", Color(1, 0, 1))
 
 func _on_Export_ConfirmationDialog_confirmed():
 	_on_Save_pressed()
 	var qmap = get_tree().root.get_node("Level/QodotMap")
 	level_editor.export_debug_level(qmap.map_file)
+	Global.player.UI.notify("Finished exporting", Color(1, 0, 1))
 
 func _on_Reset_All_pressed():
 	pass

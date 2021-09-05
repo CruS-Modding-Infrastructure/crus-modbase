@@ -312,7 +312,7 @@ func _init():
 	Mod.get_node(MOD_NAME).add_child(LevelEditor)
 	backup_saves()
 	var debug_level = init_debug_level()
-	var menu = Global.menu
+	var menu = Global.get_node("Menu")
 	var showmods_btn = load(MOD_PATH + "/scenes/ShowMods.tscn").instance()
 	var vbox = menu.get_node("Settings/GridContainer/PanelContainer6/VBoxContainer3/")
 	vbox.add_child_below_node(vbox.get_node("CenterContainer"), showmods_btn)

@@ -237,7 +237,7 @@ func _on_Noclip_toggled(button_pressed):
 	if is_instance_valid(cheats):
 		if button_pressed:
 			cheats.enter_noclip(!taking_preview_image)
-		else:
+		elif is_instance_valid(cheats.noclip_inst):
 			cheats.noclip_inst.keep_weapon_disabled = true
 			cheats.exit_noclip(!taking_preview_image)
 
