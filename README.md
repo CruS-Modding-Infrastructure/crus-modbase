@@ -35,7 +35,7 @@ Check out [this guide](https://hackmd.io/@OsM6oUcXSwG3mLNvTlPMZg/SkYQwbONu) if y
 
 ## Cheats
 
-When in-game, type CEOMINDSET and hit enter to activate the cheat prompt, which can be activated by pressing `/~.
+When in-game, type `ceomindset` and hit enter to activate the cheat prompt, which can be activated by pressing `/~.
 
 `NOCLIP` - Enable noclip
 
