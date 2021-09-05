@@ -3,5 +3,6 @@
     "author": "crustyrashky",
     "version": "0.3.0",
     "description": "Adds useful modding things, custom map support and more.",
-    "init": "res://MOD_CONTENT/CruS Mod Base/init.gd"
+    "init": "res://MOD_CONTENT/CruS Mod Base/init.gd",
+    "priority": 1
 }
