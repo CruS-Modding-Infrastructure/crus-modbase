@@ -104,7 +104,6 @@ func rebuild_qodotmap(qmap: QodotMap, caller=null, progress_func_name="", ignore
 						node.mesh_instance = n
 					if n is CollisionShape and "collision_shape" in node:
 						node.collision_shape = n
-				possible_doors.append(node)
 
 		# swap out current QodotMap for new one
 		var parent = qmap.get_parent()
