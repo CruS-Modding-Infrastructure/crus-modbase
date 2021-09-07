@@ -1,7 +1,7 @@
 extends Node
 
 var map_built = false
-var debug_tab_initialized = false
+var debug_tab = null
 var hover_panel = null
 var CMB = Mod.get_node("CruS Mod Base")
 var LevelVerifier = load(CMB.modpath + "/scripts/level_verifier.gd").new()
@@ -10,7 +10,7 @@ signal map_build_over()
 func _process(delta):
 	# Inject the debug and level tabs into the in-game stock menu
 	if "debug_level" in CMB.data:
-		if !debug_tab_initialized and is_instance_valid(Global.player) and Global.player.get_parent().get_node_or_null("Stock_Menu"):
+		if !is_instance_valid(debug_tab) and is_instance_valid(Global.player) and Global.player.get_parent().get_node_or_null("Stock_Menu"):
 			add_debug_menus()
 
 func add_debug_menus():
@@ -25,8 +25,8 @@ func add_debug_menus():
 		imenu.get_node("Character_Container").reset_implants_state()
 		stabs.get_parent().get_parent().add_child(hpanel)
 		hover_panel = hpanel
-		debug_tab_initialized = true
-	if debug_tab_initialized:
+		debug_tab = dtab
+	if is_instance_valid(debug_tab):
 		hover_panel.rect_global_position = Global.menu.get_global_mouse_position() + Vector2(50, 20)
 		hover_panel.rect_global_position.y = clamp(hover_panel.rect_global_position.y, 0, (720 - hover_panel.rect_size.y - 100) * Global.menu.rect_scale.x)
 		hover_panel.rect_global_position.x = clamp(hover_panel.rect_global_position.x, 0, (1280 - hover_panel.rect_size.x - 100) * Global.menu.rect_scale.y)
@@ -77,23 +77,43 @@ func copy_directory(dirpath, new_dirpath) -> bool:
 	else:
 		Mod.mod_log("ERROR: Failed to open " + dirpath + " for copying!", CMB)
 	return false
-	
 
 # Allows rebuilding level QodotMaps in real time from the TrenchBroom .map
 # NOTE: after rebuilding a QodotMap node with this the mesh_instances need to be reset
 func rebuild_qodotmap(qmap: QodotMap, caller=null, progress_func_name="", ignore_list=[]) -> QodotMap:
 	Mod.mod_log("Building .map to QodotMap node", CMB)
-	qmap.block_until_complete = false
-	qmap.external_texture_dict = get_custom_texture_dict("user://levels/_debug/textures")
-	qmap.connect("build_failed", self, "_on_map_build_fail")
-	qmap.connect("build_complete", self, "_on_map_build_succeed")
+	var qmap_new = QodotMap.new()
+	qmap_new.name = qmap.name
+	qmap_new.map_file = qmap.map_file
+	qmap_new.base_texture_dir = qmap.base_texture_dir
+	qmap.entity_fgd = load("res://addons/qodot/game-definitions/fgd/qodot_fgd.tres")
+	qmap_new.block_until_complete = false
+	qmap_new.external_texture_dict = get_custom_texture_dict("user://levels/_debug/textures")
+	qmap_new.connect("build_failed", self, "_on_map_build_fail")
+	qmap_new.connect("build_complete", self, "_on_map_build_succeed")
 	if is_instance_valid(caller) and caller.has_method(progress_func_name):
-		qmap.connect("build_progress", caller, progress_func_name)
+		qmap_new.connect("build_progress", caller, progress_func_name)
 	map_built = false
-	qmap.verify_and_build(null, ignore_list)
+	qmap_new.verify_and_build(null, ignore_list)
 
 	if map_built:
-		return qmap
+		for node in qmap_new.get_children():
+			if "mesh_instance" in node: # reset mesh instances
+				for n in node.get_children():
+					if n is MeshInstance:
+						node.mesh_instance = n
+					if n is CollisionShape and "collision_shape" in node:
+						node.collision_shape = n
+				possible_doors.append(node)
+
+		# swap out current QodotMap for new one
+		var parent = qmap.get_parent()
+		var qm_pos = qmap.get_position_in_parent()
+		parent.remove_child(qmap)
+		parent.add_child(qmap_new)
+		parent.move_child(qmap_new, qm_pos)
+		
+		return qmap_new
 	return null
 
 # Builds TrenchBroom map to a Godot scene.
@@ -134,13 +154,12 @@ func convert_map_to_tscn(map_ospath, out_folder="user://levels/_debug", export_m
 	qmap.name = "QodotMap"
 	qmap.map_file = map_ospath
 	qmap.base_texture_dir = "res://Maps/textures"
-	#qmap.entity_fgd = load("user://levels/_debug/qodot_fgd.tres")
 	qmap.entity_fgd = load("res://addons/qodot/game-definitions/fgd/qodot_fgd.tres")
 	qmap.block_until_complete = true
 	qmap.external_texture_dict = get_custom_texture_dict(out_folder + "/textures")
 	qmap.connect("build_failed", self, "_on_map_build_fail")
 	qmap.connect("build_complete", self, "_on_map_build_succeed")
-	# qmap.connect("build_progress", self, "_on_map_build_progress")
+	#qmap.connect("build_progress", self, "_on_map_build_progress")
 	map_built = false
 	qmap.verify_and_build(level_root)
 

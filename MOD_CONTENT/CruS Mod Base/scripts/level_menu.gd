@@ -296,27 +296,6 @@ func _on_Reload_From_TB_pressed():
 func _on_Reload_Progress(build_step, percent):
 	reload_bar.value = floor(percent * 100)
 	if reload_bar.value == 100:
-		for node in get_tree().root.get_node("Level/QodotMap").get_children():
-			# reset mesh instances
-			if "mesh_instance" in node:
-				for n in node.get_children():
-					if n is MeshInstance:
-						node.mesh_instance = n
-					if n is CollisionShape and "collision_shape" in node:
-						node.collision_shape = n
-			if "initrot" in node: # fix doors opening wrong
-				var mi = node.mesh_instance
-				var t = mi.transform
-				if mi.get_aabb().size.x > mi.get_aabb().size.z:
-					node.global_transform.origin.x -= mi.get_aabb().position.x
-					node.global_transform.origin.z -= mi.get_aabb().position.z + mi.get_aabb().size.z * 0.5
-					t = t.translated(Vector3(mi.get_aabb().position.x, 0, mi.get_aabb().position.z + mi.get_aabb().size.z * 0.5))
-				else :
-					node.global_transform.origin.x -= mi.get_aabb().position.x + mi.get_aabb().size.x * 0.5
-					node.global_transform.origin.z -= mi.get_aabb().position.z
-					t = t.translated(Vector3(mi.get_aabb().position.x + mi.get_aabb().size.x * 0.5, 0, mi.get_aabb().position.z))
-				mi.transform = t
-				node.collision_shape.transform = t
 		reloading_map = false
 		get_tree().paused = false
 		reload_container.hide()
