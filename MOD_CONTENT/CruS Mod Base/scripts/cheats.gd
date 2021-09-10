@@ -85,7 +85,9 @@ func reset_noclip():
 	noclip_inst = null
 
 func toggle_noclip():
-	if is_instance_valid(Global.player) and Global.menu.in_game and !is_instance_valid(noclip_inst):
+	if (is_instance_valid(Global.player) and 
+		Global.menu.in_game and 
+		(!is_instance_valid(noclip_inst) or !noclip_inst.in_use)):
 		enter_noclip()
 	else:
 		exit_noclip()
@@ -94,10 +96,11 @@ func in_noclip():
 	return is_instance_valid(noclip_inst) and noclip_inst.in_use
 
 func enter_noclip(hide_nodes=true):
-	if !is_instance_valid(noclip_inst):
-		noclip_inst = Noclip.instance()
-		Global.current_scene.add_child(noclip_inst)
-		noclip_inst.player_use(hide_nodes)
+	if is_instance_valid(noclip_inst):
+		noclip_inst.queue_free()
+	noclip_inst = Noclip.instance()
+	Global.current_scene.add_child(noclip_inst)
+	noclip_inst.player_use(hide_nodes)
 
 func exit_noclip(show_nodes=true):
 	if is_instance_valid(noclip_inst) and noclip_inst.in_use:

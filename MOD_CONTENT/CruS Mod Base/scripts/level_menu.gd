@@ -89,11 +89,13 @@ func _ready():
 	level_container.get_node("Save_Level").visible = in_debug_lvl
 	level_container.get_node("Export_Level").visible = in_debug_lvl
 	init_skybox_file_entries()
-	if skybox_path != "" and add_skybox_file_entry(skybox_path):
-		_on_Skybox_Popup_id_pressed(skybox_file_dropdown.get_item_count() - 1)
-	skybox_path = env.environment.background_sky.panorama.get_path()
-	if skybox_files.find(skybox_path) != -1:
-		_on_Skybox_Popup_id_pressed(skybox_files.find(skybox_path))
+	if skybox_path != "":
+		if add_skybox_file_entry(skybox_path):
+			_on_Skybox_Popup_id_pressed(skybox_file_dropdown.get_item_count() - 1)
+		elif skybox_files.find(skybox_path) != -1:
+			_on_Skybox_Popup_id_pressed(skybox_files.find(skybox_path))
+	else:
+		skybox_path = env.environment.background_sky.panorama.get_path()
 	connect("settings_changed", self, "_on_settings_changed")
 
 # Copied from init until I make a utility thing
