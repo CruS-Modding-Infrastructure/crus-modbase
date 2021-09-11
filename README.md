@@ -32,6 +32,8 @@ Check out [this guide](https://hackmd.io/@OsM6oUcXSwG3mLNvTlPMZg/SkYQwbONu) if y
 - [McMansion Estate](https://github.com/crustyrashky/crus-modbase/files/6949799/McMansion_Estate_V1.1.zip)
  by Oskodos and voxelectrica
 - [Church Schizm](https://github.com/crustyrashky/crus-modbase/files/6985599/Church_Schizm_V1.0.zip) by Oskodos
+- [dust2](https://github.com/crustyrashky/crus-modbase/files/7147188/dust2_v0.1.zip) ported by StookyPotato
+
 
 ## Cheats
 
