@@ -33,6 +33,7 @@ Check out [this guide](https://hackmd.io/@OsM6oUcXSwG3mLNvTlPMZg/SkYQwbONu) if y
  by Oskodos and voxelectrica
 - [Church Schizm](https://github.com/crustyrashky/crus-modbase/files/6985599/Church_Schizm_V1.0.zip) by Oskodos
 - [dust2](https://github.com/crustyrashky/crus-modbase/files/7147188/dust2_v0.1.zip) ported by StookyPotato
+- [Financial Ruins](https://github.com/crustyrashky/crus-modbase/files/7230710/Financal.Ruins.-.Public.Release.V1.2.zip) by Keith Mason
 
 
 ## Cheats
