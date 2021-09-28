@@ -35,6 +35,9 @@ Check out [this guide](https://hackmd.io/@OsM6oUcXSwG3mLNvTlPMZg/SkYQwbONu) if y
 - [dust2](https://github.com/crustyrashky/crus-modbase/files/7147188/dust2_v0.1.zip) ported by StookyPotato
 - [Armed Men In A Building](https://github.com/crustyrashky/crus-modbase/files/7230712/level.zip) by ConsulCast
 - [Financial Ruins](https://github.com/crustyrashky/crus-modbase/files/7230710/Financal.Ruins.-.Public.Release.V1.2.zip) by Keith Mason
+- [Funko Factory](https://github.com/crustyrashky/crus-modbase/files/7240174/Funko_Factory.zip) by Ringo
+   - Requires [Ringo's Mapping Enhancements for Cruelty Squad](https://github.com/Ringo5103/Ringos-Mapping-Enhancements-for-Cruelty-Squad) mod
+
 
 
 ## Cheats
