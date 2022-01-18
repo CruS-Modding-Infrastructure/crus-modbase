@@ -99,23 +99,30 @@ func load_textures(texture_list: Array) -> Dictionary:
 func load_texture(texture_name: String) -> Texture:
 	if(texture_name == TEXTURE_EMPTY):
 		return null
-	
+
 	# Load image as texture if it's external
 	if texture_name in external_texture_dict:
+		print('[qodot]     Trying to load texture %s from texture dict' % [ texture_name ])
+		var dict_value = external_texture_dict[texture_name]
+		print('[qodot]       Resolved image path <%s>' % [ dict_value ])
 		var img = Image.new()
 		var err = img.load(external_texture_dict[texture_name])
 		if err == 0:
+			print('[qodot]         Success')
 			var tex = ImageTexture.new()
 			tex.create_from_image(img)
 			return tex as Texture
 		else:
+			print('[qodot]         Failed')
 			return null
 
 	# Load albedo texture if it exists
 	for texture_extension in texture_extensions:
 		var texture_path := "%s/%s.%s" % [base_texture_path, texture_name, texture_extension]
+		print('[qodot]     Trying to load albedo from path <%s>' % [ texture_path ])
 		var texture = load(texture_path)
 		if texture:
+			print('[qodot]       Success')
 			return texture as Texture
 
 	var texture_name_lower : String = texture_name.to_lower()
@@ -160,8 +167,11 @@ func create_material(
 	else:
 		material = SpatialMaterial.new()
 
+	# print('[qodot] Trying to load texture <%s>' % [ texture_name ])
 	var texture : Texture = load_texture(texture_name)
 	if not texture:
+		# print('[qodot]   Material not found at path <%s>' % [ material_path ])
+		# print('[qodot]   Loading Texture %s failed.' % [ texture_name ])
 		return material
 
 	material.set_texture(SpatialMaterial.TEXTURE_ALBEDO, texture)
@@ -195,7 +205,7 @@ func get_pbr_texture(texture: String, suffix: int) -> Texture:
 
 	if texture_comps.size() == 0:
 		return null
-	
+
 	for texture_extension in texture_extensions:
 		var path := "%s/%s/%s" % [
 			base_texture_path,

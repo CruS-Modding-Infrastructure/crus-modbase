@@ -1,19 +1,51 @@
 extends Node
 
+signal map_build_over()
+
 var map_built = false
 var debug_tab = null
 var hover_panel = null
 var CMB = Mod.get_node("CruS Mod Base")
 var LevelVerifier = load(CMB.modpath + "/scripts/level_verifier.gd").new()
-signal map_build_over()
-	
+
+# ass name
+const export_nav_copy_default_project_subfolder = "Levels"
+
+func dprint(msg: String, ctx: String = "") -> void:
+	if Engine.editor_hint:
+		print("[%s] %s" % [ "CMB:level_editor" + (":" + ctx if len(ctx) > 0 else ""), msg])
+	else:
+		Mod.mod_log(msg, "CMB:level_editor" + (":" + ctx if len(ctx) > 0 else ""))
+
+# func _physics_process(delta):
 func _process(delta):
+	# @NOTE: Could this be moved to _physics_process instead to reduce overhead?
 	# Inject the debug and level tabs into the in-game stock menu
 	if "debug_level" in CMB.data:
-		if !is_instance_valid(debug_tab) and is_instance_valid(Global.player) and Global.player.get_parent().get_node_or_null("Stock_Menu"):
+		if (not is_instance_valid(debug_tab)
+				and is_instance_valid(Global.player)
+				and Global.player.get_parent().get_node_or_null("Stock_Menu")):
 			add_debug_menus()
 
+#region Export Filtering
+
+# For base children of level directory only
+export (Array) var ignored_debug_subdirs   = [ "autosave" ]
+# For any child file in a level directory, recursively
+export (Array) var ignored_debug_file_exts = [ "psd", "import", "ai" ]
+
+func is_ignored_export_ext(fname: String) -> bool:
+	# return ignored_debug_file_exts.has(fname.get_extension().trim_prefix('.'))
+	var ignored : bool = ignored_debug_file_exts.has(fname.get_extension())
+	if ignored:
+		dprint(' [Ignored] %s' % [ fname ], 'export:is_ignored_ext')
+	return ignored
+
+#endregion Export Filtering
+
 func add_debug_menus():
+	dprint('Loading debug menus', 'add_debug_menus')
+	var noclip_restart_required: bool = false
 	var stabs = Global.player.get_parent().get_node("Stock_Menu/Character_Container/TabContainer")
 	if !stabs.get_node_or_null("Debug"):
 		var dtab = load(CMB.modpath + "/scenes/DebugTab.tscn").instance()
@@ -21,34 +53,56 @@ func add_debug_menus():
 		var imenu = load(CMB.modpath + "/scenes/Implant_Menu_Ingame.tscn").instance()
 		stabs.get_parent().add_child(imenu)
 		var hpanel = load(CMB.modpath + "/scenes/Hover_Panel.tscn").instance()
+
 		imenu.get_node("Character_Container").update_implant_slots()
 		imenu.get_node("Character_Container").reset_implants_state()
 		stabs.get_parent().get_parent().add_child(hpanel)
 		hover_panel = hpanel
-		debug_tab = dtab
+		debug_tab   = dtab
+
 	if is_instance_valid(debug_tab):
 		hover_panel.rect_global_position = Global.menu.get_global_mouse_position() + Vector2(50, 20)
-		hover_panel.rect_global_position.y = clamp(hover_panel.rect_global_position.y, 0, (720 - hover_panel.rect_size.y - 100) * Global.menu.rect_scale.x)
-		hover_panel.rect_global_position.x = clamp(hover_panel.rect_global_position.x, 0, (1280 - hover_panel.rect_size.x - 100) * Global.menu.rect_scale.y)
+		hover_panel.rect_global_position.y = clamp(
+				hover_panel.rect_global_position.y,
+				0,
+				(1280 - hover_panel.rect_size.y - 100) * Global.menu.rect_scale.x)
+		hover_panel.rect_global_position.x = clamp(
+				hover_panel.rect_global_position.x,
+				0,
+				(720 - hover_panel.rect_size.x - 100) * Global.menu.rect_scale.y)
+
+		# Also enable console now, since its always added (now) don't remind the user
+		debug_tab.cheats.enable_cheat_prompt(true)
+
 	if !stabs.get_node_or_null("Level"):
 		var ltab = load(CMB.modpath + "/scenes/LevelTab.tscn").instance()
 		stabs.add_child(ltab)
 
 # Scans the textures folder of a level to make a name->path dictionary of its custom textures
-func get_custom_texture_dict(textures_path, dict={}) -> Dictionary:
+func get_custom_texture_dict(textures_path, dict: Dictionary, extension_whitelist: PoolStringArray) -> Dictionary:
 	var dir = Directory.new()
 	if dir.open(textures_path) == OK:
 		dir.list_dir_begin(true, true)
-		var fname = dir.get_next()
+		var fname: String = dir.get_next()
+		var fext:  String = fname.get_extension()
+
 		while fname != "":
 			var p = textures_path + "/" + fname
 			if dir.current_is_dir():
-				get_custom_texture_dict(p, dict)
+				get_custom_texture_dict(p, dict, extension_whitelist)
 			else:
 				var texdir = ""
 				if "/textures/Maps" in textures_path:
 					texdir = textures_path.get_file() + "/"
-				dict[texdir + fname.get_basename()] = p
+
+				# Moved inline from separate function until needed in another context to trim down
+				# on declarations
+				fext = fname.get_extension()
+				for ext in extension_whitelist:
+					if fext == ext:
+						var key = texdir + fname.get_basename()
+						dict[key] = p
+
 			fname = dir.get_next()
 		dir.list_dir_end()
 	return dict
@@ -63,37 +117,43 @@ func copy_directory(dirpath, new_dirpath) -> bool:
 			dir.list_dir_begin(true, true)
 			var fname = dir.get_next()
 			while fname != "":
-				var p = dirpath + "/" + fname
-				var new_p = new_dirpath + "/" + fname
+				var p     = "%s/%s" % [ dirpath,     fname ]
+				var new_p = "%s/%s" % [ new_dirpath, fname ]
 				if dir.current_is_dir():
+					# (Recursive directory name filter would go here)
 					copy_directory(p, new_p)
 				else:
-					dir.copy(p, new_p)
+					# Check if ignored file extension
+					if not is_ignored_export_ext(fname):
+						dir.copy(p, new_p)
 				fname = dir.get_next()
 			dir.list_dir_end()
 			return true
 		else:
-			Mod.mod_log("ERROR: Failed to open " + new_dirpath + " for copying!", CMB)
+			dprint("ERROR: Failed to open " + new_dirpath + " for copying!",  'copy_directory')
 	else:
-		Mod.mod_log("ERROR: Failed to open " + dirpath + " for copying!", CMB)
+		dprint("ERROR: Failed to open " + dirpath + " for copying!",  'copy_directory')
 	return false
 
 # Allows rebuilding level QodotMaps in real time from the TrenchBroom .map
 # NOTE: after rebuilding a QodotMap node with this the mesh_instances need to be reset
-func rebuild_qodotmap(qmap: QodotMap, caller=null, progress_func_name="", ignore_list=[]) -> QodotMap:
-	Mod.mod_log("Building .map to QodotMap node", CMB)
+func rebuild_qodotmap(qmap: QodotMap, caller=null, progress_func_name="", ignore_list: Array = [ ]) -> QodotMap:
+	dprint("Building .map to QodotMap node", 'rebuild_qodotmap')
 	var qmap_new = QodotMap.new()
 	qmap_new.name = qmap.name
 	qmap_new.map_file = qmap.map_file
 	qmap_new.base_texture_dir = qmap.base_texture_dir
 	qmap.entity_fgd = load("res://addons/qodot/game-definitions/fgd/qodot_fgd.tres")
 	qmap_new.block_until_complete = false
-	qmap_new.external_texture_dict = get_custom_texture_dict("user://levels/_debug/textures")
+	qmap_new.external_texture_dict = get_custom_texture_dict(
+			"user://levels/_debug/textures", { }, qmap_new.texture_file_extensions)
 	qmap_new.connect("build_failed", self, "_on_map_build_fail")
 	qmap_new.connect("build_complete", self, "_on_map_build_succeed")
+	qmap_new.connect("build_progress", self, "_on_map_build_progress")
 	if is_instance_valid(caller) and caller.has_method(progress_func_name):
 		qmap_new.connect("build_progress", caller, progress_func_name)
 	map_built = false
+	dprint('qmap_new.verify_and_build(null, ignore_list)', 'rebuild_qodotmap')
 	qmap_new.verify_and_build(null, ignore_list)
 
 	if map_built:
@@ -111,33 +171,64 @@ func rebuild_qodotmap(qmap: QodotMap, caller=null, progress_func_name="", ignore
 		parent.remove_child(qmap)
 		parent.add_child(qmap_new)
 		parent.move_child(qmap_new, qm_pos)
-		
+
 		return qmap_new
 	return null
+
+const base_last_convert_map_to_tscn := {
+	success          = false,
+	nav_cache_loaded = false,
+	errors           = [ ],
+}
+# Stores last tscn export result
+var last_convert_map_to_tscn := base_last_convert_map_to_tscn
 
 # Builds TrenchBroom map to a Godot scene.
 # map_ospath - OS path to mapfile
 # out_folder - Godot path to output folder
 # export_mode - If true, erases the QodotMap's map_file property to prevent accidental doxxing
-func convert_map_to_tscn(map_ospath, out_folder="user://levels/_debug", export_mode=false) -> String:
-	Mod.mod_log("Generating .tscn...", CMB)
+func convert_map_to_tscn(map_ospath: String, out_folder="user://levels/_debug", export_mode=false) -> String:
+	# Immediately invalidate last result
+	last_convert_map_to_tscn = base_last_convert_map_to_tscn
+
+	dprint("Generating .tscn...", 'convert_map_to_tscn')
 
 	var level_root = Spatial.new()
+	dprint("glight", 'convert_map_to_tscn')
 	var g_light = load(CMB.modpath + "/scenes/Global_Light.tscn").instance()
+
+	dprint("nav", 'convert_map_to_tscn')
 	var nav = Navigation.new()
+	dprint("nav_mesh_inst", 'convert_map_to_tscn')
 	var nav_mesh_inst = NavigationMeshInstance.new()
-	var world_env = WorldEnvironment.new()
-	
-	level_root.name = "Level"
-	
-	level_root.add_child(g_light, true)
-	
-	nav.set_script(load("res://Scripts/Navigation.gd"))
+	dprint("nav_mesh_inst.navmesh", 'convert_map_to_tscn')
 	nav_mesh_inst.navmesh = NavigationMesh.new()
+	var world_env = WorldEnvironment.new()
+
+	level_root.name = "Level"
+	dprint("level_root <- g_light", 'convert_map_to_tscn')
+	level_root.add_child(g_light, true)
+
+	dprint("Setting nav script", 'convert_map_to_tscn')
+	nav.set_script(load("res://Scripts/Navigation.gd"))
+
+	# Try to load cached navmesh
+	var nav_cache_path = "res://Levels/%s-nav.tres" % [ map_ospath.get_file().get_basename() ]
+
+	dprint('Checking for cached copy of navigation mesh at <%s>' % [ nav_cache_path ],  'convert_map_to_tscn')
+	if ResourceLoader.exists(nav_cache_path):
+		dprint('Found cached navigation mesh', 'convert_map_to_tscn')
+		# Set navmesh to copy of cached
+		var cache_res: Resource = ResourceLoader.load(nav_cache_path, "", true)
+		nav_mesh_inst.navmesh = cache_res.duplicate()
+		dprint("Loaded cached navmesh resource from <%s>" % [ nav_cache_path ], 'convert_map_to_tscn')
+		last_convert_map_to_tscn.nav_cache_loaded = true
+
 	nav.add_child(nav_mesh_inst, true)
 	level_root.add_child(nav, true)
-	
-	var env = Environment.new()
+
+	dprint("Creating Environment", 'convert_map_to_tscn')
+	var env: Environment = Environment.new()
 	env.background_mode = Environment.BG_SKY
 	env.background_sky = PanoramaSky.new()
 	env.background_sky.panorama = load("res://Textures/sky9.png")
@@ -147,28 +238,51 @@ func convert_map_to_tscn(map_ospath, out_folder="user://levels/_debug", export_m
 	world_env.environment = env
 	world_env.set_script(load("res://Levels/sky_rotator.gd"))
 	level_root.add_child(world_env, true)
-	
-	var qmap = QodotMap.new()
+
+	dprint("Creating Qodotmap", 'convert_map_to_tscn')
+
+	var qmap: QodotMap = (
+		load("res://addons/qodot/src/nodes/qodot_map.gd").new()
+			if OS.has_feature("release")
+		else QodotMap.new()
+	)
 	level_root.add_child(qmap, true)
 	qmap.name = "QodotMap"
 	qmap.map_file = map_ospath
 	qmap.base_texture_dir = "res://Maps/textures"
 	qmap.entity_fgd = load("res://addons/qodot/game-definitions/fgd/qodot_fgd.tres")
 	qmap.block_until_complete = true
-	qmap.external_texture_dict = get_custom_texture_dict(out_folder + "/textures")
+	qmap.external_texture_dict = get_custom_texture_dict(
+		out_folder + "/textures",
+		{ },
+		qmap.texture_file_extensions)
 	qmap.connect("build_failed", self, "_on_map_build_fail")
 	qmap.connect("build_complete", self, "_on_map_build_succeed")
-	#qmap.connect("build_progress", self, "_on_map_build_progress")
+	qmap.connect("build_progress", self, "_on_map_build_progress")
+	if OS.has_feature("release"):
+		dprint('qmap:', 'convert_map_to_tscn')
+		dprint("  - name:                  %s" % [ qmap.name                  ], 'convert_map_to_tscn')
+		dprint("  - map_file:              %s" % [ qmap.map_file              ], 'convert_map_to_tscn')
+		dprint("  - base_texture_dir:      %s" % [ qmap.base_texture_dir      ], 'convert_map_to_tscn')
+		dprint("  - entity_fgd:            %s" % [ qmap.entity_fgd            ], 'convert_map_to_tscn')
+		dprint("  - block_until_complete:  %s" % [ qmap.block_until_complete  ], 'convert_map_to_tscn')
+		dprint("  - external_texture_dict: %s" % [ JSON.print(qmap.external_texture_dict) ], 'convert_map_to_tscn')
 	map_built = false
 	qmap.verify_and_build(level_root)
 
 	if "debug_level" in CMB.data and "_debug" in CMB.data.debug_level:
+		dprint('CMB.data.debug_level._debug detected:', 'convert_map_to_tscn')
 		var dbg = CMB.data.debug_level._debug
 		g_light.visible = dbg["g_light_enabled"]
+		dprint('Saved g_light.visible     => %s' % [ dbg["g_light_enabled"] ], 'convert_map_to_tscn')
 		g_light.init_energy = dbg["g_light_energy"]
+		dprint('Saved g_light.init_energy => %s' % [ dbg["g_light_energy"] ], 'convert_map_to_tscn')
 		g_light.darkness = dbg["g_light_darkness"]
+		dprint('Saved g_light.darkness    => %s' % [ dbg["g_light_darkness"] ], 'convert_map_to_tscn')
+
 		var sb = load(dbg["skybox_file_path"])
-		if !sb:
+		if not sb:
+			dprint('Failed to directly load skybox resource, creating new image instance to assign path.', 'convert_map_to_tscn')
 			sb = Image.new()
 			sb.load(dbg["skybox_file_path"])
 		if sb:
@@ -176,43 +290,75 @@ func convert_map_to_tscn(map_ospath, out_folder="user://levels/_debug", export_m
 			var skytex = ImageTexture.new()
 			skytex.create_from_image(img)
 			env.background_sky.panorama = skytex
+			dprint('Saved env.background_sky.panorama => %s' % [
+					Mod.path_wrap(env.background_sky.panorama) ], 'convert_map_to_tscn')
 		else:
-			Mod.mod_log("WARNING: Failed to load skybox " + dbg["skybox_file_path"], CMB)
-		env.fog_height_min = dbg["fog_height_min"]
-		env.fog_height_max = dbg["fog_height_max"]
-		env.fog_depth_begin = dbg["fog_depth_begin"]
-		env.fog_depth_end = dbg["fog_depth_end"]
+			dprint("WARNING: Failed to load skybox " + dbg["skybox_file_path"], 'convert_map_to_tscn')
 
-	var scene_ospath = ""
+
+		env.fog_height_min  = dbg["fog_height_min"]
+		dprint('Saved env.fog_height_min    => %s' % [ dbg["fog_height_min"] ], 'convert_map_to_tscn')
+		env.fog_height_max  = dbg["fog_height_max"]
+		dprint('Saved env.fog_height_max    => %s' % [ dbg["fog_height_max"] ], 'convert_map_to_tscn')
+		env.fog_depth_begin = dbg["fog_depth_begin"]
+		dprint('Saved env.fog_depth_begin   => %s' % [ dbg["fog_depth_begin"] ], 'convert_map_to_tscn')
+		env.fog_depth_end   = dbg["fog_depth_end"]
+		dprint('Saved env.fog_depth_end     => %s' % [ dbg["fog_depth_end"] ], 'convert_map_to_tscn')
+
+		#region Bake in time of day, if configured
+
+		if "time_of_day" in dbg and dbg["time_of_day"] >= 0:
+			g_light.debug_time = dbg["time_of_day"]
+			dprint('Saving g_light.debug_time => %s' % [ dbg["time_of_day"] ], 'convert_map_to_tscn')
+
+		#endregion Bake in time of day, if configured
+
+	var scene_ospath := ""
+	var scene_name
+	var scene
+	dprint("Post build map_built check", 'convert_map_to_tscn')
 	if map_built and qmap.get_child_count() > 0:
-		var scene = PackedScene.new()
-		g_light.owner = level_root
-		nav.owner = level_root
+		scene = PackedScene.new()
+		g_light.owner       = level_root
+		nav.owner           = level_root
 		nav_mesh_inst.owner = level_root
-		world_env.owner = level_root
-		qmap.owner = level_root
-		if export_mode:
-			qmap.map_file = ""
+		world_env.owner     = level_root
+		qmap.owner          = level_root
 		scene.pack(level_root)
-		var scene_name = map_ospath.get_file().trim_suffix("map") + "tscn"
+		scene_name = map_ospath.get_file().trim_suffix("map") + "tscn"
 		scene_ospath = ProjectSettings.globalize_path(out_folder + "/" + scene_name)
+
 		ResourceSaver.save(scene_ospath, scene)
-		Mod.mod_log("Successfully built map to " + out_folder + ", running checks...", CMB)
-		var errs = LevelVerifier.check_scene(out_folder + "/" + scene_ospath.get_file())
-		Mod.mod_log("Found " + str(len(errs)) + " errors" + ("" if len(errs) == 0 else ": "), CMB)
+		dprint("Successfully built map to %s, running checks..." % [ Mod.path_wrap(out_folder) ], 'convert_map_to_tscn')
+		var errs = LevelVerifier.check_scene(out_folder.plus_file(scene_ospath.get_file()))
+		dprint("Found %s errors %s" % [str(len(errs)), ("" if len(errs) == 0 else ": ")], 'convert_map_to_tscn')
 		for err in errs:
-			Mod.mod_log("\t-> " + err, CMB)
+			dprint("\t-> " + err, 'convert_map_to_tscn')
 		if len(errs) > 0:
+			last_convert_map_to_tscn.errors = Array(errs)
 			return ""
+		else:
+			last_convert_map_to_tscn.success = true
 	else:
-		Mod.mod_log("ERROR: Failed to build map to level scene", CMB)
+		dprint("ERROR: Failed to build map to level scene", 'convert_map_to_tscn')
+		if is_instance_valid(qmap):
+			var ent_count = qmap.get_child_count()
+			if ent_count > 0:
+				dprint("    Build failed but QodotEntity has %d entities:" % [ ent_count ], 'convert_map_to_tscn')
+				for idx in ent_count:
+					dprint("      - @%s" % [ qmap.get_child(idx) ], 'convert_map_to_tscn')
+		else:
+			dprint("    QodotEntity not valid.", 'convert_map_to_tscn')
+
+
+
 	return scene_ospath
 
 # Generates JSON from level metadata
 func generate_level_json(lvl_dict, export_mode=false) -> String:
 	var lvl = {}
 	if !("level_scene" in lvl_dict):
-		Mod.mod_log('ERROR: Can\'t generate level.json because property "level_scene" is missing', CMB)
+		dprint('ERROR: Can\'t generate level.json because property "level_scene" is missing', 'convert_map_to_tscn')
 		return '{"error": "Missing level_scene property"}'
 	if "name" in lvl_dict and lvl_dict.level_scene.get_base_dir() != "user://levels/_debug":
 		lvl["name"] = lvl_dict.name
@@ -223,11 +369,11 @@ func generate_level_json(lvl_dict, export_mode=false) -> String:
 	lvl["level_scene"] = lvl_dict.level_scene
 	if export_mode and lvl.level_scene.get_base_dir() == "user://levels/_debug":
 		lvl["level_scene"] = lvl.level_scene.get_file()
-		
+
 	lvl["image"] = lvl_dict.image if "image" in lvl_dict else "your_240x240_pic.png"
 	lvl["music"] = lvl_dict.music if "music" in lvl_dict else "your_level_music.ogg"
 	if "ambience" in lvl_dict:
-		lvl["ambience"] = lvl_dict.ambience 
+		lvl["ambience"] = lvl_dict.ambience
 	lvl["dialogue"] = lvl_dict.dialogue if "dialogue" in lvl_dict else ["..."]
 	lvl["reward"] = lvl_dict.reward if "reward" in lvl_dict else 0
 	lvl["fish"] = lvl_dict.fish if "fish" in lvl_dict else ["FISH", "DEAD"]
@@ -237,10 +383,12 @@ func generate_level_json(lvl_dict, export_mode=false) -> String:
 		"hell": [0, 0, 0],
 		"hell_stock_s": 0
 	}
+	# @NOTE: Originally removed the export_mode check, but it seems to fuck with loading an exported
+	#        _debug map
 	if "_debug" in lvl_dict and !export_mode:
 		lvl["_debug"] = lvl_dict._debug
 	return JSON.print(lvl, "\t")
-	
+
 # Exports the level in _debug in a new folder, ready to be distributed
 func export_debug_level(map_ospath) -> bool:
 	var debug_lvl = CMB.data["debug_level"]
@@ -254,49 +402,73 @@ func export_debug_level(map_ospath) -> bool:
 		var debug_dir = Directory.new()
 		if debug_dir.open("user://levels/_debug") == OK:
 			debug_dir.list_dir_begin(true, true)
-			var fname = debug_dir.get_next()
+			var fname: String = debug_dir.get_next()
 			while fname != "":
 				if debug_dir.current_is_dir():
-					copy_directory("user://levels/_debug/" + fname, lvl_dir + "/" + fname)
+					# Filter
+					if ignored_debug_subdirs.has(fname):
+						dprint('Skipping export of sub-directory %s' % [ fname ],  'export_debug_level')
+					else:
+						copy_directory("user://levels/_debug/" + fname, lvl_dir + "/" + fname)
 				elif fname.get_extension() != ".map":
-					debug_dir.copy("user://levels/_debug/" + fname, lvl_dir + "/" + fname)
+					if is_ignored_export_ext(fname):
+						dprint('Skipping export child file with ignored extension %s' % [ fname ],  'export_debug_level')
+					else:
+						debug_dir.copy("user://levels/_debug/" + fname, lvl_dir + "/" + fname)
 				fname = debug_dir.get_next()
 			debug_dir.list_dir_end()
-		
+
 		var json_file = File.new()
 		if json_file.open(lvl_dir + "/" + "level.json", File.WRITE) == OK:
 			json_file.store_string(json_str)
 			json_file.close()
 		else:
-			Mod.mod_log("ERROR: Couldn't write level.json during export!", CMB)
+			dprint("ERROR: Couldn't write level.json during export!", 'export_debug_level')
+
 		convert_map_to_tscn(map_ospath, lvl_dir, true)
+		dprint('Finished convert_map_to_tscn', 'export_debug_level')
 		var scene_path = lvl_dir + "/" + lvl_name + ".tscn"
+
 		var f = File.new()
-		if !f.file_exists(scene_path):
+		if not f.file_exists(scene_path):
 			return false
-		var warn_file = File.new()
-		if warn_file.open(lvl_dir + "/" + "LEVEL_WARNINGS.txt", File.WRITE) == OK:
-			var warnings = "Level has no navmesh, so enemies won't move properly. Due to engine limitations, you must bake it yourself in Godot"
-			var warn_arr = LevelVerifier.check_scene(scene_path, debug_lvl)
-			for w in warn_arr:
-				warnings += "\n" + w
-			warn_file.store_string(warnings)
-			warn_file.close()
-		Mod.mod_log("Successfully exported level to \"%s\"" % lvl_dir, CMB)
+
+		# Handle emitted errors/warnings
+		var warnings := PoolStringArray()
+		if not last_convert_map_to_tscn.nav_cache_loaded:
+			warnings.append("Level has no navmesh, so enemies won't move properly. Due to engine limitations, you must bake it yourself in Godot")
+		if 'errors' in last_convert_map_to_tscn and last_convert_map_to_tscn.errors.size() > 0:
+			for w in last_convert_map_to_tscn.errors:
+				warnings.append(w)
+		if warnings.size() > 0:
+			var warn_file := File.new()
+			if warn_file.open(lvl_dir + "/" + "LEVEL_WARNINGS.txt", File.WRITE) == OK:
+				warn_file.store_string(warnings.join('\n'))
+				warn_file.close()
+
+		var msg: String = "Successfully exported level to %s" % [ Mod.path_wrap(lvl_dir) ]
+		dprint(msg, 'export_debug_level')
+		Global.player.UI.message(msg, false)
 		return true
 	else:
-		Mod.mod_log("ERROR: Couldn't open " + lvl_dir + " for export!", CMB)
+		dprint("ERROR: Couldn't open " + lvl_dir + " for export!",  'export_debug_level')
 	return false
 
 func _on_map_build_fail():
 	map_built = true
-	Mod.mod_log("Map failed to build", CMB)
+	dprint("Map failed to build", 'on:map_build_fail')
 	emit_signal("map_build_over")
 
 func _on_map_build_progress(build_step, percent):
-	Mod.mod_log(str("Build progressing, step: ", build_step, " (", percent * 100, "%)"), CMB)
+	# Mod.mod_log(str("Build progressing, step: ", build_step, " (", percent * 100, "%)"), CMB)
+	dprint("[%05.2f%s] Build Step: %s" % [
+				(percent * 100),
+				'%' if not is_equal_approx(percent, 1) else "",
+				build_step
+			],
+			 'on:map_build_progress')
 
 func _on_map_build_succeed():
 	map_built = true
-	Mod.mod_log("Map successfully built", CMB)
+	dprint("Map successfully built",  'on:map_build_succeed')
 	emit_signal("map_build_over")

@@ -5,6 +5,13 @@ class_name CModBase
 const MOD_NAME = "CruS Mod Base"
 const MOD_PATH = "res://MOD_CONTENT/" + MOD_NAME
 
+const MOD_DPRINT_BASE = 'CMB'
+func dprint(msg: String, ctx: String = "") -> void:
+	if Engine.editor_hint:
+		print("[%s] %s" % [ MOD_DPRINT_BASE + (":" + ctx if len(ctx) > 0 else ""), msg])
+	else:
+		Mod.mod_log(msg, MOD_DPRINT_BASE + (":" + ctx if len(ctx) > 0 else ""))
+
 var Audio = load(MOD_PATH + "/lib/GDScriptAudioImport.gd").new()
 var LevelVerifier = load(MOD_PATH + "/scripts/level_verifier.gd").new()
 var LevelEditor = load(MOD_PATH + "/scenes/LevelEditor.tscn").instance()
@@ -14,7 +21,7 @@ var loaded_level_names = []
 static func get_file_path(key: String, dict: Dictionary) -> String:
 	var p = ""
 	if !dict.has(key) or !dict.get(key): return p
-	
+
 	var f = File.new()
 	if f.open(dict[key], File.READ) == OK or ResourceLoader.exists(dict[key]):
 		p = dict[key]
@@ -30,22 +37,22 @@ func handle_level_data(lvl: Dictionary) -> bool:
 	# handle tscn
 	var scene_path = get_file_path("level_scene", lvl)
 	if scene_path != "":
-		Mod.mod_log("...found level scene at: " + scene_path, MOD_NAME)
+		dprint("    - Found level scene at: %s" % [ Mod.path_wrap(scene_path) ], "handle_level_data")
 		var errs = LevelVerifier.check_scene(scene_path, lvl)
 		if len(errs) == 0:
 			lvl["scene_path"] = scene_path
 		else:
-			Mod.mod_log("ERROR: Failed to load level scene:", MOD_NAME)
+			dprint("ERROR: Failed to load level scene:", "handle_level_data")
 			for err in errs:
-				Mod.mod_log("\t-> " + err, MOD_NAME)
+				dprint("\t-> " + err, "handle_level_data")
 			return false
 	elif lvl.level_scene != "":
-		Mod.mod_log("ERROR: Couldn't find level scene at: " + lvl.level_scene, MOD_NAME)
+		dprint("ERROR: Couldn't find level scene at: %s" % [ Mod.path_wrap(lvl.level_scene) ], "handle_level_data")
 		return false
 	else:
-		Mod.mod_log("ERROR: No level scene found!", MOD_NAME)
+		dprint("ERROR: No level scene found!", "handle_level_data")
 		return false
-		
+
 	# handle image
 	var image_path = get_file_path("image", lvl)
 	if image_path != "":
@@ -58,41 +65,41 @@ func handle_level_data(lvl: Dictionary) -> bool:
 				var tex = ImageTexture.new()
 				tex.create_from_image(img, 0)
 				lvl["image"] = tex
-				Mod.mod_log("...found level preview image at: " + image_path, MOD_NAME)
+				dprint("    - Found level preview image at: %s" % [ Mod.path_wrap(lvl.get("image")) ], "handle_level_data")
 			else:
-				Mod.mod_log("WARNING: Failed to open level preview image at path: " + lvl.get("image"), MOD_NAME)
+				dprint("WARNING: Failed to open level preview image at path: %s" % [ Mod.path_wrap(lvl.get("image")) ], "handle_level_data")
 				lvl["image"] = null
 	else:
 		if lvl.get("image"):
-			Mod.mod_log("WARNING: Couldn't get level preview image from path: " + lvl.get("image"), MOD_NAME)
+			dprint("WARNING: Couldn't get level preview image from path: %s" % [ Mod.path_wrap(lvl.get("image")) ], "handle_level_data")
 		lvl["image"] = null
 
 	# handle music
 	var music_path = get_file_path("music", lvl)
 	if music_path != "" and music_path.get_extension() == "ogg":
 		lvl["music"] = load(music_path) if music_path.begins_with("res://") else Audio.loadfile(music_path)
-		Mod.mod_log("...found level music: " + music_path, MOD_NAME)
+		dprint("    - Found level music: " + Mod.path_wrap(music_path), "handle_level_data")
 	elif music_path.get_extension() != "ogg":
-		Mod.mod_log("WARNING: Couldn't load level music, make sure it's in .ogg format", MOD_NAME)
+		dprint("WARNING: Couldn't load level music, make sure it's in .ogg format", "handle_level_data")
 		lvl["music"] = null
 	else:
 		if lvl.get("music"):
-			Mod.mod_log("WARNING: Couldn't find level music!", MOD_NAME)
+			dprint("WARNING: Couldn't find level music!", "handle_level_data")
 		lvl["music"] = null
 
 	# handle ambience
 	var amb_path = get_file_path("ambience", lvl)
 	if amb_path != "" and amb_path.get_extension() == "ogg":
 		lvl["ambience"] = load(amb_path) if amb_path.begins_with("res://") else Audio.loadfile(amb_path)
-		Mod.mod_log("...found level ambience track: " + amb_path, MOD_NAME)
+		dprint("    - Found level ambience track: %s" % [ Mod.path_wrap(amb_path) ], "handle_level_data")
 	elif amb_path.get_extension() != "ogg":
-		Mod.mod_log("WARNING: Couldn't load level ambience track, make sure it's in .ogg format.", MOD_NAME)
+		dprint("WARNING: Couldn't load level ambience track, make sure it's in .ogg format.", "handle_level_data")
 		lvl["ambience"] = null
 	else:
 		if lvl.get("ambience"):
-			Mod.mod_log("WARNING: Couldn't find level ambience track!", MOD_NAME)
+			dprint("WARNING: Couldn't find level ambience track!", "handle_level_data")
 		lvl["ambience"] = null
-	
+
 	# handle dialogue
 	var dialogue_path = ""
 	var dialogue_init = false
@@ -100,50 +107,50 @@ func handle_level_data(lvl: Dictionary) -> bool:
 		if lvl["dialogue"] is String:
 			dialogue_path = get_file_path("dialogue", lvl)
 		elif lvl["dialogue"] is float:
-			Mod.mod_log("...level will use the dialogue from level " + str(lvl["dialogue"]), MOD_NAME)
+			dprint("   - Level will use the dialogue from level %s" % [ str(lvl["dialogue"]) ], "handle_level_data")
 			lvl["dialogue"] = int(lvl["dialogue"])
 			dialogue_init = true
 		elif lvl["dialogue"] is Array:
 			if (lvl["dialogue"].size() > 0):
-				Mod.mod_log("...loaded " + str(lvl["dialogue"].size()) + " lines of NPC dialogue", MOD_NAME)
+				dprint("   - Loaded " + str(lvl["dialogue"].size()) + " lines of NPC dialogue", "handle_level_data")
 				dialogue_init = true
 			else:
-				Mod.mod_log("Empty dialogue array!", MOD_NAME)
+				dprint("Empty dialogue array!", "handle_level_data")
 		else:
-			Mod.mod_log("Invalid dialogue value, must be a string (Godot file path), string array (direct input) or integer (level number)", MOD_NAME)
-	
+			dprint("Invalid dialogue value, must be a string (Godot file path), string array (direct input) or integer (level number)", "handle_level_data")
+
 	var f = File.new()
 	if f.open(dialogue_path, File.READ) == OK:
-		Mod.mod_log("...found dialogue file: " + dialogue_path, MOD_NAME)
+		dprint("    - Found dialogue file: %s" % [ Mod.path_wrap(dialogue_path) ], "handle_level_data")
 		var json = JSON.parse(f.get_as_text())
 		if json.error == OK and json.result is Array:
 			if json.result.size() == 0:
-				Mod.mod_log("No lines of level dialogue in dialogue file!", MOD_NAME)
+				dprint("No lines of level dialogue in dialogue file!", "handle_level_data")
 				f.close()
 				return false
 			lvl["dialogue"] = json.result
-			Mod.mod_log("...loaded " + str(lvl["dialogue"].size()) + " lines of NPC dialogue", MOD_NAME)
+			dprint("   - Loaded " + str(lvl["dialogue"].size()) + " lines of NPC dialogue", "handle_level_data")
 			dialogue_init = true
 		else:
 			var err = json.error_string
 			if !(json.result is Array):
 				err = "file isn't an array"
-			Mod.mod_log("Failed to parse dialogue file!" + " (line: " + str(json.error_line) + ", error: " + err + ")", MOD_NAME)
-			
+			dprint("Failed to parse dialogue file!" + " (line: " + str(json.error_line) + ", error: " + err + ")", "handle_level_data")
+
 	if !dialogue_init and dialogue_path != "":
-		Mod.mod_log("WARNING: Couldn't add dialogue or none found, defaulting to [\"...\"]", MOD_NAME)
+		dprint("WARNING: Couldn't add dialogue or none found, defaulting to [\"...\"]", "handle_level_data")
 	f.close()
 
 	# pad fish tickers to 4 characters (for those 3 letter ticker fish)
 	if lvl.has("fish"):
 		for i in range(0, len(lvl["fish"])):
 			if not (lvl["fish"][i] is String):
-				Mod.mod_log("WARNING: '" + lvl["fish"][i] + "' is not a valid fish ticker string, using default fish pool", MOD_NAME)
+				dprint("WARNING: '" + lvl["fish"][i] + "' is not a valid fish ticker string, using default fish pool", "handle_level_data")
 				lvl["fish"] = null
 				break
 			if len(lvl["fish"][i]) != 4:
 				lvl["fish"][i] = "%-4s" % lvl["fish"][i]
-	
+
 	# correct ranks
 	if lvl.has("ranks") and (lvl.get("ranks").get("normal") or lvl.get("ranks").get("hell")):
 		var ranks = lvl["ranks"]
@@ -151,25 +158,25 @@ func handle_level_data(lvl: Dictionary) -> bool:
 		for a in arrs:
 			if ranks.has(a):
 				if !(ranks[a] is Array) or !(len(ranks[a]) == 3):
-					Mod.mod_log("WARNING: Rank times for " + a + " are not an array of three whole numbers, defaulting to [0, 0, 0]", MOD_NAME)
+					dprint("WARNING: Rank times for " + a + " are not an array of three whole numbers, defaulting to [0, 0, 0]", "handle_level_data")
 					ranks[a] = [0, 0, 0]
 				elif !(ranks[a][0] is float) or !(ranks[a][1] is float) or !(ranks[a][2] is float):
-					Mod.mod_log("WARNING: Rank times for " + a + " are not all numbers, converting them", MOD_NAME)
+					dprint("WARNING: Rank times for " + a + " are not all numbers, converting them", "handle_level_data")
 					ranks[a] = [abs(float(ranks[a][0])), abs(float(ranks[a][1])), abs(float(ranks[a][2]))]
 			else:
-				Mod.mod_log("WARNING: Missing " + a + " rank times, defaulting them to 0", MOD_NAME)
+				dprint("WARNING: Missing " + a + " rank times, defaulting them to 0", "handle_level_data")
 				ranks[a] = [0, 0, 0]
 		if lvl.has("normal_stock_s") and not (lvl["normal_stock_s"] is float):
-			Mod.mod_log("WARNING: Invalid normal_stock_s value, defaulting to 0", MOD_NAME)
+			dprint("WARNING: Invalid normal_stock_s value, defaulting to 0", "handle_level_data")
 			lvl["normal_stock_s"] = 0
 		if lvl.has("hell_stock_s") and not (lvl["hell_stock_s"] is float):
-			Mod.mod_log("WARNING: Invalid hell_stock_s value, defaulting to 0", MOD_NAME)
+			dprint("WARNING: Invalid hell_stock_s value, defaulting to 0", "handle_level_data")
 			lvl["hell_stock_s"] = 0
 	return true
 
 func load_level(current_dir: String, dir_name: String) -> Dictionary:
-	var path = current_dir + "/" + dir_name
-	Mod.mod_log("Scanning " + path, MOD_NAME)
+	var path = current_dir.plus_file(dir_name)
+	dprint("Scanning %s" % [ Mod.path_wrap(path) ], "load_level")
 	var dir = Directory.new()
 	var lvl = null
 	var files = []
@@ -185,107 +192,114 @@ func load_level(current_dir: String, dir_name: String) -> Dictionary:
 		elif fname == "level.json":
 			lvl = {}
 			var json = File.new()
-			if json.open(dir.get_current_dir() + "/" + fname, File.READ) == OK:
+			dprint(" - Reading level data from JSON file: %s" % [ Mod.path_wrap(dir.get_current_dir().plus_file(fname)) ], "load_level")
+			if json.open(dir.get_current_dir().plus_file(fname), File.READ) == OK:
 				lvl = JSON.parse(json.get_as_text())
 				var json_errs = LevelVerifier.check_json(lvl.result)
 				if lvl.error == OK and lvl.result is Dictionary and json_errs.empty():
 					if lvl.result.has("name") and loaded_level_names.find(lvl.result.name) != -1:
-						Mod.mod_log("WARNING: Level with name \"" + lvl.result.name + "\" already exists, not loading this level", MOD_NAME)
+						dprint("WARNING: Level with name \"" + lvl.result.name + "\" already exists, not loading this level", "load_level")
 						dir.list_dir_end()
-						return {}
+						return { }
 					json_valid = true
 				elif lvl.error != OK:
 					match lvl.error:
-						ERR_PARSE_ERROR: Mod.mod_log("ERROR: Problem on line " + str(lvl.error_line) + " of level.json in " + path, MOD_NAME)
-						_: Mod.mod_log("ERROR: Unspecified, code " + lvl.error, MOD_NAME)
+						ERR_PARSE_ERROR: dprint("ERROR: Problem on line " + str(lvl.error_line) + " of level.json in " + path, "load_level")
+						_: dprint("ERROR: Unspecified, code " + lvl.error, "load_level")
 				elif !(lvl.result is Dictionary):
-					Mod.mod_log("ERROR: JSON is not an object (not enclosed in {}) for level.json in " + path, MOD_NAME)
+					dprint("ERROR: JSON is not an object (not enclosed in {}) for level.json in " + path, "load_level")
 				elif !json_errs.empty():
-					Mod.mod_log("ERROR: Failed to load level.json:", MOD_NAME)
+					dprint("ERROR: Failed to load level.json:", "load_level")
 					for err in json_errs:
-						Mod.mod_log("\t-> " + err, MOD_NAME)
+						dprint("\t-> " + err, "load_level")
 				json.close()
 			else:
-				Mod.mod_log("ERROR: Failed to open level.json!", MOD_NAME)
+				dprint("ERROR: Failed to open level.json!", "load_level")
 		fname = dir.get_next()
 	dir.list_dir_end()
-	
+
 	if json_valid:
 		for f in files:
 			var loaded = ProjectSettings.load_resource_pack(f)
 			if loaded:
-				Mod.mod_log("...loaded " + f, MOD_NAME)
+				dprint("   - Loaded " + Mod.path_wrap(f), "load_level")
 				loaded_count += 1
-			else: Mod.mod_log("...failed to load " + f, MOD_NAME)
+			else: dprint("    - Failed to load " + Mod.path_wrap(f), "load_level")
 		if !lvl.result.has("name"):
 			lvl.result["name"] = dir_name
 		if !handle_level_data(lvl.result):
 			loaded_count = -1
 		return lvl.result if loaded_count > -1 else {}
 	elif lvl == null:
-		Mod.mod_log("ERROR: No level.json found!", MOD_NAME)
+		dprint("ERROR: No level.json found!", "load_level")
 	return {}
+
+const USER_LEVELS_DIR = 'user://levels'
 
 func load_levels() -> Array:
 	var levels = []
 	var dir = Directory.new()
 	if dir.open('user://') == OK:
-		if !dir.dir_exists('user://levels'):
-			dir.make_dir('user://levels')
+		if !dir.dir_exists(USER_LEVELS_DIR):
+			dir.make_dir(USER_LEVELS_DIR)
 		else:
-			dir.change_dir('user://levels')
+			dir.change_dir(USER_LEVELS_DIR)
 			dir.list_dir_begin(true, true)
 			var fname = dir.get_next()
 			while fname != "":
-				if dir.current_is_dir() and fname != "_debug":
+				if dir.current_is_dir() and fname != "_debug" and fname != "__debug":
 					var cur_dir = dir.get_current_dir()
 					var lvl = load_level(cur_dir, fname)
 					if lvl.has("name"):
 						levels.append(lvl)
 						loaded_level_names.append(lvl.name)
-						Mod.mod_log("Finished loading level \"" + lvl["name"] + "\" by \"" + lvl["author"] + "\"", MOD_NAME)
+						dprint("Finished loading level \"" + lvl["name"] + "\" by \"" + lvl["author"] + "\"", "load_levels")
 					else:
-						Mod.mod_log("Couldn't load level!", MOD_NAME)
+						dprint("Couldn't load level!", "load_levels")
 				fname = dir.get_next()
 			dir.list_dir_end()
 	return levels
 
-# Load the _debug level, which is special because it can be built from a TrenchBroom .map
+# Load the _debug level data, which is special because it can be built from a TrenchBroom .map
 func init_debug_level():
 	var map_ospath = ""
 	var level_ospath = ""
 	var level = {"error": "No .map found"}
-	
+
 	var dir = Directory.new()
-	if !dir.dir_exists('user://levels'):
-		dir.make_dir('user://levels')
-	if dir.open('user://levels/_debug') == OK:
-		#if dir.file_exists('user://qodot_fgd.tres') or dir.file_exists('user://levels/_debug/qodot_fgd.tres'):
-		#	if !dir.file_exists('user://levels/_debug/qodot_fgd.tres'):
-		#		dir.copy('user://qodot_fgd.tres', 'user://levels/_debug/qodot_fgd.tres')
-			dir.list_dir_begin(true, true)
-			var fname = dir.get_next()
-			while fname != "":
-				var ext = fname.get_extension()
-				if ext == "map":
-					map_ospath = OS.get_user_data_dir() + "/levels/_debug/" + fname
-					if dir.file_exists(map_ospath.trim_suffix("map") + "tscn"):
-						level_ospath = dir.get_current_dir() + "/" + fname
-						level_ospath = level_ospath.trim_suffix("map") + "tscn"
-					break
-				fname = dir.get_next()
-			dir.list_dir_end()
-	
+	if !dir.dir_exists(USER_LEVELS_DIR):
+		dir.make_dir(USER_LEVELS_DIR)
+	if dir.open(USER_LEVELS_DIR.plus_file('_debug')) == OK:
+		if (dir.file_exists('user://qodot_fgd.tres')
+				or dir.file_exists(USER_LEVELS_DIR.plus_file('_debug/qodot_fgd.tres'))):
+			if not dir.file_exists(USER_LEVELS_DIR.plus_file('_debug/qodot_fgd.tres')):
+				dir.copy('user://qodot_fgd.tres', USER_LEVELS_DIR.plus_file('_debug/qodot_fgd.tres'))
+		dir.list_dir_begin(true, true)
+
+		var fname = dir.get_next()
+		while fname != "":
+			var ext = fname.get_extension()
+			if ext == "map":
+				map_ospath = OS.get_user_data_dir().plus_file("levels/_debug/" + fname)
+				if dir.file_exists(map_ospath.trim_suffix("map") + "tscn"):
+					level_ospath = dir.get_current_dir() + "/" + fname
+					level_ospath = level_ospath.trim_suffix("map") + "tscn"
+					dprint("Debug level ospath => %s" % [ Mod.path_wrap(level_ospath) ], "init_debug_level")
+				break
+			fname = dir.get_next()
+
+		dir.list_dir_end()
+
 	if map_ospath == "":
 		return level
-	
+
 	if map_ospath != "":
-		Mod.mod_log("Detected debug .map", MOD_NAME)
+		dprint("Detected debug .map", "init_debug_level")
 		level_ospath = LevelEditor.convert_map_to_tscn(map_ospath)
 		if level_ospath == "":
-			Mod.mod_log("Failed to convert .map, not entering debug level", MOD_NAME)
+			dprint("Failed to convert .map, not entering debug level", "init_debug_level")
 			level = {"error": "Bad .map file"}
-	
+
 	if level_ospath != "":
 		level = {}
 		level["name"] = map_ospath.get_file().trim_suffix(".map")
@@ -293,6 +307,8 @@ func init_debug_level():
 		level["version"] = "0.0.0"
 		level["description"] = "Your level description"
 		level["objectives"] = ["Your level objectives"]
+		# @TODO: Add ability to save it where it will go after loading via debug?
+		#        e.g. level-name.map -> user://levels/level-name/level-name.tres
 		level["level_scene"] = "user://levels/_debug/" + level_ospath.get_file()
 		level["scene_path"] = level["level_scene"]
 
@@ -302,28 +318,32 @@ func init_debug_level():
 func backup_saves():
 	var dir = Directory.new()
 	if !dir.dir_exists("user://backup"):
-		Mod.mod_log("No backup folder detected so this is probably the modbase's first start, backing up saves...", MOD_NAME)
+		dprint("No backup folder detected so this is probably the modbase's first start, backing up saves...", "backup_saves")
 		dir.make_dir("user://backup")
 		dir.copy("user://stocks.save", "user://backup/stocks.save")
 		dir.copy("user://savegame.save", "user://backup/savegame.save")
 		dir.copy("user://settings.save", "user://backup/settings.save")
 
 func _init():
+	dprint('', 'on:init')
 	Mod.get_node(MOD_NAME).add_child(LevelEditor)
 	backup_saves()
+
+	dprint('init_debug_level', 'on:init')
 	var debug_level = init_debug_level()
 	var menu = Global.get_node("Menu")
-	var showmods_btn = load(MOD_PATH + "/scenes/ShowMods.tscn").instance()
+	var showmods_btn = load(MOD_PATH.plus_file("scenes/ShowMods.tscn")).instance()
 	var vbox = menu.get_node("Settings/GridContainer/PanelContainer6/VBoxContainer3/")
 	vbox.add_child_below_node(vbox.get_node("CenterContainer"), showmods_btn)
 	var data = Mod.get_node(MOD_NAME).data
-	if !debug_level.has("error"):
+	if not debug_level.has("error"):
 		data["debug_level"] = debug_level
 	else:
-		Mod.mod_log("Loading user levels...", MOD_NAME)
+		dprint("Loading user levels...", 'on:init')
 		data["levels"] = load_levels()
 		if data["levels"].size() > 0:
-			Mod.mod_log("LEVEL LOADING COMPLETE: Successfully loaded " + str(data["levels"].size()) + " level(s)", MOD_NAME)
+			dprint("LEVEL LOADING COMPLETE: Successfully loaded " + str(data["levels"].size()) + " level(s)", 'on:init')
 		else:
-			Mod.mod_log("LEVEL LOADING COMPLETE: No levels were loaded!", MOD_NAME)
+			dprint("LEVEL LOADING COMPLETE: No levels were loaded!", 'on:init')
+
 	get_parent().initialized = true

@@ -1,9 +1,5 @@
 extends HBoxContainer
 
-
-
-
-
 var EQUIPMENT_BUTTONS:Array
 enum {HEAD, TORSO, LEG, ARM}
 var IMPLANTS
@@ -28,7 +24,7 @@ func reset_implants_state():
 	var arm_implant = Global.implants.arm_implant
 	var head_implant = Global.implants.head_implant
 	var torso_implant = Global.implants.torso_implant
-	
+
 	# ammo gland timer
 	if arm_implant.regen_ammo:
 		gp.weapon.regentimer1 = Timer.new()
@@ -44,15 +40,15 @@ func reset_implants_state():
 			gp.weapon.regentimer1.queue_free()
 		if is_instance_valid(gp.weapon.regentimer2):
 			gp.weapon.regentimer2.queue_free()
-	
+
 	# angular advantage sight line
 	gp.weapon.IM2.clear()
-	
+
 	# biothrusters
 	gp.weapon.kicktimer = 51
 	gp.weapon.kickflag = false
 	gp.friction_disabled = false
-	
+
 	# goggles
 	if !is_instance_valid(gp.get_node_or_null("NV")):
 		gp.add_child(load(Mod.get_node("CruS Mod Base").modpath + "/scenes/NV.tscn").instance())
@@ -63,7 +59,7 @@ func reset_implants_state():
 	gp.shader_screen.material.set_shader_param("scope", head_implant.nightvision)
 	gp.shader_screen.material.set_shader_param("nightmare_vision", head_implant.nightmare)
 	gp.shader_screen.material.set_shader_param("holy_mode", head_implant.holy)
-	
+
 	# cortical scaledown+
 	var player_gpos = Vector3.ZERO + gp.global_transform.origin
 	if Global.implants.head_implant.shrink:
@@ -73,7 +69,7 @@ func reset_implants_state():
 	gp.global_transform.origin = player_gpos
 
 	# tattered hat
-	# TODO: figure out clean way to toggle rain in realtime 
+	# TODO: figure out clean way to toggle rain in realtime
 	#		from multiple places for official and custom levels
 #	if head_implant.fishing_bonus:
 #		Global.rain = true
@@ -118,9 +114,9 @@ func reset_implants_state():
 #		Global.music.stop()
 #		Global.music.stream = Global.LEVEL_SONGS[Global.CURRENT_LEVEL]
 #		Global.music.play()
-	
+
 	gp.jump_bonus = leg_implant.jump_bonus + torso_implant.jump_bonus + head_implant.jump_bonus + arm_implant.jump_bonus
-	
+
 	# orb suit
 	if gp.weapon.has_node("orbarms"):
 		gp.weapon.get_node("orbarms").hide()
@@ -152,18 +148,18 @@ func reset_implants_state():
 			if gp.get_node("Foot_Step").stream.resource_path != "res://Sfx/orbwalk.wav":
 				prev_footstep = gp.get_node("Foot_Step").stream
 			gp.get_node("Foot_Step").stream = load("res://Sfx/orbwalk.wav")
-	
+
 	gp.speed_bonus = leg_implant.speed_bonus + torso_implant.speed_bonus + head_implant.speed_bonus + arm_implant.speed_bonus
 	if Global.husk_mode:
 		gp.speed_bonus += 0.25
 	if Global.death:
 		gp.speed_bonus += 0.1
 	gp.armor = clamp(leg_implant.armor + torso_implant.armor + head_implant.armor + arm_implant.armor, 0.5, 1.0)
-	
+
 	# hazmat suit
 	if leg_implant.toxic_shield or torso_implant.toxic_shield or arm_implant.toxic_shield or head_implant.toxic_shield or gp.orb:
 		gp.hazmat = true
-	
+
 	# biosuit
 	if torso_implant.terror:
 		gp.terrorsuit.show()
@@ -173,7 +169,7 @@ func reset_implants_state():
 		gp.terrorsuit.hide()
 		gp.UI.show()
 		gp.shader_screen.material.set_shader_param("scope", head_implant.nightvision) # prevent conflict with nvgs
-	
+
 	# cursed torch
 	if arm_implant.cursed_torch and !Global.hope_discarded:
 		Global.set_hope()
@@ -205,12 +201,12 @@ func _ready():
 				if IMPLANTS[b].hidden:
 					new_button.modulate = Color(1, 1, 1)
 					new_button.texture_normal = load("res://Textures/Menu/mystery.png")
-		else :
+		else:
 			new_button.name = "n/a"
 			new_button.texture_normal = load("res://Textures/Menu/Empty_Slot.png")
 		new_button.rect_size = Vector2(64, 64)
 		new_button.expand = true
-		
+
 		new_button.connect("pressed", self, "_on_implant_pressed", [b])
 		new_button.connect("mouse_entered", self, "_on_mouse_entered", [b])
 		new_button.connect("mouse_exited", self, "_on_mouse_exited", [b])
@@ -238,7 +234,7 @@ func _slot_button_pressed(type):
 			EQUIPMENT_BUTTONS[IMPLANTS.find(Global.implants.head_implant)].modulate = Color(1, 1, 1, 1)
 			Global.implants.head_implant = Global.implants.empty_implant
 			$TextureRect / Head_Button.texture_normal = load("res://Textures/Menu/Empty_Slot.png")
-			
+
 		TORSO:
 			$Unequip.play()
 			EQUIPMENT_BUTTONS[IMPLANTS.find(Global.implants.torso_implant)].modulate = Color(1, 1, 1, 1)
@@ -293,7 +289,7 @@ func _on_mouse_entered(i):
 			hover_info.get_node("Hint").text = "Somewhere in this world something is waiting for you."
 			hover_info.get_node("Image").texture = load("res://Textures/Menu/mystery.png")
 			hover_info.get_parent().show()
-			return 
+			return
 		hover_info.get_node("Image").show()
 		hover_info.get_parent().raise()
 		hover_info.get_node("Name").text = IMPLANTS[i].i_name
@@ -327,7 +323,7 @@ func _on_mouse_exited(i):
 func _on_implant_pressed(i):
 	if i < IMPLANTS.size():
 		if !debug and IMPLANTS[i].hidden and Global.implants.purchased_implants.find(IMPLANTS[i].i_name) == - 1:
-			return 
+			return
 		if !debug and Global.implants.purchased_implants.find(IMPLANTS[i].i_name) == - 1:
 			cancel = false
 			if Global.money >= IMPLANTS[i].price:
@@ -338,21 +334,21 @@ func _on_implant_pressed(i):
 				confirmed = false
 				if cancel == true:
 					cancel = false
-					return 
+					return
 				cancel = false
 				var m = Global.money
 				Global.money -= IMPLANTS[i].price
 				if Global.money < 0:
 					Global.money = m
-					return 
+					return
 				if IMPLANTS[i].i_name == "House":
 					Global.BONUS_UNLOCK.append("House")
 				EQUIPMENT_BUTTONS[i].modulate = Color(1, 1, 1)
 				$TextureRect / Money.text = str("$", Global.money)
 				Global.implants.purchased_implants.append(IMPLANTS[i].i_name)
 				Global.save_game()
-			return 
-		
+			return
+
 		$Equip.play()
 		if IMPLANTS[i].head:
 			if Global.implants.head_implant != Global.implants.empty_implant:
@@ -400,4 +396,4 @@ func _on_ConfirmationDialog_confirmed():
 	confirmed = true
 func _on_Cancel_Pressed():
 	cancel = true
-	
+

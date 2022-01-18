@@ -1,208 +1,171 @@
 extends Container
 enum {UP, RIGHT, DOWN, LEFT}
-enum {KEY_FORWARD, KEY_LEFT, KEY_RIGHT, KEY_BACK, KEY_SHOOT, KEY_JUMP, KEY_CROUCH, KEY_RELOAD, KEY_ZOOM, KEY_USE, KEY_KICK, KEY_LEAN_LEFT, KEY_LEAN_RIGHT, KEY_WEAPON1, KEY_WEAPON2, KEY_LAST_WEAPON, KEY_TERTIARY, KEY_THROW_WEAPON, KEY_SUICIDE, KEY_STOCKS}
-enum {START, LEVEL_SELECT, WEAPON_SELECT, IN_GAME, LEVEL_END, SETTINGS, CHARACTER, STOCKS}
+enum {KEY_FORWARD, KEY_LEFT, KEY_RIGHT, KEY_BACK, KEY_SHOOT, KEY_JUMP, KEY_CROUCH, KEY_RELOAD, KEY_ZOOM, KEY_USE, KEY_KICK, KEY_LEAN_LEFT, KEY_LEAN_RIGHT, KEY_WEAPON1, KEY_WEAPON2, KEY_LAST_WEAPON, KEY_TERTIARY, KEY_THROW_WEAPON, KEY_SUICIDE, KEY_STOCKS
+	# ADDITIONS
+	 KEY_TOGGLE_FULLSCREEN,}
+enum {START, LEVEL_SELECT, WEAPON_SELECT, IN_GAME, LEVEL_END, SETTINGS, CHARACTER, STOCKS,}
 var confirmed = false
 var cancel = false
-enum {B_START, B_SETTINGS, B_QUIT, B_LEVEL, B_MISSION_START, 
-	B_WEAPON_1, B_WEAPON_2, B_CHARACTER, B_STOCKS, B_W_PISTOL, B_W_SMG, B_W_SHOTGUN, B_W_RL, B_W_SNIPER, B_W_AR, B_W_S_SMG, B_W_NAMBU, 
+enum {B_START, B_SETTINGS, B_QUIT, B_LEVEL, B_MISSION_START,
+	B_WEAPON_1, B_WEAPON_2, B_CHARACTER, B_STOCKS, B_W_PISTOL, B_W_SMG, B_W_SHOTGUN, B_W_RL, B_W_SNIPER, B_W_AR, B_W_S_SMG, B_W_NAMBU,
 	B_W_GAS_LAUNCHER, B_W_MG3, B_W_AUTOSHOTGUN, B_W_MAUSER, B_W_BORE, B_W_MKR, B_W_RADGUN, B_W_TRANQ, B_W_BLACKJACK, B_W_FLASHLIGHT, B_W_ZIPPY, B_W_AN94, B_W_VAG72, B_W_STEYR, B_W_CANCER, B_W_ROD, B_W_FLAMETHROWER, B_W_SKS, B_W_NAILER, B_W_SHOCK, B_W_LIGHT, B_EX_MENU, B_EX_LEVEL_SELECT, B_RETURN, B_RETRY, B_BONUS,
 	B_PREV_LEVELS, B_NEXT_LEVELS}
-const BUTTON_TEXTURES:Array = [preload("res://Textures/Menu/start_normal.png"), 
-									preload("res://Textures/Menu/settings_normal.png"), 
-									preload("res://Textures/Menu/OS_normal.png"), 
-									preload("res://Textures/Menu/implant_menu_button.png"), 
-									preload("res://Textures/Menu/mission_start.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Menu/implant_menu_button.png"), 
-									preload("res://Textures/Menu/stock.png"), 
-									preload("res://Textures/Menu/Weapon_Buttons/Pistol.png"), 
-									preload("res://Textures/Menu/Weapon_Buttons/SMG.png"), 
-									preload("res://Textures/Menu/Weapon_Buttons/Shotgun.png"), 
-									preload("res://Textures/Menu/Weapon_Buttons/RL.png"), 
-									preload("res://Textures/Menu/Weapon_Buttons/Sniper.png"), 
-									preload("res://Textures/Menu/Weapon_Buttons/AR.png"), 
-									preload("res://Textures/Menu/Weapon_Buttons/S_SMG.png"), 
-									preload("res://Textures/Menu/Weapon_Buttons/Nambu.png"), 
-									preload("res://Textures/Menu/Weapon_Buttons/Gas_Launcher.png"), 
-									preload("res://Textures/Menu/Weapon_Buttons/MG3.png"), 
-									preload("res://Textures/Menu/Weapon_Buttons/Autoshotgun.png"), 
-									preload("res://Textures/Menu/Weapon_Buttons/Mauser.png"), 
-								preload("res://Textures/Menu/Weapon_Buttons/Bore.png"), 
-								preload("res://Textures/Menu/Weapon_Buttons/MKR.png"), 
-								preload("res://Textures/Menu/Weapon_Buttons/radgun.png"), 
-								preload("res://Textures/Menu/Weapon_Buttons/tranq.png"), 
-								preload("res://Textures/Menu/Weapon_Buttons/baton.png"), 
-								preload("res://Textures/Menu/Weapon_Buttons/flashlight.png"), 
-								preload("res://Textures/Menu/Weapon_Buttons/zippy.png"), 
-								preload("res://Textures/Menu/Weapon_Buttons/AN94.png"), 
-								preload("res://Textures/Menu/Weapon_Buttons/vag72.png"), 
-								preload("res://Textures/Menu/Weapon_Buttons/steyr.png"), 
-								preload("res://Textures/Menu/Weapon_Buttons/dna.png"), 
-								preload("res://Textures/Menu/Weapon_Buttons/rod.png"), 
-								preload("res://Textures/Menu/Weapon_Buttons/flamethrower.png"), 
-								preload("res://Textures/Menu/Weapon_Buttons/SKS.png"), 
-								preload("res://Textures/Menu/Weapon_Buttons/nailer.png"), 
-								preload("res://Textures/Menu/Weapon_Buttons/shockwave.png"), 
-								preload("res://Textures/Menu/Weapon_Buttons/light.png"), 
-									preload("res://Textures/Menu/exit_menu_normal.png"), 
-									preload("res://Textures/Menu/exit_level_normal.png"), 
-									preload("res://Textures/Menu/return_normal.png"), 
-									preload("res://Textures/Menu/retry_normal.png"), 
+const BUTTON_TEXTURES: Array = [preload("res://Textures/Menu/start_normal.png"),
+									preload("res://Textures/Menu/settings_normal.png"),
+									preload("res://Textures/Menu/OS_normal.png"),
+									preload("res://Textures/Menu/implant_menu_button.png"),
+									preload("res://Textures/Menu/mission_start.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Menu/implant_menu_button.png"),
+									preload("res://Textures/Menu/stock.png"),
+									preload("res://Textures/Menu/Weapon_Buttons/Pistol.png"),
+									preload("res://Textures/Menu/Weapon_Buttons/SMG.png"),
+									preload("res://Textures/Menu/Weapon_Buttons/Shotgun.png"),
+									preload("res://Textures/Menu/Weapon_Buttons/RL.png"),
+									preload("res://Textures/Menu/Weapon_Buttons/Sniper.png"),
+									preload("res://Textures/Menu/Weapon_Buttons/AR.png"),
+									preload("res://Textures/Menu/Weapon_Buttons/S_SMG.png"),
+									preload("res://Textures/Menu/Weapon_Buttons/Nambu.png"),
+									preload("res://Textures/Menu/Weapon_Buttons/Gas_Launcher.png"),
+									preload("res://Textures/Menu/Weapon_Buttons/MG3.png"),
+									preload("res://Textures/Menu/Weapon_Buttons/Autoshotgun.png"),
+									preload("res://Textures/Menu/Weapon_Buttons/Mauser.png"),
+								preload("res://Textures/Menu/Weapon_Buttons/Bore.png"),
+								preload("res://Textures/Menu/Weapon_Buttons/MKR.png"),
+								preload("res://Textures/Menu/Weapon_Buttons/radgun.png"),
+								preload("res://Textures/Menu/Weapon_Buttons/tranq.png"),
+								preload("res://Textures/Menu/Weapon_Buttons/baton.png"),
+								preload("res://Textures/Menu/Weapon_Buttons/flashlight.png"),
+								preload("res://Textures/Menu/Weapon_Buttons/zippy.png"),
+								preload("res://Textures/Menu/Weapon_Buttons/AN94.png"),
+								preload("res://Textures/Menu/Weapon_Buttons/vag72.png"),
+								preload("res://Textures/Menu/Weapon_Buttons/steyr.png"),
+								preload("res://Textures/Menu/Weapon_Buttons/dna.png"),
+								preload("res://Textures/Menu/Weapon_Buttons/rod.png"),
+								preload("res://Textures/Menu/Weapon_Buttons/flamethrower.png"),
+								preload("res://Textures/Menu/Weapon_Buttons/SKS.png"),
+								preload("res://Textures/Menu/Weapon_Buttons/nailer.png"),
+								preload("res://Textures/Menu/Weapon_Buttons/shockwave.png"),
+								preload("res://Textures/Menu/Weapon_Buttons/light.png"),
+									preload("res://Textures/Menu/exit_menu_normal.png"),
+									preload("res://Textures/Menu/exit_level_normal.png"),
+									preload("res://Textures/Menu/return_normal.png"),
+									preload("res://Textures/Menu/retry_normal.png"),
 									preload("res://Textures/Menu/retry_normal.png")
 								]
-const WEAPON_PROFILES:Array = [preload("res://Textures/Menu/Weapon_Profiles/Pistol.png"), 
-								preload("res://Textures/Menu/Weapon_Profiles/SMG.png"), 
-								preload("res://Textures/Menu/Weapon_Profiles/Shotgun.png"), 
-								preload("res://Textures/Menu/Weapon_Profiles/RL.png"), 
-								preload("res://Textures/Menu/Weapon_Profiles/Sniper.png"), 
-								preload("res://Textures/Menu/Weapon_Profiles/AR.png"), 
-								preload("res://Textures/Menu/Weapon_Profiles/S_SMG.png"), 
-								preload("res://Textures/Menu/Weapon_Profiles/S_SMG.png"), 
-								preload("res://Textures/Menu/Weapon_Profiles/S_SMG.png"), 
-								preload("res://Textures/Menu/Weapon_Profiles/S_SMG.png"), 
-								preload("res://Textures/Menu/Weapon_Profiles/S_SMG.png"), 
-								preload("res://Textures/Menu/Weapon_Profiles/S_SMG.png"), 
-								preload("res://Textures/Menu/Weapon_Profiles/S_SMG.png"), 
+const WEAPON_PROFILES: Array = [preload("res://Textures/Menu/Weapon_Profiles/Pistol.png"),
+								preload("res://Textures/Menu/Weapon_Profiles/SMG.png"),
+								preload("res://Textures/Menu/Weapon_Profiles/Shotgun.png"),
+								preload("res://Textures/Menu/Weapon_Profiles/RL.png"),
+								preload("res://Textures/Menu/Weapon_Profiles/Sniper.png"),
+								preload("res://Textures/Menu/Weapon_Profiles/AR.png"),
+								preload("res://Textures/Menu/Weapon_Profiles/S_SMG.png"),
+								preload("res://Textures/Menu/Weapon_Profiles/S_SMG.png"),
+								preload("res://Textures/Menu/Weapon_Profiles/S_SMG.png"),
+								preload("res://Textures/Menu/Weapon_Profiles/S_SMG.png"),
+								preload("res://Textures/Menu/Weapon_Profiles/S_SMG.png"),
+								preload("res://Textures/Menu/Weapon_Profiles/S_SMG.png"),
+								preload("res://Textures/Menu/Weapon_Profiles/S_SMG.png"),
 								preload("res://Textures/Menu/Weapon_Profiles/S_SMG.png")]
-const BUTTON_TEXTURES_H:Array = [preload("res://Textures/Menu/hover.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
+const BUTTON_TEXTURES_H: Array = [preload("res://Textures/Menu/hover.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
 								]
-const BUTTON_TEXTURES_P:Array = [preload("res://Textures/Menu/hover.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
-									preload("res://Textures/Items/medkit1.png"), 
+const BUTTON_TEXTURES_P: Array = [preload("res://Textures/Menu/hover.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
+									preload("res://Textures/Items/medkit1.png"),
 								]
-const BUTTON_TEXTURES_D:Array = [preload("res://Textures/Menu/Disabled_Button/1.png"), 
-								preload("res://Textures/Menu/Disabled_Button/2.png"), 
-								preload("res://Textures/Menu/Disabled_Button/3.png"), 
+const BUTTON_TEXTURES_D: Array = [preload("res://Textures/Menu/Disabled_Button/1.png"),
+								preload("res://Textures/Menu/Disabled_Button/2.png"),
+								preload("res://Textures/Menu/Disabled_Button/3.png"),
 								preload("res://Textures/Menu/Disabled_Button/4.png")]
 const MYSTERY = preload("res://Textures/Menu/mystery.png")
 enum {W_PISTOL, W_SMG, W_TRANQ, W_BLACKJACK, W_SHOTGUN, W_RL, W_SNIPER, W_AR, W_S_SMG, W_NAMBU, W_GAS_LAUNCHER, W_MG3, W_AUTOSHOTGUN, W_MAUSER, W_BORE, W_MKR, W_RADIATOR, W_FLASHLIGHT, W_ZIPPY, W_AN94, W_VAG72, W_STEYR, W_CANCER, W_ROD, W_FLAMETHROWER, W_SKS, W_NAILER, W_SHOCK, W_LIGHT}
-const RESOLUTIONS:Array = [Vector2(1920, 1080), Vector2(1600, 900), Vector2(1366, 768), Vector2(1280, 720), Vector2(3840, 2160), Vector2(2560, 1440), Vector2(3840, 2400), Vector2(2560, 1600), Vector2(1920, 1200), Vector2(1680, 1050), Vector2(1440, 900), Vector2(3440, 1440), Vector2(2880, 1200), Vector2(2560, 1080), Vector2(1920, 800), Vector2(1600, 1200), Vector2(1440, 1080), Vector2(1024, 768), Vector2(800, 600), Vector2(640, 480), Vector2(1080, 1080)]
-const RANK_LETTERS:Array = [preload("res://Textures/rank_letters/C.png"), 
-preload("res://Textures/rank_letters/B.png"), 
-preload("res://Textures/rank_letters/A.png"), 
-preload("res://Textures/rank_letters/S.png"), 
-preload("res://Textures/rank_letters/N.png")]
-var LEVEL_NAMES:Array = ["Training Facility", "Headquarters", "Suburb", "Spaceport", "PD", "Mall", "Apartment", "Ship", "Swamp", "Casino", "Castle", "Office", "Archon Grid", "NEED", "HELP", "END", "PAIN", "NOW", "AAAAAA"]
+const RESOLUTIONS: Array = [Vector2(1920, 1080), Vector2(1600, 900), Vector2(1366, 768), Vector2(1280, 720), Vector2(3840, 2160), Vector2(2560, 1440), Vector2(3840, 2400), Vector2(2560, 1600), Vector2(1920, 1200), Vector2(1680, 1050), Vector2(1440, 900), Vector2(3440, 1440), Vector2(2880, 1200), Vector2(2560, 1080), Vector2(1920, 800), Vector2(1600, 1200), Vector2(1440, 1080), Vector2(1024, 768), Vector2(800, 600), Vector2(640, 480), Vector2(1080, 1080)]
 
-const HANDLER_FRAMES:Array = [preload("res://Textures/Menu/Handler/1.png"), 
-								preload("res://Textures/Menu/Handler/2.png"), 
-								preload("res://Textures/Menu/Handler/3.png"), 
+const RANK_LETTERS: Array = [
+	preload("res://Textures/rank_letters/C.png"),
+	preload("res://Textures/rank_letters/B.png"),
+	preload("res://Textures/rank_letters/A.png"),
+	preload("res://Textures/rank_letters/S.png"),
+	preload("res://Textures/rank_letters/N.png"),]
+
+var LEVEL_NAMES: Array = ["Training Facility", "Headquarters", "Suburb", "Spaceport", "PD", "Mall", "Apartment", "Ship", "Swamp", "Casino", "Castle", "Office", "Archon Grid", "NEED", "HELP", "END", "PAIN", "NOW", "AAAAAA"]
+
+const HANDLER_FRAMES: Array = [preload("res://Textures/Menu/Handler/1.png"),
+								preload("res://Textures/Menu/Handler/2.png"),
+								preload("res://Textures/Menu/Handler/3.png"),
 								preload("res://Textures/Menu/Handler/4.png")]
 var key_pressed
 var wait_for_key = false
-var menu_dir:Array = [2, 
-								1, 
-								0, 
-								3, 
-								2, 
-								1, 
-								1, 
-						2, 
-						3, 
-						3, 
-						3
-						]
-var level_select_dir:Array = [2, 
-								2, 
-								1, 
-								2, 
-								3, 
-								2, 
-								1, 
-						1, 
-						1, 
-						1, 
-						2, 
-						3, 
-						3, 
-						3, 
-						3, 
-						2, 
-						1, 
-						1, 
-						1, 
-						1, 
-						2, 
-						3, 
-						3, 
-						3, 
-						3
-						]
-var menu:Array = []
-var active_menus:Array = []
-var active_element:Control
-var level_buttons:Array = []
+var menu_dir: Array = [2, 1, 0, 3, 2, 1, 1, 2, 3, 3, 3, ]
+var level_select_dir: Array = [2, 2, 1, 2, 3, 2, 1, 1, 1, 1, 2, 3, 3, 3, 3, 2, 1, 1, 1, 1, 2, 3, 3, 3, 3, ]
+var menu: Array = []
+var active_menus: Array = []
+var active_element: Control
+var level_buttons: Array = []
 var current_menu = 0
 var current_weapon_select = 0
 var weapon_1 = 0
 var weapon_2 = 1
-var weapon_select_buttons:Array = []
+var weapon_select_buttons: Array = []
 var previous_menu = 0
-var menu_button:Array = []
+var menu_button: Array = []
 var button_size = Vector2(64, 64)
 var b_position = Vector2(100, 100)
 var dir = 0
 var in_game = false
 
-var resolution_list:ItemList
+var resolution_list: ItemList
 var time = 0
-var all_buttons:Array
+var all_buttons: Array
 var hover_info
-var menu_creation_level_index:int = 0
+var menu_creation_level_index: int = 0
 var menu_changing = false
-onready  var clear_button = $Settings / GridContainer / PanelContainer6 / VBoxContainer3 / ClearSave
+onready var clear_button = $Settings / GridContainer / PanelContainer6 / VBoxContainer3 / ClearSave
+
 class Menu extends Control:
 	var buttons:Array
 	var elements:Array
+
 func _physics_process(delta):
 	time += 1
 	if in_game:
 		clear_button.hide()
-	else :
+	else:
 		clear_button.show()
-	
-	
-	
-	
-	
-	
+
 	hover_info.get_parent().rect_global_position = get_global_mouse_position() + Vector2(50, 20)
 	hover_info.get_parent().rect_global_position.y = clamp(hover_info.get_parent().rect_global_position.y, 0, (720 - hover_info.get_parent().rect_size.y - 100) * rect_scale.x)
 	hover_info.get_parent().rect_global_position.x = clamp(hover_info.get_parent().rect_global_position.x, 0, (1280 - hover_info.get_parent().rect_size.x - 100) * rect_scale.y)
-	
-	
-	
-	
+
 	for button in all_buttons:
 		for b in level_buttons:
 			if button == b:
-				return 
+				return
 		if button.disabled:
 			button.texture_disabled = BUTTON_TEXTURES_D[int(sin(button.get_index() + time * 0.05) * 3) % 3]
 
@@ -211,33 +174,38 @@ func get_key_index(action):
 		return [action.scancode, "KEY"]
 	elif action is InputEventMouseButton:
 		return [action.button_index, "MOUSE"]
+
 func get_scancodes():
-	var key_scancodes:Array = [get_key_index(InputMap.get_action_list("movement_forward")[0]), 
-	get_key_index(InputMap.get_action_list("movement_left")[0]), 
-	get_key_index(InputMap.get_action_list("movement_right")[0]), 
-	get_key_index(InputMap.get_action_list("movement_backward")[0]), 
-	get_key_index(InputMap.get_action_list("mouse_1")[0]), 
-	get_key_index(InputMap.get_action_list("movement_jump")[0]), 
-	get_key_index(InputMap.get_action_list("crouch")[0]), 
-	get_key_index(InputMap.get_action_list("reload")[0]), 
-	get_key_index(InputMap.get_action_list("zoom")[0]), 
-	get_key_index(InputMap.get_action_list("Use")[0]), 
-	get_key_index(InputMap.get_action_list("kick")[0]), 
-	get_key_index(InputMap.get_action_list("Lean_Left")[0]), 
-	get_key_index(InputMap.get_action_list("Lean_Right")[0]), 
-	get_key_index(InputMap.get_action_list("weapon1")[0]), 
-	get_key_index(InputMap.get_action_list("weapon2")[0]), 
-	get_key_index(InputMap.get_action_list("switch_weapon")[0]), 
-	get_key_index(InputMap.get_action_list("Tertiary_Weapon")[0]), 
-	get_key_index(InputMap.get_action_list("drop")[0]), 
-	get_key_index(InputMap.get_action_list("Suicide")[0]), 
-	get_key_index(InputMap.get_action_list("Stocks")[0])]
+	var key_scancodes: Array = [get_key_index(InputMap.get_action_list("movement_forward")[0]),
+		get_key_index(InputMap.get_action_list("movement_left")[0]),
+		get_key_index(InputMap.get_action_list("movement_right")[0]),
+		get_key_index(InputMap.get_action_list("movement_backward")[0]),
+		get_key_index(InputMap.get_action_list("mouse_1")[0]),
+		get_key_index(InputMap.get_action_list("movement_jump")[0]),
+		get_key_index(InputMap.get_action_list("crouch")[0]),
+		get_key_index(InputMap.get_action_list("reload")[0]),
+		get_key_index(InputMap.get_action_list("zoom")[0]),
+		get_key_index(InputMap.get_action_list("Use")[0]),
+		get_key_index(InputMap.get_action_list("kick")[0]),
+		get_key_index(InputMap.get_action_list("Lean_Left")[0]),
+		get_key_index(InputMap.get_action_list("Lean_Right")[0]),
+		get_key_index(InputMap.get_action_list("weapon1")[0]),
+		get_key_index(InputMap.get_action_list("weapon2")[0]),
+		get_key_index(InputMap.get_action_list("switch_weapon")[0]),
+		get_key_index(InputMap.get_action_list("Tertiary_Weapon")[0]),
+		get_key_index(InputMap.get_action_list("drop")[0]),
+		get_key_index(InputMap.get_action_list("Suicide")[0]),
+		get_key_index(InputMap.get_action_list("Stocks")[0]),
+		get_key_index(InputMap.get_action_list("toggle_full")[0])]
 	return key_scancodes
 
 # custom stuff
+
+const MODBASE_BASE = "res://MOD_CONTENT/"
+
 const MAX_PAGE_SIZE = 20
-var CUSTOM_BTN_TEXTURES = [preload("res://MOD_CONTENT/CruS Mod Base/assets/prev.png"),
-						   preload("res://MOD_CONTENT/CruS Mod Base/assets/next.png")]
+var CUSTOM_BTN_TEXTURES = [load(MODBASE_BASE + "CruS Mod Base/assets/prev.png"),
+							 load(MODBASE_BASE + "CruS Mod Base/assets/next.png")]
 var all_level_buttons = null
 var custom_levels = []
 var level_btn_index = 0
@@ -253,7 +221,7 @@ func update_level_page_buttons(init=false):
 		btn.queue_free()
 	page_btns = []
 	menu[LEVEL_SELECT].buttons += [B_PREV_LEVELS, B_NEXT_LEVELS]
-	if begin_index > 0: 
+	if begin_index > 0:
 		page_btns.append(create_button(LEVEL_SELECT, "Previous levels", "_on_Prev_Levels_Button_Pressed", B_PREV_LEVELS))
 	if end_index < all_level_buttons.size():
 		page_btns.append(create_button(LEVEL_SELECT, "More levels", "_on_Next_Levels_Button_Pressed", B_NEXT_LEVELS))
@@ -267,22 +235,22 @@ func update_level_page_buttons(init=false):
 func update_level_buttons(init=false):
 	if all_level_buttons == null:
 		all_level_buttons = level_buttons.duplicate()
-	
+
 	var sz = menu[LEVEL_SELECT].buttons.size()
 	var begin_index = clamp(level_btn_index, 0, all_level_buttons.size())
 	var end_index = clamp(level_btn_index + next_page_size, 0, all_level_buttons.size())
-	
+
 	# spacing for next/previous levels buttons
 	next_page_size = MAX_PAGE_SIZE
 	if begin_index > 0:
 		next_page_size -= 1
-	if end_index < all_level_buttons.size(): 
+	if end_index < all_level_buttons.size():
 		next_page_size -= 1
 	end_index = clamp(level_btn_index + next_page_size, 0, all_level_buttons.size())
-	
+
 	menu[LEVEL_SELECT].buttons = [B_RETURN, B_CHARACTER, B_STOCKS, B_WEAPON_1, B_WEAPON_2, B_MISSION_START]
 	level_buttons = all_level_buttons.duplicate()
-	
+
 	var menu_index = menu[LEVEL_SELECT].buttons.size() + 1
 	for i in range(all_level_buttons.size()):
 		if i < begin_index:
@@ -325,7 +293,7 @@ func add_level_ranks(level: Dictionary):
 		{ "prefix": "normal", "ranks": [G.LEVEL_RANK_S, G.LEVEL_RANK_A, G.LEVEL_RANK_B, G.LEVEL_SRANK_S] },
 		{ "prefix": "hell", "ranks": [G.HELL_RANK_S, G.HELL_RANK_A, G.HELL_RANK_B, G.HELL_SRANK_S] }]
 	var ranks_dict = level.get("ranks") if level.has("ranks") else null
-	
+
 	for t in types:
 		if ranks_dict:
 			var rank_time = null
@@ -360,21 +328,21 @@ func add_custom_levels():
 		var lsd_len = level_select_dir.size()
 		var last_dirs = level_select_dir.slice(lsd_len - 4, lsd_len - 1)
 		match last_dirs:
-			[RIGHT, RIGHT, RIGHT, RIGHT], [LEFT, LEFT, LEFT, LEFT]: 
+			[RIGHT, RIGHT, RIGHT, RIGHT], [LEFT, LEFT, LEFT, LEFT]:
 				level_select_dir.append(DOWN)
-			_: 
+			_:
 				if lsd_len < 7 or !last_dirs.has(DOWN):
 					print("ERROR: level select menu directions are messed up")
 					return
 				match last_dirs[-1]:
-					RIGHT, LEFT: 
+					RIGHT, LEFT:
 						level_select_dir.append(last_dirs[-1])
-					DOWN: 
+					DOWN:
 						level_select_dir.append(RIGHT if last_dirs[-2] == LEFT else LEFT)
 					_:
 						print("ERROR: bad level select direction")
 						return
-		
+
 		var dialogue = ["..."]
 		var di = level.get("dialogue")
 		if di is Array and di.size() > 0:
@@ -449,7 +417,7 @@ func load_custom_levels_data():
 			"store": Global.hell_stock_ranks
 		}
 	}
-	
+
 	var save_game = File.new()
 	if save_game.file_exists("user://custom_level_times.save") and save_game.open("user://custom_level_times.save", File.READ) == OK:
 		var save = parse_json(save_game.get_as_text())
@@ -481,24 +449,36 @@ func load_custom_levels_data():
 
 func _ready():
 	var cmb = Mod.get_node("CruS Mod Base")
+
+	# Idiot checks, just in case I break this again
+	assert(cmb != null, "Failed to load CruS Mod Base.")
+	assert("data" in cmb, "`data` member missing from CruS Mod Base node.")
+
 	if "debug_level" in cmb.data:
 		custom_levels = [cmb.data.debug_level]
 	else:
 		custom_levels = cmb.data.levels
-	
+
 	if Global.ending_3:
 		$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / Chaos_Mode.show()
-	else :
+	else:
 		$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / Chaos_Mode.hide()
 	$Settings / GridContainer / PanelContainer6 / VBoxContainer3 / Timer.pressed = Global.timer
 	$Settings / GridContainer / PanelContainer6 / VBoxContainer3 / Highperformance.pressed = Global.high_performance
 	Global.screenmat.set_shader_param("gamma", Global.gamma)
 	$Settings / GridContainer / PanelContainer / VBoxContainer / GAMMALABEL.text = "Gamma: " + str(Global.gamma)
 	$"Settings/GridContainer/PanelContainer/VBoxContainer/Camera Sway".pressed = Global.camera_sway
-	
+
 	$Settings / GridContainer / PanelContainer5 / CheckBox.pressed = Global.full_screen
+
+#	if Global.full_screen:
+#		get_tree().set_screen_stretch(
+#			SceneTree.STRETCH_MODE_VIEWPORT,
+#			Global.full_screen_stretch_mode,
+#			Vector2(Global.resolution[0], Global.resolution[1]))
 	if Global.full_screen:
-		get_tree().set_screen_stretch(SceneTree.STRETCH_MODE_VIEWPORT, SceneTree.STRETCH_ASPECT_KEEP, Vector2(Global.resolution[0], Global.resolution[1]))
+			_on_Full_Screen_toggled(true)
+
 	$ConfirmationDialog.get_cancel().connect("pressed", self, "_on_Cancel_Pressed")
 	$Settings / GridContainer / PanelContainer / VBoxContainer / InvertYAxis.pressed = Global.invert_y
 	for level in range(Global.LEVELS.size()):
@@ -515,84 +495,94 @@ func _ready():
 	$Settings / GridContainer / PanelContainer6 / VBoxContainer3 / Reflections.pressed = Global.reflections
 	$Settings / GridContainer / PanelContainer6 / VBoxContainer3 / Draw_Label.text = "Draw Distance:\n" + str(Global.draw_distance)
 	$Settings / GridContainer / PanelContainer6 / VBoxContainer3 / Drawslider.value = Global.draw_distance
+
 	_on_Civslider_value_changed(Global.civilian_reduction)
+
 	$Settings / GridContainer / PanelContainer6 / VBoxContainer3 / Civslider.value = Global.civilian_reduction
 	$Level_Info_Grid / Level_Info_Vbox / Weapons_Vbox / TextureRect.texture = $Weapon1_Viewport.get_texture()
 	$Level_Info_Grid / Level_Info_Vbox / Weapons_Vbox / TextureRect2.texture = $Weapon2_Viewport.get_texture()
+
 	var keylist = $Settings / GridContainer / PanelContainer2 / VBoxContainer4 / Key_List
-	keylist.add_item("Forward: " + InputMap.get_action_list("movement_forward")[0].as_text())
-	keylist.add_item("Left: " + InputMap.get_action_list("movement_left")[0].as_text())
-	keylist.add_item("Right: " + InputMap.get_action_list("movement_right")[0].as_text())
-	keylist.add_item("Back: " + InputMap.get_action_list("movement_backward")[0].as_text())
-	keylist.add_item("Shoot: " + InputMap.get_action_list("mouse_1")[0].as_text())
-	keylist.add_item("Jump: " + InputMap.get_action_list("movement_jump")[0].as_text())
-	keylist.add_item("Crouch: " + InputMap.get_action_list("crouch")[0].as_text())
-	keylist.add_item("Reload: " + InputMap.get_action_list("reload")[0].as_text())
-	keylist.add_item("Zoom: " + InputMap.get_action_list("zoom")[0].as_text())
-	keylist.add_item("Use: " + InputMap.get_action_list("Use")[0].as_text())
-	keylist.add_item("Kick: " + InputMap.get_action_list("kick")[0].as_text())
-	keylist.add_item("Lean Left: " + InputMap.get_action_list("Lean_Left")[0].as_text())
-	keylist.add_item("Lean Right: " + InputMap.get_action_list("Lean_Right")[0].as_text())
-	keylist.add_item("Weapon 1: " + InputMap.get_action_list("weapon1")[0].as_text())
-	keylist.add_item("Weapon 2: " + InputMap.get_action_list("weapon2")[0].as_text())
-	keylist.add_item("Last Weapon: " + InputMap.get_action_list("switch_weapon")[0].as_text())
-	keylist.add_item("Tertiary Weapon: " + InputMap.get_action_list("Tertiary_Weapon")[0].as_text())
-	keylist.add_item("Throw Weapon: " + InputMap.get_action_list("drop")[0].as_text())
-	keylist.add_item("Suicide: " + InputMap.get_action_list("Suicide")[0].as_text())
-	keylist.add_item("Stock Market: " + InputMap.get_action_list("Stocks")[0].as_text())
+	keylist.add_item("Forward: "           + InputMap.get_action_list("movement_forward")[0].as_text())
+	keylist.add_item("Left: "              + InputMap.get_action_list("movement_left")[0].as_text())
+	keylist.add_item("Right: "             + InputMap.get_action_list("movement_right")[0].as_text())
+	keylist.add_item("Back: "              + InputMap.get_action_list("movement_backward")[0].as_text())
+	keylist.add_item("Shoot: "             + InputMap.get_action_list("mouse_1")[0].as_text())
+	keylist.add_item("Jump: "              + InputMap.get_action_list("movement_jump")[0].as_text())
+	keylist.add_item("Crouch: "            + InputMap.get_action_list("crouch")[0].as_text())
+	keylist.add_item("Reload: "            + InputMap.get_action_list("reload")[0].as_text())
+	keylist.add_item("Zoom: "              + InputMap.get_action_list("zoom")[0].as_text())
+	keylist.add_item("Use: "               + InputMap.get_action_list("Use")[0].as_text())
+	keylist.add_item("Kick: "              + InputMap.get_action_list("kick")[0].as_text())
+	keylist.add_item("Lean Left: "         + InputMap.get_action_list("Lean_Left")[0].as_text())
+	keylist.add_item("Lean Right: "        + InputMap.get_action_list("Lean_Right")[0].as_text())
+	keylist.add_item("Weapon 1: "          + InputMap.get_action_list("weapon1")[0].as_text())
+	keylist.add_item("Weapon 2: "          + InputMap.get_action_list("weapon2")[0].as_text())
+	keylist.add_item("Last Weapon: "       + InputMap.get_action_list("switch_weapon")[0].as_text())
+	keylist.add_item("Tertiary Weapon: "   + InputMap.get_action_list("Tertiary_Weapon")[0].as_text())
+	keylist.add_item("Throw Weapon: "      + InputMap.get_action_list("drop")[0].as_text())
+	keylist.add_item("Suicide: "           + InputMap.get_action_list("Suicide")[0].as_text())
+	keylist.add_item("Stock Market: "      + InputMap.get_action_list("Stocks")[0].as_text())
+	keylist.add_item("Toggle Fullscreen: " + InputMap.get_action_list("toggle_full")[0].as_text())
+
 	$MyWork.rect_global_position.x = 170
 	$MyWork.rect_global_position.y = 248
 	hover_info = $Hover_Panel / Hover_Info
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	$Title_Screen.rect_size = Vector2(512, 512)
+
+	# Testing if this is causing screen alignment issue
+	if OS.is_window_focused():
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	else:
+		print('[Menu_Test] Game window not foocused, skipping mouse capture mode activation.')
+
+	$Title_Screen.rect_size            = Vector2(512, 512)
 	$Title_Screen.rect_global_position = Vector2(720, 128)
-	$Level_Info_Grid.rect_size = Vector2(720, 720)
+	$Level_Info_Grid.rect_size            = Vector2(720, 720)
 	$Level_Info_Grid.rect_global_position = Vector2(512, 0)
-	
+
 	$Character_Menu.rect_size = Vector2(1024, 512)
 	$Character_Menu / Character_Container / TextureRect.rect_size = Vector2(384, 384)
 	$Character_Menu.rect_global_position = Vector2(128, 128)
 	$Character_Menu / Character_Container.rect_global_position = Vector2(256, 192)
 	$Character_Menu / Character_Container / Equip_Grid.rect_size = Vector2(384, 384)
-	$Character_Menu / Character_Container / TextureRect / Head_Button.rect_size = Vector2(48, 48)
-	$Character_Menu / Character_Container / TextureRect / Head_Button.rect_position = Vector2(168, - 8)
-	$Character_Menu / Character_Container / TextureRect / Torso_Button.rect_size = Vector2(48, 48)
+	$Character_Menu / Character_Container / TextureRect / Head_Button.rect_size      = Vector2(48, 48)
+	$Character_Menu / Character_Container / TextureRect / Head_Button.rect_position  = Vector2(168, -8)
+	$Character_Menu / Character_Container / TextureRect / Torso_Button.rect_size     = Vector2(48, 48)
 	$Character_Menu / Character_Container / TextureRect / Torso_Button.rect_position = Vector2(168, 64)
-	$Character_Menu / Character_Container / TextureRect / Leg_Button.rect_size = Vector2(48, 48)
-	$Character_Menu / Character_Container / TextureRect / Leg_Button.rect_position = Vector2(64, 256)
-	$Character_Menu / Character_Container / TextureRect / Arm_Button.rect_size = Vector2(48, 48)
-	$Character_Menu / Character_Container / TextureRect / Arm_Button.rect_position = Vector2(64, 128)
-	
+	$Character_Menu / Character_Container / TextureRect / Leg_Button.rect_size       = Vector2(48, 48)
+	$Character_Menu / Character_Container / TextureRect / Leg_Button.rect_position   = Vector2(64, 256)
+	$Character_Menu / Character_Container / TextureRect / Arm_Button.rect_size       = Vector2(48, 48)
+	$Character_Menu / Character_Container / TextureRect / Arm_Button.rect_position   = Vector2(64, 128)
+
 	$Stock_Menu.rect_size = Vector2(1024, 512)
 	$Stock_Menu / Character_Container / TextureRect.rect_size = Vector2(384, 384)
 	$Stock_Menu.rect_global_position = Vector2(128, 128)
 	$Stock_Menu / Character_Container.rect_global_position = Vector2(256, 192)
-	$Stock_Menu / Character_Container.stocklist.rect_size = Vector2(384, 384)
-	
-	
+	$Stock_Menu / Character_Container.stocklist.rect_size  = Vector2(384, 384)
+
 	for button in $Level_End_Grid / Level_Info_Vbox.get_children():
 		if button.get_class() == "TextureButton":
 			button.connect("mouse_entered", self, "_on_mouse_entered", [0, button])
 			button.connect("mouse_exited", self, "_on_mouse_exited", [0, button])
-	
+
 	for button in $Character_Menu / Character_Container / Equip_Grid.get_children():
 		button.rect_size = Vector2(10, 10)
-	
+
 	for element in $Level_Info_Grid.get_children():
 		element.rect_size = Vector2(240, 240)
-	
-	$Settings / GridContainer / PanelContainer / VBoxContainer / M_Sensitivity.value = Global.mouse_sensitivity * 100
-	$Settings / GridContainer / PanelContainer3 / VBoxContainer2 / Master_Volume.value = Global.master_volume + 105
-	$Settings / GridContainer / PanelContainer3 / VBoxContainer2 / Music_Volume.value = Global.music_volume + 105
-	$Settings / GridContainer / PanelContainer / VBoxContainer / FOV.value = Global.FOV
-	$Settings / GridContainer / PanelContainer / VBoxContainer / FOVLABEL.text = "FOV: " + str(Global.FOV)
-	$Settings / GridContainer / PanelContainer6 / VBoxContainer3 / SkipIntro.pressed = Global.skip_intro
-	$Settings / GridContainer / PanelContainer4 / VBoxContainer3 / Blood_Color_Rect.color = Global.blood_color
-	$Settings / GridContainer / PanelContainer4 / VBoxContainer3 / HBoxContainer / R.value = Global.blood_color.r
+
+	$Settings / GridContainer / PanelContainer  / VBoxContainer  / M_Sensitivity.value = Global.mouse_sensitivity * 100
+	$Settings / GridContainer / PanelContainer3 / VBoxContainer2 / Master_Volume.value = Global.master_volume     + 105
+	$Settings / GridContainer / PanelContainer3 / VBoxContainer2 / Music_Volume.value  = Global.music_volume      + 105
+	$Settings / GridContainer / PanelContainer  / VBoxContainer  / FOV.value = Global.FOV
+	$Settings / GridContainer / PanelContainer  / VBoxContainer  / FOVLABEL.text = "FOV: " + str(Global.FOV)
+	$Settings / GridContainer / PanelContainer6 / VBoxContainer3 / SkipIntro.pressed        = Global.skip_intro
+	$Settings / GridContainer / PanelContainer4 / VBoxContainer3 / Blood_Color_Rect.color   = Global.blood_color
+	$Settings / GridContainer / PanelContainer4 / VBoxContainer3 / HBoxContainer  / R.value = Global.blood_color.r
 	$Settings / GridContainer / PanelContainer4 / VBoxContainer3 / HBoxContainer2 / G.value = Global.blood_color.g
 	$Settings / GridContainer / PanelContainer4 / VBoxContainer3 / HBoxContainer3 / B.value = Global.blood_color.b
 	$Settings / GridContainer / PanelContainer4 / VBoxContainer3 / HBoxContainer4 / A.value = Global.blood_color.a
-	
+
 	resolution_list = $Settings / GridContainer / PanelContainer5 / Resolution_List
 	for r in RESOLUTIONS:
 		resolution_list.add_item(str(r.x) + "x" + str(r.y))
@@ -606,34 +596,36 @@ func _ready():
 	menu[LEVEL_SELECT].buttons = [B_RETURN, B_CHARACTER, B_STOCKS, B_WEAPON_1, B_WEAPON_2, B_MISSION_START]
 	for level in Global.LEVELS:
 		menu[LEVEL_SELECT].buttons.append(B_LEVEL)
-	
+
 	add_custom_levels()
 	load_custom_levels_data()
-	
+
 	if "debug_level" in cmb.data:
 		Global.CURRENT_LEVEL = Global.LEVEL_META.size() - 1
-		
+
 	menu[WEAPON_SELECT].buttons = [B_RETURN, B_W_PISTOL, B_W_SMG, B_W_TRANQ, B_W_BLACKJACK, B_W_SHOTGUN, B_W_RL, B_W_SNIPER, B_W_AR, B_W_S_SMG, B_W_NAMBU, B_W_GAS_LAUNCHER, B_W_MG3, B_W_AUTOSHOTGUN, B_W_MAUSER, B_W_BORE, B_W_MKR, B_W_RADGUN, B_W_FLASHLIGHT, B_W_ZIPPY, B_W_AN94, B_W_VAG72, B_W_STEYR, B_W_CANCER, B_W_ROD, B_W_FLAMETHROWER, B_W_SKS, B_W_NAILER, B_W_SHOCK, B_W_LIGHT]
 	menu[CHARACTER].buttons = [B_RETURN]
 	menu[STOCKS].buttons = [B_RETURN]
-	
+
 	active_menus.append(menu[START])
-	
+
 	for m in range(menu.size()):
 		create_buttons(m)
+
 	for child in menu[START].get_children():
 		child.show()
 		child.set_position(b_position)
 		b_position.x += button_size.x
+
 	update_level_info()
-	
+
 	update_level_buttons(true)
-	
+
 	hide_buttons(menu[START], 2, 4)
+
 	set_res(Global.resolution[0], Global.resolution[1])
-	
-	
-func hide_buttons(m:Menu, a:int, b:int):
+
+func hide_buttons(m: Menu, a: int, b: int):
 	for ab in range(a, b + 1):
 		m.get_child(ab).hide()
 	var s = m.get_children().size()
@@ -642,7 +634,7 @@ func hide_buttons(m:Menu, a:int, b:int):
 			for k in range(i, s):
 				m.get_child(k).rect_position.x -= button_size.x
 
-func show_buttons(m:Menu, a:int, b:int):
+func show_buttons(m: Menu, a: int, b: int):
 	var s = m.get_children().size()
 	for i in range(0, s - 1):
 		if m.get_child(i).visible == false:
@@ -651,9 +643,7 @@ func show_buttons(m:Menu, a:int, b:int):
 	for ab in range(a, b + 1):
 		m.get_child(ab).show()
 
-
-
-func create_buttons(m:int):
+func create_buttons(m: int):
 	var level = 0
 	var bonus = 0
 	for i in range(menu[m].buttons.size()):
@@ -671,9 +661,7 @@ func create_buttons(m:int):
 				if Global.LEVEL_META[level] is Dictionary:
 					level_buttons.back().hint_tooltip = str("By ", Global.LEVEL_META[level].author)
 				level += 1
-			
-				
-				
+
 			B_SETTINGS:
 				create_button(m, "Settings", "_on_Settings_Button_Pressed", menu[m].buttons[i])
 			B_QUIT:
@@ -784,7 +772,7 @@ func create_buttons(m:int):
 			_:
 				print("BUTTON ERROR")
 
-func create_button(m:int, n:String, connection:String, b:int):
+func create_button(m: int, n: String, connection: String, b: int):
 	var new_button = TextureButton.new()
 	menu[m].add_child(new_button)
 	new_button.name = n
@@ -794,7 +782,7 @@ func create_button(m:int, n:String, connection:String, b:int):
 		new_button.texture_normal = CUSTOM_BTN_TEXTURES[1]
 	else:
 		new_button.texture_normal = BUTTON_TEXTURES[b]
-		
+
 	new_button.texture_hover = BUTTON_TEXTURES_H[0]
 	new_button.texture_disabled = BUTTON_TEXTURES_D[randi() % 3]
 
@@ -810,7 +798,7 @@ func create_button(m:int, n:String, connection:String, b:int):
 		new_button.texture_normal = BUTTON_TEXTURES[B_W_PISTOL + weapon_1]
 	if b == B_WEAPON_2:
 		new_button.texture_normal = BUTTON_TEXTURES[B_W_PISTOL + weapon_2]
-	
+
 	new_button.expand = true
 	new_button.set_position(b_position)
 	new_button.rect_size = button_size
@@ -820,9 +808,12 @@ func create_button(m:int, n:String, connection:String, b:int):
 	new_button.hide()
 	all_buttons.append(new_button)
 	return new_button
+
+#region Input Signals
+
 func _on_mouse_entered(m, button):
 	if button.disabled:
-		return 
+		return
 	hover_info.get_node("Image").hide()
 	hover_info.get_parent().raise()
 	hover_info.get_node("Name").text = button.name
@@ -831,44 +822,32 @@ func _on_mouse_entered(m, button):
 	if button.hint_tooltip != "":
 		hover_info.get_node("Hint").show()
 		hover_info.get_node("Hint").text = button.hint_tooltip
-	else :
+	else:
 		hover_info.get_node("Hint").hide()
 	if button.has_method("_get_name_override"):
 		hover_info.get_node("Name").text = button._get_name_override()
 	hover_info.get_parent().show()
+
 func _on_mouse_exited(m, button):
 	hover_info.get_parent().hide()
 	hover_info.get_parent().rect_size = Vector2(0, 0)
-	
 
-func _on_Implants_Button_Pressed(m:int, button_id:TextureButton):
+func _on_Implants_Button_Pressed(m: int, button_id: TextureButton):
 	goto_menu(m, CHARACTER, button_id)
 	active_element = $Character_Menu
 	$Character_Menu / Character_Container.update_buttons()
 	$Character_Menu / Character_Container / TextureRect / Money.text = "$" + str(Global.money)
 	$Character_Menu.raise()
 	$Character_Menu.show()
-	
-	
-	
-	
-	
 
-func _on_Stocks_Button_Pressed(m:int, button_id:TextureButton):
+func _on_Stocks_Button_Pressed(m: int, button_id: TextureButton):
 	goto_menu(m, STOCKS, button_id)
 	active_element = $Stock_Menu
-	
-	
+
 	$Stock_Menu.raise()
 	$Stock_Menu.show()
-	
-	
-	
-	
-	
 
-
-func _on_Start_Button_Pressed(m:int, button_id:TextureButton):
+func _on_Start_Button_Pressed(m: int, button_id: TextureButton):
 	Global.save_settings()
 	if ( not in_game):
 		goto_menu(m, LEVEL_SELECT, button_id)
@@ -882,16 +861,236 @@ func _on_Start_Button_Pressed(m:int, button_id:TextureButton):
 			yield (get_tree(), "idle_frame")
 		$Level_Info_Grid / HBoxContainer / Description_Scroll / Description.speech()
 		$Level_Info_Grid / HBoxContainer / Description_Scroll / Description.speech_break = false
-	else :
+	else:
 		toggle_menu()
 
-func _on_Settings_Button_Pressed(m:int, button_id:TextureButton):
+func _on_Settings_Button_Pressed(m: int, button_id: TextureButton):
 	goto_menu(m, SETTINGS, button_id)
 	active_element = $Settings
 	$Settings / GridContainer / PanelContainer6 / VBoxContainer3 / PlayTime.text = "Active Play Time:\n" + Global.time2str(Global.play_time)
 	$Settings.rect_position.x = 320
 	$Settings.raise()
 	$Settings.come()
+
+func _on_Quit_Button_Pressed(m: int, button_id: TextureButton):
+	get_tree().quit()
+
+func _on_Weapon_1_Pressed(m: int, button_id: TextureButton):
+	current_weapon_select = 1
+	goto_menu(m, WEAPON_SELECT, button_id)
+	button_state()
+
+func _on_Weapon_2_Pressed(m: int, button_id: TextureButton):
+	current_weapon_select = 2
+	goto_menu(m, WEAPON_SELECT, button_id)
+	button_state()
+
+func _on_Rod_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_ROD)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(BUTTON_TEXTURES[B_W_ROD])
+
+func _on_SKS_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_SKS)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(BUTTON_TEXTURES[B_W_SKS])
+
+func _on_Nailer_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_NAILER)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(BUTTON_TEXTURES[B_W_NAILER])
+
+func _on_DNA_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_CANCER)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(BUTTON_TEXTURES[B_W_CANCER])
+
+func _on_Pistol_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_PISTOL)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(BUTTON_TEXTURES[B_W_PISTOL])
+
+func _on_SMG_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_SMG)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_S_SMG_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_S_SMG)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_Shotgun_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_SHOTGUN)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_Shock_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_SHOCK)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_RL_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_RL)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_Sniper_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_SNIPER)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_Steyr_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_STEYR)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_AR_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_AR)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_AN94_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_AN94)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_MKR_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_MKR)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_Nambu_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_NAMBU)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_Gas_Launcher_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_GAS_LAUNCHER)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_MG3_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_MG3)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_Autoshotgun_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_AUTOSHOTGUN)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_Mauser_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_MAUSER)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_Bore_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_BORE)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_Radgun_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_RADIATOR)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_Tranq_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_TRANQ)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_Blackjack_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_BLACKJACK)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_Flashlight_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_FLASHLIGHT)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_Zippy_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_ZIPPY)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_VAG72_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_VAG72)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_FT_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_FLAMETHROWER)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_Light_Pressed(m: int, button_id: TextureButton):
+	set_weapon(W_LIGHT)
+	go_back(m, button_id)
+	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
+
+func _on_Return_Button_Pressed(m: int, button_id: TextureButton):
+	if menu_changing:
+		return
+	go_back(m, button_id)
+
+	if menu[m] == menu[LEVEL_SELECT]:
+		$Level_Info_Grid / HBoxContainer / Description_Scroll / Description.speech_break = true
+
+func _on_Mission_Start_Pressed(m: int, button_id: TextureButton):
+	Global.STOCKS.save_stocks("user://stocks.save")
+	goto_menu(m, START, button_id)
+	toggle_menu()
+	show_buttons(menu[START], 2, 4)
+	$Hover_Panel.hide()
+	in_game = true
+	if weapon_1 <= 3 and weapon_2 <= 3:
+		Global.stock_mode = true
+	else:
+		Global.stock_mode = false
+	print(Global.stock_mode)
+	$Level_Info_Grid / HBoxContainer / Description_Scroll / Description.speech_break = true
+	Global.goto_scene(Global.LEVEL_META[Global.CURRENT_LEVEL].get("scene_path") if Global.LEVELS.size() <= Global.CURRENT_LEVEL else Global.LEVELS[Global.CURRENT_LEVEL])
+
+func _on_Level_Pressed(m: int, button_id: TextureButton):
+	var level_index = button_id.get_index() - 6 + level_btn_index
+	Global.CURRENT_LEVEL = level_index
+
+	if Global.LEVEL_PUNISHED[Global.CURRENT_LEVEL]:
+		$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / Punishment_Image.modulate = Color(1, 1, 1, 1)
+	else:
+		$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / Punishment_Image.modulate = Color(0.7, 0, 0, 1)
+
+	update_level_info()
+
+	for button in range(level_buttons.size()):
+		var button_actual = button + level_btn_index
+		if button_actual == Global.CURRENT_LEVEL:
+			level_buttons[button].disabled = true
+		else:
+			level_buttons[button].disabled = false
+		if button_actual > Global.L_PUNISHMENT:
+			if button_actual <= Global.L_PUNISHMENT + Global.BONUS_LEVELS.size():
+				if Global.BONUS_UNLOCK.find(Global.BONUS_LEVELS[button_actual - Global.L_PUNISHMENT - 1]) != - 1 and button != Global.CURRENT_LEVEL:
+					level_buttons[button].show()
+					level_buttons[button].texture_disabled = BUTTON_TEXTURES_D[0]
+					level_buttons[button].disabled = false
+				else:
+					level_buttons[button].show()
+					if Global.BONUS_UNLOCK.find(Global.BONUS_LEVELS[button_actual - Global.L_PUNISHMENT - 1]) != - 1:
+						level_buttons[button].texture_disabled = BUTTON_TEXTURES_D[0]
+					else:
+						level_buttons[button].texture_disabled = MYSTERY
+					level_buttons[button].disabled = true
+			else:
+				level_buttons[button].texture_disabled = BUTTON_TEXTURES_D[0]
+
+	$Level_Info_Grid / HBoxContainer / Description_Scroll / Description.visible_characters = 0
+
+	$Level_Info_Grid / HBoxContainer / Description_Scroll / Description.speech()
+
+#endregion Input Signals
 
 func level_end():
 	active_element = $Level_End_Grid
@@ -901,141 +1100,7 @@ func level_end():
 	menu[START].hide()
 	save_custom_levels_data()
 
-func _on_Quit_Button_Pressed(m:int, button_id:TextureButton):
-	get_tree().quit()
-
-func _on_Weapon_1_Pressed(m:int, button_id:TextureButton):
-	current_weapon_select = 1
-	goto_menu(m, WEAPON_SELECT, button_id)
-	button_state()
-
-func _on_Weapon_2_Pressed(m:int, button_id:TextureButton):
-	current_weapon_select = 2
-	goto_menu(m, WEAPON_SELECT, button_id)
-	button_state()
-
-
-func _on_Rod_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_ROD)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(BUTTON_TEXTURES[B_W_ROD])
-
-func _on_SKS_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_SKS)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(BUTTON_TEXTURES[B_W_SKS])
-
-func _on_Nailer_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_NAILER)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(BUTTON_TEXTURES[B_W_NAILER])
-
-func _on_DNA_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_CANCER)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(BUTTON_TEXTURES[B_W_CANCER])
-func _on_Pistol_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_PISTOL)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(BUTTON_TEXTURES[B_W_PISTOL])
-func _on_SMG_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_SMG)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-func _on_S_SMG_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_S_SMG)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-func _on_Shotgun_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_SHOTGUN)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-func _on_Shock_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_SHOCK)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-func _on_RL_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_RL)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-func _on_Sniper_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_SNIPER)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-func _on_Steyr_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_STEYR)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-func _on_AR_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_AR)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-func _on_AN94_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_AN94)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-func _on_MKR_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_MKR)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-func _on_Nambu_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_NAMBU)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-func _on_Gas_Launcher_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_GAS_LAUNCHER)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-func _on_MG3_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_MG3)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-func _on_Autoshotgun_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_AUTOSHOTGUN)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-func _on_Mauser_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_MAUSER)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-func _on_Bore_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_BORE)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-func _on_Radgun_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_RADIATOR)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-func _on_Tranq_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_TRANQ)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-func _on_Blackjack_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_BLACKJACK)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-func _on_Flashlight_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_FLASHLIGHT)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-func _on_Zippy_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_ZIPPY)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-func _on_VAG72_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_VAG72)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-func _on_FT_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_FLAMETHROWER)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-func _on_Light_Pressed(m:int, button_id:TextureButton):
-	set_weapon(W_LIGHT)
-	go_back(m, button_id)
-	weapon_select_buttons[current_weapon_select - 1].set_normal_texture(button_id.texture_normal)
-
-func set_weapon(w_index:int):
+func set_weapon(w_index: int):
 	match current_weapon_select:
 		1:
 			$Weapon1_Viewport.get_node("Weapon").MESH[weapon_1].hide()
@@ -1045,75 +1110,15 @@ func set_weapon(w_index:int):
 			$Weapon2_Viewport.get_node("Weapon").MESH[weapon_2].hide()
 			weapon_2 = w_index
 			$Weapon2_Viewport.get_node("Weapon").MESH[weapon_2].show()
+
 	for w in range(Global.CURRENT_WEAPONS.size()):
 		if w == weapon_1 or w == weapon_2:
 			Global.CURRENT_WEAPONS[w] = true
-		else :
+		else:
 			Global.CURRENT_WEAPONS[w] = false
 
-func _on_Return_Button_Pressed(m:int, button_id:TextureButton):
-	if menu_changing:
-		return 
-	go_back(m, button_id)
-	
-		
-	if menu[m] == menu[LEVEL_SELECT]:
-		$Level_Info_Grid / HBoxContainer / Description_Scroll / Description.speech_break = true
+func go_back(m: int, b_id: TextureButton):
 
-func _on_Mission_Start_Pressed(m:int, button_id:TextureButton):
-	Global.STOCKS.save_stocks("user://stocks.save")
-	goto_menu(m, START, button_id)
-	toggle_menu()
-	show_buttons(menu[START], 2, 4)
-	$Hover_Panel.hide()
-	in_game = true
-	if weapon_1 <= 3 and weapon_2 <= 3:
-		Global.stock_mode = true
-	else :
-		Global.stock_mode = false
-	print(Global.stock_mode)
-	$Level_Info_Grid / HBoxContainer / Description_Scroll / Description.speech_break = true
-	Global.goto_scene(Global.LEVEL_META[Global.CURRENT_LEVEL].get("scene_path") if Global.LEVELS.size() <= Global.CURRENT_LEVEL else Global.LEVELS[Global.CURRENT_LEVEL])
-
-func _on_Level_Pressed(m:int, button_id:TextureButton):
-	var level_index = button_id.get_index() - 6 + level_btn_index
-	Global.CURRENT_LEVEL = level_index
-	if Global.LEVEL_PUNISHED[Global.CURRENT_LEVEL]:
-		$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / Punishment_Image.modulate = Color(1, 1, 1, 1)
-	else :
-		$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / Punishment_Image.modulate = Color(0.7, 0, 0, 1)
-	update_level_info()
-	for button in range(level_buttons.size()):
-		var button_actual = button + level_btn_index
-		if button_actual == Global.CURRENT_LEVEL:
-			level_buttons[button].disabled = true
-		else :
-			level_buttons[button].disabled = false
-		if button_actual > Global.L_PUNISHMENT:
-			if button_actual <= Global.L_PUNISHMENT + Global.BONUS_LEVELS.size():
-				if Global.BONUS_UNLOCK.find(Global.BONUS_LEVELS[button_actual - Global.L_PUNISHMENT - 1]) != - 1 and button != Global.CURRENT_LEVEL:
-					level_buttons[button].show()
-					level_buttons[button].texture_disabled = BUTTON_TEXTURES_D[0]
-					level_buttons[button].disabled = false
-				else :
-					level_buttons[button].show()
-					if Global.BONUS_UNLOCK.find(Global.BONUS_LEVELS[button_actual - Global.L_PUNISHMENT - 1]) != - 1:
-						level_buttons[button].texture_disabled = BUTTON_TEXTURES_D[0]
-					else :
-						level_buttons[button].texture_disabled = MYSTERY
-					level_buttons[button].disabled = true
-			else:
-				level_buttons[button].texture_disabled = BUTTON_TEXTURES_D[0]
-
-	$Level_Info_Grid / HBoxContainer / Description_Scroll / Description.visible_characters = 0
-
-
-	$Level_Info_Grid / HBoxContainer / Description_Scroll / Description.speech()
-
-	
-
-func go_back(m:int, b_id:TextureButton):
-	
 	Global.STOCKS.save_stocks("user://stocks.save")
 	var counter = 0
 	menu_changing = true
@@ -1131,76 +1136,69 @@ func go_back(m:int, b_id:TextureButton):
 			$SFX / Close.pitch_scale = 1 + rand_range( - 0.3, 0.3)
 			$SFX / Close.play()
 		var to_pos = b_position
-		
+
 		while ( not active_menus[active_menus.size() - 1].get_children()[child].rect_position.is_equal_approx(to_pos)):
 			active_menus[active_menus.size() - 1].get_children()[child].set_position(lerp(active_menus[active_menus.size() - 1].get_children()[child].rect_position, to_pos, 1))
 			hover_info.get_parent().hide()
 			yield (get_tree(), "idle_frame")
 		active_menus[active_menus.size() - 1].get_children()[child].hide()
-	
+
 	for child in active_menus[active_menus.size() - 2].get_children():
 		child.disabled = false
-	
+
 	active_menus.pop_back()
 	button_state()
 	hover_info.get_parent().hide()
 	menu_changing = false
 
-
-
-
-
-
-
-
-
-	
-
-func goto_menu(from_menu:int, to_menu:int, b:TextureButton):
+func goto_menu(from_menu: int, to_menu: int, b: TextureButton):
 	Global.STOCKS.save_stocks("user://stocks.save")
+
 	if Global.LEVEL_PUNISHED[Global.CURRENT_LEVEL]:
 		$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / Punishment_Image.modulate = Color(1, 1, 1, 1)
-	else :
+	else:
 		$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / Punishment_Image.modulate = Color(0.7, 0, 0, 1)
+
 	menu_changing = true
+
+
 	if active_menus.find(menu[to_menu]) != - 1 and active_menus.size() > 1:
-		
 		for m in active_menus:
 			if m != menu[to_menu]:
 				for child in m.get_children():
 					child.hide()
 					child.disabled = true
 					child.set_position(m.get_children()[0].rect_position)
-			else :
+			else:
 				for child in m.get_children():
 					child.disabled = false
 		active_menus.pop_back()
 		active_element.go()
 		menu_changing = false
-		return 
+		return
+
 	active_menus.append(menu[to_menu])
-	
+
 	b_position = b.rect_position
-	
+
 	var wep_dir = 1
 	for child in menu[from_menu].get_children():
 		child.disabled = true
+
 	for child in menu[to_menu].get_children():
 		child.disabled = true
 		if fmod(menu[to_menu].get_children().find(child), 3) == 0:
 			$SFX / Open.pitch_scale = 0.43 + rand_range( - 0.3, 0.1)
 			$SFX / Open.play()
-		
+
 		child.rect_size = button_size
 		dir = menu_dir[from_menu]
 		if menu[to_menu].get_children().find(child) >= 5:
-			
-			
-			
-			
+
 				dir = (dir + 2) % 3
 		if to_menu == LEVEL_SELECT:
 			dir = level_select_dir[menu[to_menu].get_children().find(child)]
+
 		if to_menu == WEAPON_SELECT:
 			dir = wep_dir
 			if menu[to_menu].get_children().find(child) == 6:
@@ -1215,23 +1213,18 @@ func goto_menu(from_menu:int, to_menu:int, b:TextureButton):
 			if menu[to_menu].get_children().find(child) == 24:
 				dir = 2
 				wep_dir = 1
-		
-		
-		
-		
-		
-		
+
 		match dir:
 			UP:
 				b_position.y -= button_size.y
 			RIGHT:
 				b_position.x += button_size.x
-				
+
 			DOWN:
 				b_position.y += button_size.y
 			LEFT:
 				b_position.x -= button_size.x
-				
+
 		child.show()
 		var to_pos = b_position
 		button_state()
@@ -1239,30 +1232,36 @@ func goto_menu(from_menu:int, to_menu:int, b:TextureButton):
 		while ( not child.rect_position.is_equal_approx(to_pos)):
 			child.disabled = true
 			child.set_position(lerp(child.rect_position, to_pos, 1))
-			
+
 			yield (get_tree(), "idle_frame")
 		child.disabled = false
 		button_state()
-		
+
 		update_level_info()
 	menu_changing = false
 
 func _input(event):
+
 	if menu_changing:
-		return 
+		return
+
 	if Global.cutscene:
-		return 
+		return
+
 	if (event is InputEventMouseButton or event is InputEventKey) and event.is_pressed() and wait_for_key:
 		key_pressed = event
 		wait_for_key = false
+
 	if event is InputEventMouseButton and not in_game:
 		if event.pressed and not visible:
 			toggle_menu()
-			return 
+			return
+
 	if event is InputEventKey:
 		if event.pressed and not visible and not in_game:
 			toggle_menu()
-			return 
+			return
+
 		if Input.is_action_just_pressed("ui_cancel"):
 			if in_game:
 				if is_instance_valid(Global.player):
@@ -1270,28 +1269,28 @@ func _input(event):
 						return
 			if (active_menus.size() != 1):
 				if active_menus.size() > 0:
-					
-						
+
 					if active_element != $Character_Menu:
 						$Level_Info_Grid / HBoxContainer / Description_Scroll / Description.speech_break = true
+
 					go_back(active_menus.size() - 1, active_menus[active_menus.size() - 1].get_children()[0])
-			else :
+			else:
 				toggle_menu()
 
 func button_state():
 	if active_menus.size() <= 0:
-		return 
+		return
 	if active_menus[active_menus.size() - 1] == menu[LEVEL_SELECT]:
 		for button in range(level_buttons.size()):
 			var button_actual = button + level_btn_index
 			if button_actual <= Global.LEVELS_UNLOCKED:
 				level_buttons[button].show()
-			else :
+			else:
 				level_buttons[button].hide()
 
 			if button_actual == Global.CURRENT_LEVEL:
 				level_buttons[button].disabled = true
-			else :
+			else:
 				level_buttons[button].disabled = false
 			if button_actual > Global.L_PUNISHMENT:
 				if button >= Global.LEVELS.size():
@@ -1300,11 +1299,11 @@ func button_state():
 					if Global.BONUS_UNLOCK.find(Global.BONUS_LEVELS[button_actual - Global.L_PUNISHMENT - 1]) != - 1 and button != Global.CURRENT_LEVEL:
 						level_buttons[button].show()
 						level_buttons[button].texture_disabled = BUTTON_TEXTURES_D[0]
-					else :
+					else:
 						level_buttons[button].show()
 						if Global.BONUS_UNLOCK.find(Global.BONUS_LEVELS[button_actual - Global.L_PUNISHMENT - 1]) != - 1:
 							level_buttons[button].texture_disabled = BUTTON_TEXTURES_D[0]
-						else :
+						else:
 							level_buttons[button].texture_disabled = MYSTERY
 						level_buttons[button].disabled = true
 				else:
@@ -1314,52 +1313,86 @@ func button_state():
 		for button in range(0, Global.WEAPONS_UNLOCKED.size()):
 			if Global.WEAPONS_UNLOCKED[button] and not Global.CURRENT_WEAPONS[button]:
 				menu[WEAPON_SELECT].get_children()[button + 1].disabled = false
-			else :
-				
-				menu[WEAPON_SELECT].get_children()[button + 1].disabled = true
-	
+			else:
 
+				menu[WEAPON_SELECT].get_children()[button + 1].disabled = true
 
 func _on_Resolution_List_item_activated(index):
 	var full = false
 	if Global.full_screen:
 		full = true
 		_on_Full_Screen_toggled(false)
+
 	OS.set_window_size(RESOLUTIONS[index])
+
 	Global.resolution = [RESOLUTIONS[index].x, RESOLUTIONS[index].y]
 	OS.set_window_position(OS.get_screen_size() * 0.5 - OS.window_size * 0.5)
+
 	OS.window_position.y = clamp(OS.window_position.y, 0, 30000)
 	OS.window_position.x = clamp(OS.window_position.y, 0, 30000)
+
 	rect_scale.x = Global.resolution[0] / 1280
 	rect_scale.y = Global.resolution[1] / 720
 	if full:
 		_on_Full_Screen_toggled(true)
-	
-	
 
 func _set_res(x, y):
+
 	OS.set_window_size(Vector2(x, y))
 	Global.resolution = [x, y]
-	OS.set_window_position(Vector2(0, 0))
-	
+
 	rect_scale.x = x / 1280
 	rect_scale.y = y / 720
 
 func set_res(x, y):
+
 	var full = false
 	if Global.full_screen:
 		full = true
 		_on_Full_Screen_toggled(false)
-	OS.set_window_size(Vector2(x, y))
-	Global.resolution = [x, y]
-	OS.set_window_position(OS.get_screen_size() * 0.5 - OS.window_size * 0.5)
+
+	# OS.set_window_size(Vector2(x, y))
+	# Global.resolution = [x, y]
+	_set_res(x, y)
+
 	OS.window_position.y = clamp(OS.window_position.y, 0, 30000)
 	OS.window_position.x = clamp(OS.window_position.y, 0, 30000)
-	rect_scale.x = Global.resolution[0] / 1280
-	rect_scale.y = Global.resolution[1] / 720
+
+	# # (Replaced by _set_res)
+	# rect_scale.x = Global.resolution[0] / 1280
+	# rect_scale.y = Global.resolution[1] / 1280
+
+	OS.set_window_position(OS.get_screen_size() * 0.5 - OS.window_size * 0.5)
+
 	if full:
 		_on_Full_Screen_toggled(true)
 
+# Placed here instead of w/ alt+enter bind's temporary location (Cheats.gd).
+# full_screen value negation will be updated in signal handler
+func full_screen_toggle():
+	_on_Full_Screen_toggled(!Global.full_screen)
+
+func _on_Full_Screen_toggled(button_pressed):
+	if button_pressed:
+		OS.window_borderless = true
+		OS.window_fullscreen = true
+		Global.full_screen   = true
+
+		OS.set_window_position(Vector2(0, 0))
+		get_tree().set_screen_stretch(
+			SceneTree.STRETCH_MODE_VIEWPORT,
+			Global.full_screen_stretch_mode,
+			Vector2(Global.resolution[0], Global.resolution[1]))
+
+	else:
+		OS.window_borderless = true
+		OS.window_fullscreen = false
+		Global.full_screen   = false
+
+		get_tree().set_screen_stretch(
+			SceneTree.STRETCH_MODE_VIEWPORT,
+			Global.full_screen_stretch_mode,
+			Vector2(Global.resolution[0], Global.resolution[1]))
 
 func update_level_info()->void :
 	var meta_file = false
@@ -1367,7 +1400,7 @@ func update_level_info()->void :
 	if Global.LEVEL_META[Global.CURRENT_LEVEL] is String:
 		meta_file = File.new()
 		if not meta_file.file_exists(Global.LEVEL_META[Global.CURRENT_LEVEL]):
-			return 
+			return
 		meta_file.open(Global.LEVEL_META[Global.CURRENT_LEVEL], File.READ)
 		parsed_level_meta = parse_json(meta_file.get_as_text())
 		meta_file.close()
@@ -1378,7 +1411,7 @@ func update_level_info()->void :
 	var objectives = parsed_level_meta.get("objectives")
 	var description = parsed_level_meta.get("description")
 	var level_info = $Level_Info_Grid / HBoxContainer / Description_Scroll / Description
-	
+
 	level_info.text = ""
 	$Level_Info_Grid / HBoxContainer / VBoxContainer / Objective_Panel / Objectives.text = ""
 	for objective in objectives:
@@ -1392,15 +1425,15 @@ func update_level_info()->void :
 	var level_hell_stime = $Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / Best_Hell_STime
 	if Global.ending_3:
 		$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / Chaos_Mode.show()
-	else :
+	else:
 		$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / Chaos_Mode.hide()
 	if not Global.hell_discovered:
 		$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / HellRank_Image.hide()
 		$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / HellSRank_Image.hide()
 		level_hell_time.hide()
 		level_hell_stime.hide()
-		
-	else :
+
+	else:
 		$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / HellRank_Image.show()
 		$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / HellSRank_Image.show()
 		level_hell_time.show()
@@ -1417,7 +1450,7 @@ func update_level_info()->void :
 			$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / Rank_Image.texture = RANK_LETTERS[1]
 		elif Global.LEVEL_TIMES_RAW[Global.CURRENT_LEVEL] != 99999999:
 			$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / Rank_Image.texture = RANK_LETTERS[0]
-		else :
+		else:
 			$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / Rank_Image.texture = RANK_LETTERS[4]
 
 	if Global.HELL_TIMES[Global.CURRENT_LEVEL] != null:
@@ -1430,7 +1463,7 @@ func update_level_info()->void :
 			$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / HellRank_Image.texture = RANK_LETTERS[1]
 		elif Global.HELL_TIMES_RAW[Global.CURRENT_LEVEL] != 99999999:
 			$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / HellRank_Image.texture = RANK_LETTERS[0]
-		else :
+		else:
 			$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / HellRank_Image.texture = RANK_LETTERS[4]
 
 	if Global.HELL_STIMES[Global.CURRENT_LEVEL] != null:
@@ -1443,7 +1476,7 @@ func update_level_info()->void :
 			$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / HellSRank_Image.texture = RANK_LETTERS[1]
 		elif Global.HELL_STIMES_RAW[Global.CURRENT_LEVEL] != 99999999:
 			$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / HellSRank_Image.texture = RANK_LETTERS[0]
-		else :
+		else:
 			$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / HellSRank_Image.texture = RANK_LETTERS[4]
 
 	if Global.LEVEL_STIMES[Global.CURRENT_LEVEL] != null:
@@ -1457,44 +1490,31 @@ func update_level_info()->void :
 			$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / SRank_Image.texture = RANK_LETTERS[1]
 		elif Global.LEVEL_STIMES_RAW[Global.CURRENT_LEVEL] != 99999999:
 			$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / SRank_Image.texture = RANK_LETTERS[0]
-		else :
+		else:
 			$Level_Info_Grid / Level_Info_Vbox / Time_Panel / VBoxContainer / HBoxContainer / SRank_Image.texture = RANK_LETTERS[4]
 	$Level_Info_Grid / Level_Info_Vbox / Level_Image.texture = Global.LEVEL_IMAGES[Global.CURRENT_LEVEL]
 
 func toggle_menu():
 
-
-
-
-
-
-
-
-
 	if (active_menus[active_menus.size() - 1] == menu[START] and active_element != $Level_End_Grid):
 		visible = not visible
 		if (Input.get_mouse_mode() == Input.MOUSE_MODE_VISIBLE):
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-		else :
+		else:
 			Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 		if (in_game):
 			get_tree().paused = not get_tree().paused
-	
-
 
 func _on_Master_Volume_value_changed(value):
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), value)
 	Global.master_volume = value
 
-
 func _on_Music_Volume_value_changed(value):
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Music"), value)
 	Global.music_volume = value
 
-
 func _on_M_Sensitivity_value_changed(value):
 	Global.mouse_sensitivity = value * 0.01
-
 
 func _on_FOV_value_changed(value):
 	Global.FOV = value
@@ -1503,43 +1523,26 @@ func _on_FOV_value_changed(value):
 func _on_Character_Speak():
 	$Level_Info_Grid / HBoxContainer / VBoxContainer / Portrait.texture = HANDLER_FRAMES[randi() % 3]
 
-
-
-func _on_Full_Screen_toggled(button_pressed):
-	if button_pressed:
-		OS.window_borderless = true
-		OS.window_fullscreen = true
-		Global.full_screen = true
-		get_tree().set_screen_stretch(SceneTree.STRETCH_MODE_VIEWPORT, SceneTree.STRETCH_ASPECT_KEEP, Vector2(Global.resolution[0], Global.resolution[1]))
-	else :
-		OS.window_borderless = true
-		OS.window_fullscreen = false
-		Global.full_screen = false
-		get_tree().set_screen_stretch(SceneTree.STRETCH_MODE_VIEWPORT, SceneTree.STRETCH_ASPECT_KEEP, Vector2(Global.resolution[0], Global.resolution[1]))
-		get_tree().set_screen_stretch(SceneTree.STRETCH_MODE_DISABLED, SceneTree.STRETCH_ASPECT_KEEP, Vector2(Global.resolution[0], Global.resolution[1]))
-		
-		
-
-
-func _on_Exit_Menu_Pressed(m:int, b:Button):
+func _on_Exit_Menu_Pressed(m: int, b: Button):
 	$Hover_Panel.hide()
 	get_node("Soul_Rended").hide()
-	
+
 	for w in range(Global.CURRENT_WEAPONS.size()):
 		if w == weapon_1 or w == weapon_2:
 			Global.CURRENT_WEAPONS[w] = true
-		else :
+		else:
 			Global.CURRENT_WEAPONS[w] = false
+
 	Global.goto_scene("res://Menu/Main_Menu.tscn")
 	in_game = false
 	menu[START].show()
 	get_tree().paused = false
-	active_element.hide()
-	active_element.go()
+	if is_instance_valid(active_element):
+		active_element.hide()
+		active_element.go()
 	hide_buttons(menu[START], 2, 4)
 
-
-func _on_Exit_Level_Select_Pressed(m:int, b:Button):
+func _on_Exit_Level_Select_Pressed(m: int, b: Button):
 	$Hover_Panel.hide()
 	get_node("Soul_Rended").hide()
 	Global.objective_complete = false
@@ -1547,7 +1550,7 @@ func _on_Exit_Level_Select_Pressed(m:int, b:Button):
 	for w in range(Global.CURRENT_WEAPONS.size()):
 		if w == weapon_1 or w == weapon_2:
 			Global.CURRENT_WEAPONS[w] = true
-		else :
+		else:
 			Global.CURRENT_WEAPONS[w] = false
 	Global.goto_scene("res://Menu/Main_Menu.tscn")
 	in_game = false
@@ -1559,20 +1562,20 @@ func _on_Exit_Level_Select_Pressed(m:int, b:Button):
 	hide_buttons(menu[START], 2, 4)
 	_on_Start_Button_Pressed(START, menu[START].get_child(0))
 
-
 func _on_exls():
 	_on_Exit_Level_Select_Pressed(START, menu[START].get_child(0))
 	$Hover_Panel.hide()
+
 func _on_exmm():
 	_on_Exit_Menu_Pressed(START, menu[START].get_child(0))
-	
+
 func _on_rb():
 	_on_Retry_Button_Pressed(START, menu[START].get_child(0))
-	
+
 func _on_qb():
 	_on_Quit_Button_Pressed(START, menu[START].get_child(0))
 
-func _on_Retry_Button_Pressed(m:int, b:TextureButton):
+func _on_Retry_Button_Pressed(m: int, b: TextureButton):
 	Global.STOCKS.save_stocks("user://stocks.save")
 	$Hover_Panel.hide()
 	get_node("Soul_Rended").hide()
@@ -1582,20 +1585,19 @@ func _on_Retry_Button_Pressed(m:int, b:TextureButton):
 		if ( not Global.objective_complete and not Global.player.died) or Global.objective_complete:
 			if Global.CURRENT_LEVEL < Global.L_PUNISHMENT:
 				Global.CURRENT_LEVEL -= 1
-		else :
+		else:
 			get_tree().paused = true
 	menu[START].show()
 	Global.objective_complete = false
 	Global.objectives = 0
 	toggle_menu()
-	
+
 	for w in range(Global.CURRENT_WEAPONS.size()):
 		if w == weapon_1 or w == weapon_2:
 			Global.CURRENT_WEAPONS[w] = true
-		else :
+		else:
 			Global.CURRENT_WEAPONS[w] = false
 	Global.goto_scene(Global.LEVEL_META[Global.CURRENT_LEVEL].get("scene_path") if Global.LEVELS.size() <= Global.CURRENT_LEVEL else Global.LEVELS[Global.CURRENT_LEVEL])
-
 
 func _on_Key_List_item_activated(index):
 	wait_for_key = true
@@ -1666,42 +1668,38 @@ func _on_Key_List_item_activated(index):
 		KEY_STOCKS:
 			set_inputs("Stocks")
 			$Settings / GridContainer / PanelContainer2 / VBoxContainer4 / Key_List.set_item_text(index, "Stock Market: " + key_pressed.as_text())
+		KEY_TOGGLE_FULLSCREEN:
+			set_inputs("toggle_full")
+			$Settings / GridContainer / PanelContainer2 / VBoxContainer4 / Key_List.set_item_text(index, "Toggle Fullscreen: " + key_pressed.as_text())
+
 func set_inputs(action):
 	InputMap.action_erase_events(action)
 	InputMap.action_add_event(action, key_pressed)
-
 
 func _on_color_value_changed(value):
 	Global.blood_color = Color($Settings / GridContainer / PanelContainer4 / VBoxContainer3 / HBoxContainer / R.value, $Settings / GridContainer / PanelContainer4 / VBoxContainer3 / HBoxContainer2 / G.value, $Settings / GridContainer / PanelContainer4 / VBoxContainer3 / HBoxContainer3 / B.value, $Settings / GridContainer / PanelContainer4 / VBoxContainer3 / HBoxContainer4 / A.value)
 	$Settings / GridContainer / PanelContainer4 / VBoxContainer3 / Blood_Color_Rect.color = Global.blood_color
 
-
 func _on_Skip_Intro_toggled(value):
 	Global.skip_intro = value
-
 
 func _on_Civslider_value_changed(value):
 	if value != 101:
 		$Settings / GridContainer / PanelContainer6 / VBoxContainer3 / Civcount_Label.text = "Civilians: " + str(value - 1) + "%"
 		Global.civilian_reduction = int(value)
-	else :
+	else:
 		$Settings / GridContainer / PanelContainer6 / VBoxContainer3 / Civcount_Label.text = "Civilians: MAX"
 		Global.civilian_reduction = int(value)
-	
-
 
 func _on_Drawslider_value_changed(value):
 	Global.draw_distance = value
 	$Settings / GridContainer / PanelContainer6 / VBoxContainer3 / Draw_Label.text = "Draw Distance:\n" + str(value)
 
-
 func _on_Reflections_toggled(value):
 	Global.reflections = value
 
-
 func _on_InvertY_toggled(value):
 	Global.invert_y = value
-
 
 func _reset_level_progression():
 
@@ -1712,7 +1710,7 @@ func _reset_level_progression():
 	confirmed = false
 	if cancel == true:
 		cancel = false
-		return 
+		return
 	Global.LEVELS_UNLOCKED = 1
 	Global.CURRENT_LEVEL = 0
 	Global.BONUS_UNLOCK = []
@@ -1726,7 +1724,7 @@ func _on_ClearSave_pressed():
 	confirmed = false
 	if cancel == true:
 		cancel = false
-		return 
+		return
 	Global.money = 0
 	Global.play_time = 0
 	$Settings / GridContainer / PanelContainer6 / VBoxContainer3 / PlayTime.text = "Active Play Time:\n0.0.0"
@@ -1789,48 +1787,42 @@ func _on_ClearSave_pressed():
 	Global.STOCKS.save_stocks("user://stocks.save")
 	Global.save_game()
 
-
 func _on_ConfirmationDialog_confirmed():
 	confirmed = true
+
 func _on_Cancel_Pressed():
 	cancel = true
 
-
 func _on_CameraSway_toggled(value):
 	Global.camera_sway = value
-
 
 func _on_Gamma_value_changed(value):
 	Global.screenmat.set_shader_param("gamma", value)
 	Global.gamma = value
 	$Settings / GridContainer / PanelContainer / VBoxContainer / GAMMALABEL.text = "Gamma: " + str(value)
 
-
 func _on_Hiperf_toggled(value):
 	Global.high_performance = value
 	if value:
 		Engine.iterations_per_second = 15
-	else :
+	else:
 		Engine.iterations_per_second = 30
-
 
 func _on_Timer_toggled(value):
 	Global.timer = value
-
 
 func _on_ResetTimer_pressed():
 	Global.play_time = 0
 	$Settings / GridContainer / PanelContainer6 / VBoxContainer3 / PlayTime.text = "Active Play Time:\n0.0.0"
 
-func _on_Next_Levels_Button_Pressed(m:int, b:TextureButton):
+func _on_Next_Levels_Button_Pressed(m: int, b: TextureButton):
 	level_btn_index = clamp(level_btn_index + next_page_size, 0, all_level_buttons.size())
 	$SFX / Close.pitch_scale = 1 + rand_range( -0.3, 0.3)
 	$SFX / Close.play()
 	update_level_buttons()
-	
-func _on_Prev_Levels_Button_Pressed(m:int, b:TextureButton):
+
+func _on_Prev_Levels_Button_Pressed(m: int, b: TextureButton):
 	level_btn_index -= clamp(next_page_size, 0, level_btn_index)
 	$SFX / Close.pitch_scale = 1 + rand_range( -0.3, 0.3)
 	$SFX / Close.play()
 	update_level_buttons()
-

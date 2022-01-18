@@ -6,7 +6,9 @@ var time_max:float = 100
 var play_time = 0
 var current_scene = null
 
-enum {KEY_FORWARD, KEY_LEFT, KEY_RIGHT, KEY_BACK, KEY_SHOOT, KEY_JUMP, KEY_CROUCH, KEY_RELOAD, KEY_ZOOM, KEY_USE, KEY_KICK, KEY_LEAN_LEFT, KEY_LEAN_RIGHT, KEY_WEAPON1, KEY_WEAPON2, KEY_LAST_WEAPON, KEY_TERTIARY, KEY_THROW_WEAPON, KEY_SUICIDE, KEY_STOCKS}
+enum {KEY_FORWARD, KEY_LEFT, KEY_RIGHT, KEY_BACK, KEY_SHOOT, KEY_JUMP, KEY_CROUCH, KEY_RELOAD, KEY_ZOOM, KEY_USE, KEY_KICK, KEY_LEAN_LEFT, KEY_LEAN_RIGHT, KEY_WEAPON1, KEY_WEAPON2, KEY_LAST_WEAPON, KEY_TERTIARY, KEY_THROW_WEAPON, KEY_SUICIDE, KEY_STOCKS,
+	# ADDITIONS
+	KEY_TOGGLE_FULLSCREEN,}
 enum {L_HQ, L_PHARMA, L_PARADISE, L_SPACE, L_ANDROGEN, L_MALL, L_APARTMENT, L_CRUISE, L_SWAMP, L_CASINO, L_CASTLE, L_OFFICE, L_PUNISHMENT}
 
 var LEVEL_META:Array
@@ -63,7 +65,8 @@ var gamma:float = 1.0
 var master_volume:float = 0
 var music_volume:float = 0
 var resolution:Array = [1280, 720]
-var full_screen:bool = false
+var full_screen_stretch_mode = SceneTree.STRETCH_ASPECT_EXPAND # STRETCH_ASPECT_KEEP
+var full_screen: bool = false
 var implants
 var enemy_count = 0
 var consecutive_deaths = 0
@@ -83,43 +86,43 @@ var every_5 = false
 var every_20 = false
 onready  var backup_timer = Timer.new()
 var screenmat = preload("res://Materials/screenmat.tres")
-const LEVELS:Array = ["res://Levels/Training_Level.tscn", 
-						"res://Levels/Level1.tscn", 
-						"res://Levels/Level2.tscn", 
-						"res://Levels/Level3.tscn", 
-						"res://Levels/Level4.tscn", 
-						"res://Levels/Level5.tscn", 
-						"res://Levels/Level6.tscn", 
-						"res://Levels/Level7.tscn", 
-						"res://Levels/Level8.tscn", 
-						"res://Levels/Level9.tscn", 
-						"res://Levels/Level10.tscn", 
-						"res://Levels/Level11.tscn", 
-						"res://Levels/Level12.tscn", 
-						"res://Levels/Bonus1.tscn", 
-						"res://Levels/Bonus2.tscn", 
-						"res://Levels/Bonus3.tscn", 
-						"res://Levels/Bonus4.tscn", 
-						"res://Levels/Bonus5.tscn", 
+const LEVELS:Array = ["res://Levels/Training_Level.tscn",
+						"res://Levels/Level1.tscn",
+						"res://Levels/Level2.tscn",
+						"res://Levels/Level3.tscn",
+						"res://Levels/Level4.tscn",
+						"res://Levels/Level5.tscn",
+						"res://Levels/Level6.tscn",
+						"res://Levels/Level7.tscn",
+						"res://Levels/Level8.tscn",
+						"res://Levels/Level9.tscn",
+						"res://Levels/Level10.tscn",
+						"res://Levels/Level11.tscn",
+						"res://Levels/Level12.tscn",
+						"res://Levels/Bonus1.tscn",
+						"res://Levels/Bonus2.tscn",
+						"res://Levels/Bonus3.tscn",
+						"res://Levels/Bonus4.tscn",
+						"res://Levels/Bonus5.tscn",
 						"res://Levels/BonusEND.tscn", ]
-var LEVEL_IMAGES = [preload("res://Levels/Training_Level.png"), 
-					preload("res://Levels/Level1.png"), 
-					preload("res://Levels/Level2.png"), 
-					preload("res://Levels/Level3.png"), 
-					preload("res://Levels/Level4.png"), 
-					preload("res://Levels/Level5.png"), 
-					preload("res://Levels/Level6.png"), 
-					preload("res://Levels/Level7.png"), 
-					preload("res://Levels/Level8.png"), 
-					preload("res://Levels/Level9.png"), 
-					preload("res://Levels/Level10.png"), 
-					preload("res://Levels/Level11.png"), 
-					preload("res://Levels/Level12.png"), 
-					preload("res://Levels/Bonus1.png"), 
-					preload("res://Levels/Bonus2.png"), 
-					preload("res://Levels/Bonus3.png"), 
-					preload("res://Levels/Bonus4.png"), 
-					preload("res://Levels/Bonus5.png"), 
+var LEVEL_IMAGES = [preload("res://Levels/Training_Level.png"),
+					preload("res://Levels/Level1.png"),
+					preload("res://Levels/Level2.png"),
+					preload("res://Levels/Level3.png"),
+					preload("res://Levels/Level4.png"),
+					preload("res://Levels/Level5.png"),
+					preload("res://Levels/Level6.png"),
+					preload("res://Levels/Level7.png"),
+					preload("res://Levels/Level8.png"),
+					preload("res://Levels/Level9.png"),
+					preload("res://Levels/Level10.png"),
+					preload("res://Levels/Level11.png"),
+					preload("res://Levels/Level12.png"),
+					preload("res://Levels/Bonus1.png"),
+					preload("res://Levels/Bonus2.png"),
+					preload("res://Levels/Bonus3.png"),
+					preload("res://Levels/Bonus4.png"),
+					preload("res://Levels/Bonus5.png"),
 					preload("res://Levels/BonusEND.png"), ]
 var level_ranks = ["N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N"]
 var level_stock_ranks = ["N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N", "N"]
@@ -136,43 +139,43 @@ var HELL_RANK_S = [0, 60000, 80000, 40000, 70000, 80000, 40000, 60000, 70000, 50
 var HELL_RANK_A = [0, 120000, 360000, 240000, 210000, 210000, 240000, 180000, 200000, 120000, 210000, 390000, 300000, 190000, 150000, 230000, 230000, 360000, 420000]
 var HELL_RANK_B = [0, 180000, 480000, 300000, 300000, 270000, 300000, 210000, 300000, 180000, 300000, 420000, 360000, 240000, 210000, 320000, 250000, 420000, 600000]
 var HELL_SRANK_S = [0, 80000, 100000, 80000, 90000, 100000, 50000, 90000, 70000, 50000, 90000, 160000, 120000, 90000, 90000, 150000, 160000, 320000, 240000]
-var LEVEL_SONGS = [preload("res://Sfx/Music/hqfight.ogg"), 
-					preload("res://Sfx/Music/level5.ogg"), 
-					preload("res://Sfx/Music/level2.ogg"), 
-					preload("res://Sfx/Music/space.ogg"), 
-					preload("res://Sfx/Music/level4.ogg"), 
-					preload("res://Sfx/Music/harpsimall.ogg"), 
-					preload("res://Sfx/Music/apartment.ogg"), 
-					preload("res://Sfx/Music/ship.ogg"), 
-					preload("res://Sfx/Music/swamptune.ogg"), 
-					preload("res://Sfx/Music/casino.ogg"), 
-					preload("res://Sfx/Music/castle.ogg"), 
-					preload("res://Sfx/Music/officemachines.ogg"), 
-					preload("res://Sfx/Music/punishment.ogg"), 
-					preload("res://Sfx/Music/darkworld.ogg"), 
-					preload("res://Sfx/Music/ship.ogg"), 
-					preload("res://Sfx/Music/cave.ogg"), 
-					preload("res://Sfx/Music/clubambience2.ogg"), 
-					preload("res://Sfx/Music/village.ogg"), 
+var LEVEL_SONGS = [preload("res://Sfx/Music/hqfight.ogg"),
+					preload("res://Sfx/Music/level5.ogg"),
+					preload("res://Sfx/Music/level2.ogg"),
+					preload("res://Sfx/Music/space.ogg"),
+					preload("res://Sfx/Music/level4.ogg"),
+					preload("res://Sfx/Music/harpsimall.ogg"),
+					preload("res://Sfx/Music/apartment.ogg"),
+					preload("res://Sfx/Music/ship.ogg"),
+					preload("res://Sfx/Music/swamptune.ogg"),
+					preload("res://Sfx/Music/casino.ogg"),
+					preload("res://Sfx/Music/castle.ogg"),
+					preload("res://Sfx/Music/officemachines.ogg"),
+					preload("res://Sfx/Music/punishment.ogg"),
+					preload("res://Sfx/Music/darkworld.ogg"),
+					preload("res://Sfx/Music/ship.ogg"),
+					preload("res://Sfx/Music/cave.ogg"),
+					preload("res://Sfx/Music/clubambience2.ogg"),
+					preload("res://Sfx/Music/village.ogg"),
 					preload("res://Sfx/Music/final.ogg"), ]
-var LEVEL_AMBIENCE = [preload("res://Sfx/Music/hq.ogg"), 
-					preload("res://Sfx/Music/title.ogg"), 
-					null, 
-					null, 
-					null, 
-					null, 
-					null, 
-					null, 
-					null, 
-					null, 
-					null, 
-					null, 
-					null, 
-					null, 
-					null, 
-					null, 
-					null, 
-					null, 
+var LEVEL_AMBIENCE = [preload("res://Sfx/Music/hq.ogg"),
+					preload("res://Sfx/Music/title.ogg"),
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
+					null,
 					null]
 var fps = 60
 var BONUS_LEVELS:Array = ["Darkworld", "Alpine Hospitality", "God", "Club", "House", "END"]
@@ -181,19 +184,18 @@ var MONEY_ITEMS:Array
 onready  var ambience = $Ambience
 var action = 0
 var action_lerp_value = 0
-var BORDERS = [preload("res://Textures/UI/border.png"), 
-preload("res://Textures/UI/border2.png"), 
-preload("res://Textures/UI/border3.png"), 
+var BORDERS = [preload("res://Textures/UI/border.png"),
+preload("res://Textures/UI/border2.png"),
+preload("res://Textures/UI/border3.png"),
 preload("res://Textures/UI/border4.png")]
 var level_time:String = ""
 var level_time_raw:float = 0
 var civilian_reduction = 101
-onready  var menu = $Menu
+onready var menu = $Menu
 var stock_mode = true
 var red_water = preload("res://Maps/textures/base/red_water.png")
 var blue_water = preload("res://Maps/textures/base/water.png")
 var toxic_water = preload("res://Maps/textures/swamp/swampwater1.png")
-
 
 func time2str(t:int):
 	var elapsed = (t) / 1000
@@ -211,49 +213,51 @@ func levels_completed():
 		if s != "N/A":
 			c += 1
 			f = true
-			print(c)
+			# print('LEVEL_TIMES - %s' % [ c ])
 		if not f:
 			if HELL_TIMES[i] != "N/A":
 				c += 1
-				print("HELL", c)
+				# print('HELL_TIMES - %s' % [ c ])
 		i += 1
 	if c >= 18:
 		return true
-	else :
+	else:
 		return false
 
-func _enter_tree()->void :
-	Steam.steamInit()
+func _enter_tree() -> void:
+	# Should be fine when not running godot version
+	if OS.has_feature("release"):
+		Global.Steam.steamInit()
 	STOCKS = $Stocks
 	player = KinematicBody.new()
 	add_child(player)
 	DIALOGUE = $Dialogue
 	border = $BorderContainer / Border
-	
+
 	implants = $Implants
 	WEAPONS_UNLOCKED = [true, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]
 	CURRENT_WEAPONS = [true, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false]
-	LEVEL_META = ["res://Levels/Training_Level.json", 
-	"res://Levels/Level1.json", 
-	"res://Levels/Level2.json", 
-	"res://Levels/Level3.json", 
-	"res://Levels/Level4.json", 
-	"res://Levels/Level5.json", 
-	"res://Levels/Level6.json", 
-	"res://Levels/Level7.json", 
-	"res://Levels/Level8.json", 
-	"res://Levels/Level9.json", 
-	"res://Levels/Level10.json", 
-	"res://Levels/Level11.json", 
-	"res://Levels/Level12.json", 
-	"res://Levels/Bonus1.json", 
-	"res://Levels/Bonus2.json", 
-	"res://Levels/Bonus3.json", 
-	"res://Levels/Bonus4.json", 
-	"res://Levels/Bonus5.json", 
+	LEVEL_META = ["res://Levels/Training_Level.json",
+	"res://Levels/Level1.json",
+	"res://Levels/Level2.json",
+	"res://Levels/Level3.json",
+	"res://Levels/Level4.json",
+	"res://Levels/Level5.json",
+	"res://Levels/Level6.json",
+	"res://Levels/Level7.json",
+	"res://Levels/Level8.json",
+	"res://Levels/Level9.json",
+	"res://Levels/Level10.json",
+	"res://Levels/Level11.json",
+	"res://Levels/Level12.json",
+	"res://Levels/Bonus1.json",
+	"res://Levels/Bonus2.json",
+	"res://Levels/Bonus3.json",
+	"res://Levels/Bonus4.json",
+	"res://Levels/Bonus5.json",
 	"res://Levels/BonusEND.json", ]
-	
-	
+
+
 	for level in range(LEVELS.size()):
 		LEVEL_TIMES.append("N/A")
 		LEVEL_TIMES_RAW.append(99999999)
@@ -266,7 +270,7 @@ func _enter_tree()->void :
 		LEVEL_PUNISHED.append(false)
 	load_game()
 	LEVELS_UNLOCKED = clamp(LEVELS_UNLOCKED, 1, 12)
-	
+
 	if WEAPONS_UNLOCKED[1]:
 		CURRENT_WEAPONS[1] = true
 	if levels_completed() and BONUS_UNLOCK.find("END") == - 1:
@@ -284,8 +288,10 @@ func set_soul():
 	consecutive_deaths = 0
 	hope_discarded = false
 	husk_mode = false
+
 func status():
 	return death
+
 func set_hope():
 	border.texture = BORDERS[3]
 	hell_discovered = true
@@ -303,7 +309,8 @@ func set_hope():
 func _backup():
 	save_game("user://backup.save")
 	Global.STOCKS.save_stocks("user://stock_backup.save")
-func _ready()->void :
+
+func _ready() -> void:
 	add_child(backup_timer)
 	backup_timer.one_shot = false
 	backup_timer.connect("timeout", self, "_backup")
@@ -321,14 +328,14 @@ func _ready()->void :
 		border.texture = BORDERS[2]
 	elif hope_discarded:
 		border.texture = BORDERS[3]
-	else :
+	else:
 		border.texture = BORDERS[0]
 	music = $Music
 	var root = get_tree().get_root()
 	current_scene = root.get_child(root.get_child_count() - 1)
-	print(levels_completed())
+	# print(levels_completed())
 
-func list_files_in_directory(path:String, file_type:String)->Array:
+func list_files_in_directory(path: String, file_type: String) -> Array:
 	var files = []
 	var dir = Directory.new()
 	dir.open(path)
@@ -340,21 +347,22 @@ func list_files_in_directory(path:String, file_type:String)->Array:
 		elif not file.begins_with(".") and file.get_extension() == file_type:
 			files.append(path + "/" + file)
 	return files
-	
+
 func goto_scene(path:String):
+	print('[Game_Manager:goto_scene] ------ UPDATING SCENE: <%s> ------' % [ path ])
 	# hack to prevent the game from deleting the orb arms in debug
 	if path.find("_debug") != -1:
 		Global.implants.torso_implant.orbsuit = true
-		
+
 	$Loading_Screen.raise()
 	call_deferred("_deferred_goto_scene", path)
 
-
-func _deferred_goto_scene(path:String)->void :
+func _deferred_goto_scene(path: String) -> void:
 	loader = ResourceLoader.load_interactive(path)
 	if loader == null:
 		print("OOPS")
-		return 
+		return
+
 	set_process(true)
 
 	current_scene.queue_free()
@@ -363,21 +371,21 @@ func _deferred_goto_scene(path:String)->void :
 	get_tree().get_root().set_disable_input(true)
 	wait_frames = 1
 
-func _process(time:float)->void :
+func _process(time:float) -> void:
 
 	if loader == null:
-		
+
 		set_process(false)
-		return 
+		return
 
 	if wait_frames > 0:
 		wait_frames -= 1
-		return 
+		return
 
 	var t = OS.get_ticks_msec()
 	while OS.get_ticks_msec() < t + time_max:
 
-		
+
 		var err = loader.poll()
 
 		if err == ERR_FILE_EOF:
@@ -386,24 +394,22 @@ func _process(time:float)->void :
 			set_new_scene(resource)
 			break
 		elif err == OK:
-			
+
 			update_progress()
-		else :
-			
+		else:
+			print('[Game_Manager:goto_scene] ------ LOADING SCENE COMPLETE: <%s> ------' % [ loader.get_resource() ])
 			loader = null
 			break
+
 func update_progress()->void :
 	var progress = float(loader.get_stage()) / loader.get_stage_count()
-	
-	
 	$Loading_Screen / CenterContainer / ProgressBar.value = progress * 100
-	
-	
 
-	
-	
 var cheats_node = load("res://MOD_CONTENT/CruS Mod Base/scenes/Cheats.tscn")
-func set_new_scene(scene_resource:PackedScene)->void :
+
+func set_new_scene(scene_resource: PackedScene)-> void:
+	print('[Game_Manager:set_new_scene] Setting new scene <%s>' % [ scene_resource.resource_path ])
+
 	$Loading_Screen.visible = false
 	current_scene = scene_resource.instance()
 	get_node("/root").add_child(current_scene)
@@ -413,6 +419,7 @@ func set_new_scene(scene_resource:PackedScene)->void :
 
 func add_objective()->void :
 	objectives += 1
+
 func remove_objective()->void :
 	objectives -= 1
 	UI.notify("Target Eliminated", Color(1, 0, 0))
@@ -421,14 +428,17 @@ func remove_objective()->void :
 		objective_complete = true
 		UI.notify("All Objectives Complete. Locate the exit.", Color(1, 0, 1))
 
-func level_finished()->void :
+func level_finished() -> void:
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Music"), music_volume)
+
 	menu.get_node("Soul_Rended").hide()
 	menu.get_node("Soul_Rended").rect_position.y = 128
 	menu.get_node("Soul_Rended").rect_position.x = 64
 	menu.get_node("Soul_Rended").rect_size.y = 420
 	menu.get_node("Soul_Rended").rect_size.x = 420
+
 	objectives = 0
+
 	if player.dead:
 		if not Global.hope_discarded:
 			consecutive_deaths += 1
@@ -444,22 +454,24 @@ func level_finished()->void :
 			menu.get_node("Soul_Rended").texture = load("res://Textures/Menu/Soul_Rended.png")
 			menu.get_node("Soul_Rended").show()
 			border.texture = BORDERS[0]
-		else :
+		else:
 			menu.get_node("Soul_Rended").hide()
+
 		objective_complete = false
 		$Menu / Level_End_Grid.active = true
 		$Menu.level_end()
 		$Menu / Level_End_Grid.rect_size.x = 720
 		$Menu.show()
-		
+
 		if not husk_mode:
 			money -= 500
 		if husk_mode:
 			consecutive_deaths = 0
 		save_game()
-		
+
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
-		return 
+		return
+
 	consecutive_deaths = 0
 	if not hope_discarded:
 		if Global.stock_mode and LEVEL_STIMES_RAW[CURRENT_LEVEL] > level_time_raw:
@@ -471,9 +483,9 @@ func level_finished()->void :
 				level_stock_ranks[CURRENT_LEVEL] = "A"
 			elif level_time_raw < LEVEL_RANK_B[CURRENT_LEVEL]:
 				level_stock_ranks[CURRENT_LEVEL] = "B"
-			else :
+			else:
 				level_stock_ranks[CURRENT_LEVEL] = "C"
-		
+
 		if LEVEL_TIMES_RAW[CURRENT_LEVEL] > level_time_raw:
 			LEVEL_TIMES[CURRENT_LEVEL] = level_time
 			LEVEL_TIMES_RAW[CURRENT_LEVEL] = level_time_raw
@@ -483,9 +495,9 @@ func level_finished()->void :
 				level_ranks[CURRENT_LEVEL] = "A"
 			elif level_time_raw < LEVEL_RANK_B[CURRENT_LEVEL]:
 				level_ranks[CURRENT_LEVEL] = "B"
-			else :
+			else:
 				level_ranks[CURRENT_LEVEL] = "C"
-	else :
+	else:
 		if Global.stock_mode and HELL_STIMES_RAW[CURRENT_LEVEL] > level_time_raw:
 			HELL_STIMES[CURRENT_LEVEL] = level_time
 			HELL_STIMES_RAW[CURRENT_LEVEL] = level_time_raw
@@ -495,9 +507,9 @@ func level_finished()->void :
 				hell_stock_ranks[CURRENT_LEVEL] = "A"
 			elif level_time_raw < HELL_RANK_B[CURRENT_LEVEL]:
 				hell_stock_ranks[CURRENT_LEVEL] = "B"
-			else :
+			else:
 				hell_stock_ranks[CURRENT_LEVEL] = "C"
-		
+
 		if HELL_TIMES_RAW[CURRENT_LEVEL] > level_time_raw:
 			HELL_TIMES[CURRENT_LEVEL] = level_time
 			HELL_TIMES_RAW[CURRENT_LEVEL] = level_time_raw
@@ -507,39 +519,41 @@ func level_finished()->void :
 				hell_ranks[CURRENT_LEVEL] = "A"
 			elif level_time_raw < HELL_RANK_B[CURRENT_LEVEL]:
 				hell_ranks[CURRENT_LEVEL] = "B"
-			else :
+			else:
 				hell_ranks[CURRENT_LEVEL] = "C"
+
 	if CURRENT_LEVEL + 1 > LEVELS_UNLOCKED and CURRENT_LEVEL + 1 <= L_PUNISHMENT:
 		LEVELS_UNLOCKED = CURRENT_LEVEL + 1
 		LEVELS_UNLOCKED = clamp(LEVELS_UNLOCKED, 1, 12)
+
 	if CURRENT_LEVEL == L_PUNISHMENT:
 		ending_1 = true
 		water_material.set_shader_param("albedoTex", red_water)
-	
-	
-
-
-
 
 	if player.weapon.weapon1 != null:
 		if not WEAPONS_UNLOCKED[player.weapon.weapon1]:
 			WEAPONS_UNLOCKED[player.weapon.weapon1] = true
+
 	if player.weapon.weapon2 != null:
 		if not WEAPONS_UNLOCKED[player.weapon.weapon2]:
 			WEAPONS_UNLOCKED[player.weapon.weapon2] = true
+
 	if punishment_mode:
 		money += LEVEL_REWARDS[CURRENT_LEVEL] * 2
-	else :
+	else:
 		money += LEVEL_REWARDS[CURRENT_LEVEL]
+
 	if punishment_mode:
 		if not LEVEL_PUNISHED[CURRENT_LEVEL] and not hope_discarded:
 			set_soul()
 		LEVEL_PUNISHED[CURRENT_LEVEL] = true
+
 	if levels_completed() and BONUS_UNLOCK.find("END") == - 1:
 		BONUS_UNLOCK.append("END")
+
 	save_game()
 	get_tree().paused = true
-	
+
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	if Global.CURRENT_LEVEL != Global.L_PUNISHMENT and Global.CURRENT_LEVEL != L_HQ and CURRENT_LEVEL != 18:
 		$Menu / Level_End_Grid.active = true
@@ -549,20 +563,22 @@ func level_finished()->void :
 		$Menu.show()
 		if Global.CURRENT_LEVEL < Global.L_PUNISHMENT and Global.CURRENT_LEVEL != L_HQ:
 			Global.CURRENT_LEVEL += 1
-	else :
+	else:
 		get_tree().paused = false
 		Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 		menu.hide_buttons(menu.menu[menu.START], 2, 4)
 		$Menu.hide()
 		menu.in_game = false
+
 		if Global.CURRENT_LEVEL == Global.L_PUNISHMENT:
-			
 			goto_scene("res://Cutscenes/CutsceneEnd1.tscn")
+
 		elif CURRENT_LEVEL == L_HQ:
 			ending_2 = true
 			save_game()
 			character_mat.set_shader_param("albedoTex", load("res://Textures/NPC/bosssguy_clothes.png"))
 			goto_scene("res://Cutscenes/CutsceneEnd2.tscn")
+
 		elif CURRENT_LEVEL == 18:
 			ending_3 = true
 			save_game()
@@ -580,12 +596,11 @@ func level_start()->void :
 	$Menu / Level_End_Menu / HBoxContainer / VBoxContainer / Level_End_Info / Enemy_HBOX / Enemies_Value.add_color_override("font_color", Color(1, 0, 0))
 	$Menu / Level_End_Menu / HBoxContainer / VBoxContainer / VBoxContainer / .hide()
 
-
-func set_current_weapon(weapon_index:int)->void :
+func set_current_weapon(weapon_index:int)->void:
 	CURRENT_WEAPONS[weapon_index] = true
+
 func get_current_weapon(weapon_index:int)->int:
 	return CURRENT_WEAPONS[weapon_index]
-
 
 func _physics_process(delta):
 	time += 1
@@ -593,25 +608,25 @@ func _physics_process(delta):
 	if fmod(time, 2) == 0:
 		every_2 = true
 
-	else :
+	else:
 		every_2 = false
 	if fmod(time, 55) == 0:
 		every_55 = true
-	else :
+	else:
 		every_55 = false
 	if fmod(time, 5) == 0:
 		every_5 = true
-	else :
+	else:
 		every_5 = false
 	if fmod(time, 4) == 0:
 		every_4 = true
 
-	else :
+	else:
 		every_4 = false
-	
+
 	if fmod(time, 20) == 0:
 		every_20 = true
-	else :
+	else:
 		every_20 = false
 	action = lerp(action, action_lerp_value, 5 * delta)
 	action_lerp_value = lerp(action_lerp_value, 0, delta * 0.1)
@@ -619,29 +634,29 @@ func _physics_process(delta):
 	if LEVEL_AMBIENCE[CURRENT_LEVEL] != null and menu.in_game:
 		ambience.volume_db = music_volume - action
 		music.volume_db = music_volume - 72 + action
-	else :
+	else:
 		music.volume_db = 0
 		ambience.volume_db = - 80
 
 func save()->Dictionary:
 	var save_dict = {
-		"weapons_unlocked":WEAPONS_UNLOCKED, 
-		"levels_unlocked":LEVELS_UNLOCKED, 
-		"levels_punished":LEVEL_PUNISHED, 
-		"bonus_unlocked":BONUS_UNLOCK, 
-		"implants_unlocked":implants.purchased_implants, 
-		"items_found":MONEY_ITEMS, 
-		"soul":soul_intact, 
-		"husk":husk_mode, 
-		"hope":hope_discarded, 
-		"consecutive_deaths":consecutive_deaths, 
-		"money":money, 
-		"dead_npcs":DEAD_CIVS, 
-		"ending_1":ending_1, 
-		"ending_2":ending_2, 
-		"ending_3":ending_3, 
-		"hell_discovered":hell_discovered, 
-		"death":death, 
+		"weapons_unlocked":WEAPONS_UNLOCKED,
+		"levels_unlocked":LEVELS_UNLOCKED,
+		"levels_punished":LEVEL_PUNISHED,
+		"bonus_unlocked":BONUS_UNLOCK,
+		"implants_unlocked":implants.purchased_implants,
+		"items_found":MONEY_ITEMS,
+		"soul":soul_intact,
+		"husk":husk_mode,
+		"hope":hope_discarded,
+		"consecutive_deaths":consecutive_deaths,
+		"money":money,
+		"dead_npcs":DEAD_CIVS,
+		"ending_1":ending_1,
+		"ending_2":ending_2,
+		"ending_3":ending_3,
+		"hell_discovered":hell_discovered,
+		"death":death,
 		"play_time":play_time
 	}
 	for level in range(LEVELS.size()):
@@ -661,26 +676,24 @@ func save()->Dictionary:
 		meta_file.close()
 	return save_dict
 
-
-
 func settings()->Dictionary:
 	var settings_dict = {
-		"full_screen":full_screen, 
-		"resolution":resolution, 
-		"draw_distance":draw_distance, 
-		"FOV":FOV, 
-		"gamma":gamma, 
-		"camera_sway":camera_sway, 
-		"InvertY":invert_y, 
-		"mouse_sensitivity":mouse_sensitivity, 
-		"master_volume":master_volume, 
-		"music_volume":music_volume, 
-		"keybinds":$Menu.get_scancodes(), 
-		"skip_intro":skip_intro, 
-		"reflections":reflections, 
-		"blood_color":[blood_color.r, blood_color.g, blood_color.b, blood_color.a], 
-		"civilians":civilian_reduction, 
-		"high_performance":high_performance, 
+		"full_screen":full_screen,
+		"resolution":resolution,
+		"draw_distance":draw_distance,
+		"FOV":FOV,
+		"gamma":gamma,
+		"camera_sway":camera_sway,
+		"InvertY":invert_y,
+		"mouse_sensitivity":mouse_sensitivity,
+		"master_volume":master_volume,
+		"music_volume":music_volume,
+		"keybinds":$Menu.get_scancodes(),
+		"skip_intro":skip_intro,
+		"reflections":reflections,
+		"blood_color":[blood_color.r, blood_color.g, blood_color.b, blood_color.a],
+		"civilians":civilian_reduction,
+		"high_performance":high_performance,
 		"timer":timer
 	}
 
@@ -698,20 +711,13 @@ func save_game(path = "user://savegame.save")->void :
 	save_game.store_line(to_json(save()))
 	save_game.close()
 
-func load_game()->void :
+func load_game()-> void:
 	var save_game = File.new()
 	var settings = File.new()
 	if not save_game.file_exists("user://savegame.save"):
 		save_game()
 	if not settings.file_exists("user://settings.save"):
 		save_settings()
-	
-	
-	
-	
-
-	
-	
 
 	save_game.open("user://savegame.save", File.READ)
 	if save_game.get_len() < 2:
@@ -719,7 +725,7 @@ func load_game()->void :
 		if not save_game.file_exists("user://backup.save"):
 			save_game()
 			save_game.open("user://savegame.save", File.READ)
-		else :
+		else:
 			save_game.open("user://backup.save", File.READ)
 			if save_game.get_len() < 2:
 				save_game.close()
@@ -737,7 +743,7 @@ func load_game()->void :
 	var p_time = parsedJSON.get("play_time")
 	if p_time != null:
 		play_time = p_time
-	
+
 	if items_found:
 		MONEY_ITEMS = items_found
 	if dead_npcs:
@@ -788,17 +794,14 @@ func load_game()->void :
 		for i in range(size_difference):
 			new_levels_punished.append(false)
 	LEVEL_PUNISHED = new_levels_punished
-	
-	
-	
-	
+
 	if new_implants_unlocked:
 		implants.purchased_implants = new_implants_unlocked
 	if new_weapons_unlocked:
 		WEAPONS_UNLOCKED = new_weapons_unlocked
 	if new_levels_unlocked:
 		LEVELS_UNLOCKED = new_levels_unlocked
-	else :
+	else:
 		LEVELS_UNLOCKED = 1
 	for level in range(LEVELS.size()):
 		var meta_file = File.new()
@@ -818,9 +821,9 @@ func load_game()->void :
 				level_ranks[level] = "A"
 			elif LEVEL_TIMES_RAW[level] < LEVEL_RANK_B[level]:
 				level_ranks[level] = "B"
-			else :
+			else:
 				level_ranks[level] = "C"
-		
+
 		if parsedJSON.get(level_name + "_string_stime"):
 			LEVEL_STIMES[level] = parsedJSON.get(level_name + "_string_stime")
 		if parsedJSON.get(level_name + "_raw_stime"):
@@ -832,7 +835,7 @@ func load_game()->void :
 				level_stock_ranks[level] = "A"
 			elif LEVEL_STIMES_RAW[level] < LEVEL_RANK_B[level]:
 				level_stock_ranks[level] = "B"
-			else :
+			else:
 				level_stock_ranks[level] = "C"
 
 		if parsedJSON.get(level_name + "_hell_string_time"):
@@ -846,9 +849,9 @@ func load_game()->void :
 				hell_ranks[level] = "A"
 			elif HELL_TIMES_RAW[level] < HELL_RANK_B[level]:
 				hell_ranks[level] = "B"
-			else :
+			else:
 				hell_ranks[level] = "C"
-		
+
 		if parsedJSON.get(level_name + "_hell_string_stime"):
 			HELL_STIMES[level] = parsedJSON.get(level_name + "_hell_string_stime")
 		if parsedJSON.get(level_name + "_hell_raw_stime"):
@@ -860,19 +863,16 @@ func load_game()->void :
 				hell_stock_ranks[level] = "A"
 			elif HELL_STIMES_RAW[level] < HELL_RANK_B[level]:
 				hell_stock_ranks[level] = "B"
-			else :
+			else:
 				hell_stock_ranks[level] = "C"
 
-
-
-
 	save_game.close()
-	
+
 	settings.open("user://settings.save", File.READ)
 	if settings.get_len() < 2:
 		settings.close()
 		save_settings()
-		return 
+		return
 	parsedJSON = parse_json(settings.get_line())
 	mouse_sensitivity = parsedJSON.get("mouse_sensitivity")
 	master_volume = parsedJSON.get("master_volume")
@@ -887,13 +887,13 @@ func load_game()->void :
 		high_performance = hiperf
 		if high_performance:
 			Engine.iterations_per_second = 15
-		else :
+		else:
 			Engine.iterations_per_second = 30
 	if parsedJSON.get("gamma") != null:
 		gamma = parsedJSON.get("gamma")
 	if parsedJSON.get("camera_sway") != null:
 		camera_sway = parsedJSON.get("camera_sway")
-	
+
 	var f_screen = parsedJSON.get("full_screen")
 	if f_screen != null:
 		full_screen = f_screen
@@ -998,6 +998,10 @@ func load_game()->void :
 					var action = InputEventKey.new()
 					action.scancode = key_scancodes[scancode][0]
 					set_inputs("Stocks", action)
+				KEY_TOGGLE_FULLSCREEN:
+					var action = InputEventKey.new()
+					action.scancode = key_scancodes[scancode][0]
+					set_inputs("toggle_full", action)
 		elif key_scancodes[scancode][1] == "MOUSE":
 			match scancode:
 				KEY_FORWARD:
@@ -1080,17 +1084,27 @@ func load_game()->void :
 					var action = InputEventMouseButton.new()
 					action.button_index = key_scancodes[scancode][0]
 					set_inputs("Stocks", action)
-	
-	
+				KEY_TOGGLE_FULLSCREEN:
+					var action = InputEventMouseButton.new()
+					action.button_index = key_scancodes[scancode][0]
+					set_inputs("toggle_full", action)
+
+
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), master_volume)
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Music"), music_volume)
-	
+
 	settings.close()
-	
 
 func wait(c:int):
 	for i in range(c):
 		yield (get_tree(), "idle_frame")
+
 func set_inputs(action, key):
 	InputMap.action_erase_events(action)
 	InputMap.action_add_event(action, key)
+
+func get_mouse_sensitivity_normalized() -> float:
+	return mouse_sensitivity * (720 / Global.resolution[1])
+
+# Mouse sensitivity scaled for current resolution/scaling
+var mouse_sensitivity_normalized setget ,get_mouse_sensitivity_normalized

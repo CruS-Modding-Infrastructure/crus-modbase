@@ -87,10 +87,12 @@ func set_texture_wads(new_texture_wads: Array) -> void:
 # Overrides
 func _ready() -> void:
 	if not DEBUG:
+		print('------------------- SKIPPING MAP BUILD -------------------')
 		return
 
 	if not Engine.is_editor_hint():
 		if verify_parameters():
+			print('------------------- BUILDING MAP -------------------')
 			build_map()
 
 func _get_property_list() -> Array:
@@ -204,6 +206,7 @@ func stop_profile(item_name: String) -> void:
 			profile_timestamps.erase(item_name)
 
 func run_build_step(step_name: String, params: Array = [], func_name: String = ""):
+	print('[QodotMap] Build Step: %s' % [step_name])
 	start_profile(step_name)
 	if func_name == "":
 		func_name = step_name
@@ -338,6 +341,7 @@ func unwrap_uv2(node: Node = null) -> void:
 
 func remove_children() -> void:
 	for child in get_children():
+		#print('[qodot_map:remove_children] Removing child: %s' % child)
 		remove_child(child)
 		child.queue_free()
 
@@ -440,9 +444,18 @@ func build_entity_nodes() -> Array:
 						should_add_child = false
 					if entity_definition.node_class != "":
 						node = ClassDB.instance(entity_definition.node_class)
+						print('---- %s := %s' % [ node,  entity_definition.node_class ])
 				elif entity_definition is QodotFGDPointClass:
 					if entity_definition.scene_file:
+						# print('[qodot_map] node_name "%s" using scene file: %s' %  [ node_name, entity_definition.scene_file ])
 						# GEN_EDIT_STATE_INSTANCE can crash exported builds
+						# var edit_state
+						# if Engine.is_editor_hint():
+						# 	edit_state = PackedScene.GEN_EDIT_STATE_INSTANCE
+						# else:
+						# 	edit_state = PackedScene.GEN_EDIT_STATE_DISABLED
+						# node = entity_definition.scene_file.instance(PackedScene.GEN_EDIT_STATE_INSTANCE)
+						# node = entity_definition.scene_file.instance(PackedScene.GEN_EDIT_STATE_DISABLED)
 						node = entity_definition.scene_file.instance(PackedScene.GEN_EDIT_STATE_DISABLED if OS.has_feature("standalone") else PackedScene.GEN_EDIT_STATE_INSTANCE)
 
 				if entity_definition.script_class:
@@ -1058,25 +1071,28 @@ func connect_signals() -> void:
 			connect_signal(entity_node, target_node)
 
 func connect_signal(entity_node: Node, target_node: Node) -> void:
-	if target_node.properties['classname'] == 'signal':
-		var signal_name = target_node.properties['signal_name']
+	if 'properties' in target_node:
+		if target_node.properties['classname'] == 'signal':
+			var signal_name = target_node.properties['signal_name']
 
-		var receiver_nodes := get_nodes_by_targetname(target_node.properties['target'])
-		for receiver_node in receiver_nodes:
-			if receiver_node.properties['classname'] != 'receiver':
-				continue
+			var receiver_nodes := get_nodes_by_targetname(target_node.properties['target'])
+			for receiver_node in receiver_nodes:
+				if receiver_node.properties['classname'] != 'receiver':
+					continue
 
-			var receiver_name = receiver_node.properties['receiver_name']
+				var receiver_name = receiver_node.properties['receiver_name']
 
-			var target_nodes := get_nodes_by_targetname(receiver_node.properties['target'])
-			for target_node in target_nodes:
-				entity_node.connect(signal_name, target_node, receiver_name, [], CONNECT_PERSIST)
+				var target_nodes := get_nodes_by_targetname(receiver_node.properties['target'])
+				for target_node in target_nodes:
+					entity_node.connect(signal_name, target_node, receiver_name, [], CONNECT_PERSIST)
+		else:
+			var signal_list = entity_node.get_signal_list()
+			for signal_dict in signal_list:
+				if signal_dict['name'] == 'trigger':
+					entity_node.connect("trigger", target_node, "use", [], CONNECT_PERSIST)
+					break
 	else:
-		var signal_list = entity_node.get_signal_list()
-		for signal_dict in signal_list:
-			if signal_dict['name'] == 'trigger':
-				entity_node.connect("trigger", target_node, "use", [], CONNECT_PERSIST)
-				break
+		print('[qdot_map::connect_signal] Target node argument missing properties member.')
 
 func remove_transient_nodes() -> void:
 	for entity_idx in range(0, entity_nodes.size()):

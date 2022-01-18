@@ -122,6 +122,7 @@ __meta__ = {
 margin_left = 8.0
 margin_right = 208.0
 margin_bottom = 70.0
+rect_min_size = Vector2( 150, 52.5 )
 window_title = ""
 dialog_text = "Do you want to purchase X?"
 
