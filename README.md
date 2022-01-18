@@ -37,6 +37,9 @@ Check out [this guide](https://hackmd.io/@OsM6oUcXSwG3mLNvTlPMZg/SkYQwbONu) if y
 - [Financial Ruins](https://github.com/crustyrashky/crus-modbase/files/7333658/Financial.Ruins.-.Public.Release.V1.4.zip) by Keith Mason and Asaklair
 - [Funko Factory](https://github.com/crustyrashky/crus-modbase/files/7240174/Funko_Factory.zip) by Ringo
    - Requires [Ringo's Mapping Enhancements for Cruelty Squad](https://github.com/Ringo5103/Ringos-Mapping-Enhancements-for-Cruelty-Squad) mod
+- [Golf Resort](https://github.com/crustyrashky/crus-modbase/files/7886469/Golf.Resort.1.1.5.zip) by Keith Mason
+
+
 
 
 ## Cheats
