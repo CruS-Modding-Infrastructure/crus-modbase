@@ -25,7 +25,11 @@ $zipDir = Get-Item $zipTempPath
 
 $excluded = @(
     "build.ps1"
+    "build.zsh"
+    "project.godot"
     ".git"
+    ".vscode"
+    "logs"
     ".gitignore"
     "mod.json"
 )
@@ -39,7 +43,7 @@ if(Test-Path $zipOutPath)
     Remove-Item $zipOutPath
 }
 # Temp duct tape: emove all base game gd files that are now compiled as well
-Get-ChildItem $zipDir -Exclude MOD_CONTENT `
+Get-ChildItem $zipDir -Recurse -File -Filter *.gd #<-Exclude MOD_CONTENT#> `
   | ForEach-Object {
     if($_  -is [FileInfo])
     {

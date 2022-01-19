@@ -193,7 +193,7 @@ func load_level(current_dir: String, dir_name: String) -> Dictionary:
 			lvl = {}
 			var json = File.new()
 			dprint(" - Reading level data from JSON file: %s" % [ Mod.path_wrap(dir.get_current_dir().plus_file(fname)) ], "load_level")
-			if json.open(dir.get_current_dir().plus_file(fname), File.READ) == OK:
+			if json.open(dir.get_current_dir() + "/" + fname, File.READ) == OK:
 				lvl = JSON.parse(json.get_as_text())
 				var json_errs = LevelVerifier.check_json(lvl.result)
 				if lvl.error == OK and lvl.result is Dictionary and json_errs.empty():
@@ -240,22 +240,22 @@ func load_levels() -> Array:
 	var levels = []
 	var dir = Directory.new()
 	if dir.open('user://') == OK:
-		if !dir.dir_exists(USER_LEVELS_DIR):
-			dir.make_dir(USER_LEVELS_DIR)
+		if !dir.dir_exists('user://levels'):
+			dir.make_dir('user://levels')
 		else:
-			dir.change_dir(USER_LEVELS_DIR)
+			dir.change_dir('user://levels')
 			dir.list_dir_begin(true, true)
 			var fname = dir.get_next()
 			while fname != "":
-				if dir.current_is_dir() and fname != "_debug" and fname != "__debug":
+				if dir.current_is_dir() and fname != "_debug":
 					var cur_dir = dir.get_current_dir()
 					var lvl = load_level(cur_dir, fname)
 					if lvl.has("name"):
 						levels.append(lvl)
 						loaded_level_names.append(lvl.name)
-						dprint("Finished loading level \"" + lvl["name"] + "\" by \"" + lvl["author"] + "\"", "load_levels")
+						Mod.mod_log("Finished loading level \"" + lvl["name"] + "\" by \"" + lvl["author"] + "\"", MOD_NAME)
 					else:
-						dprint("Couldn't load level!", "load_levels")
+						Mod.mod_log("Couldn't load level!", MOD_NAME)
 				fname = dir.get_next()
 			dir.list_dir_end()
 	return levels
@@ -267,28 +267,24 @@ func init_debug_level():
 	var level = {"error": "No .map found"}
 
 	var dir = Directory.new()
-	if !dir.dir_exists(USER_LEVELS_DIR):
-		dir.make_dir(USER_LEVELS_DIR)
-	if dir.open(USER_LEVELS_DIR.plus_file('_debug')) == OK:
-		if (dir.file_exists('user://qodot_fgd.tres')
-				or dir.file_exists(USER_LEVELS_DIR.plus_file('_debug/qodot_fgd.tres'))):
-			if not dir.file_exists(USER_LEVELS_DIR.plus_file('_debug/qodot_fgd.tres')):
-				dir.copy('user://qodot_fgd.tres', USER_LEVELS_DIR.plus_file('_debug/qodot_fgd.tres'))
-		dir.list_dir_begin(true, true)
-
-		var fname = dir.get_next()
-		while fname != "":
-			var ext = fname.get_extension()
-			if ext == "map":
-				map_ospath = OS.get_user_data_dir().plus_file("levels/_debug/" + fname)
-				if dir.file_exists(map_ospath.trim_suffix("map") + "tscn"):
-					level_ospath = dir.get_current_dir() + "/" + fname
-					level_ospath = level_ospath.trim_suffix("map") + "tscn"
-					dprint("Debug level ospath => %s" % [ Mod.path_wrap(level_ospath) ], "init_debug_level")
-				break
-			fname = dir.get_next()
-
-		dir.list_dir_end()
+	if !dir.dir_exists('user://levels'):
+		dir.make_dir('user://levels')
+	if dir.open('user://levels/_debug') == OK:
+		#if dir.file_exists('user://qodot_fgd.tres') or dir.file_exists('user://levels/_debug/qodot_fgd.tres'):
+		#	if !dir.file_exists('user://levels/_debug/qodot_fgd.tres'):
+		#		dir.copy('user://qodot_fgd.tres', 'user://levels/_debug/qodot_fgd.tres')
+			dir.list_dir_begin(true, true)
+			var fname = dir.get_next()
+			while fname != "":
+				var ext = fname.get_extension()
+				if ext == "map":
+					map_ospath = OS.get_user_data_dir() + "/levels/_debug/" + fname
+					if dir.file_exists(map_ospath.trim_suffix("map") + "tscn"):
+						level_ospath = dir.get_current_dir() + "/" + fname
+						level_ospath = level_ospath.trim_suffix("map") + "tscn"
+					break
+				fname = dir.get_next()
+			dir.list_dir_end()
 
 	if map_ospath == "":
 		return level
@@ -332,11 +328,11 @@ func _init():
 	dprint('init_debug_level', 'on:init')
 	var debug_level = init_debug_level()
 	var menu = Global.get_node("Menu")
-	var showmods_btn = load(MOD_PATH.plus_file("scenes/ShowMods.tscn")).instance()
+	var showmods_btn = load(MOD_PATH + "/scenes/ShowMods.tscn").instance()
 	var vbox = menu.get_node("Settings/GridContainer/PanelContainer6/VBoxContainer3/")
 	vbox.add_child_below_node(vbox.get_node("CenterContainer"), showmods_btn)
 	var data = Mod.get_node(MOD_NAME).data
-	if not debug_level.has("error"):
+	if !debug_level.has("error"):
 		data["debug_level"] = debug_level
 	else:
 		dprint("Loading user levels...", 'on:init')

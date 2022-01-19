@@ -1,12 +1,11 @@
 extends Node
 
-signal map_build_over()
-
 var map_built = false
 var debug_tab = null
 var hover_panel = null
 var CMB = Mod.get_node("CruS Mod Base")
 var LevelVerifier = load(CMB.modpath + "/scripts/level_verifier.gd").new()
+signal map_build_over()
 
 # ass name
 const export_nav_copy_default_project_subfolder = "Levels"
@@ -65,11 +64,11 @@ func add_debug_menus():
 		hover_panel.rect_global_position.y = clamp(
 				hover_panel.rect_global_position.y,
 				0,
-				(1280 - hover_panel.rect_size.y - 100) * Global.menu.rect_scale.x)
+				(720 - hover_panel.rect_size.y - 100) * Global.menu.rect_scale.x)
 		hover_panel.rect_global_position.x = clamp(
 				hover_panel.rect_global_position.x,
 				0,
-				(720 - hover_panel.rect_size.x - 100) * Global.menu.rect_scale.y)
+				(1280 - hover_panel.rect_size.x - 100) * Global.menu.rect_scale.y)
 
 		# Also enable console now, since its always added (now) don't remind the user
 		debug_tab.cheats.enable_cheat_prompt(true)
@@ -219,7 +218,7 @@ func convert_map_to_tscn(map_ospath: String, out_folder="user://levels/_debug", 
 	if ResourceLoader.exists(nav_cache_path):
 		dprint('Found cached navigation mesh', 'convert_map_to_tscn')
 		# Set navmesh to copy of cached
-		var cache_res: Resource = ResourceLoader.load(nav_cache_path, "", true)
+		var cache_res = ResourceLoader.load(nav_cache_path, "", true)
 		nav_mesh_inst.navmesh = cache_res.duplicate()
 		dprint("Loaded cached navmesh resource from <%s>" % [ nav_cache_path ], 'convert_map_to_tscn')
 		last_convert_map_to_tscn.nav_cache_loaded = true
@@ -228,7 +227,7 @@ func convert_map_to_tscn(map_ospath: String, out_folder="user://levels/_debug", 
 	level_root.add_child(nav, true)
 
 	dprint("Creating Environment", 'convert_map_to_tscn')
-	var env: Environment = Environment.new()
+	var env := Environment.new()
 	env.background_mode = Environment.BG_SKY
 	env.background_sky = PanoramaSky.new()
 	env.background_sky.panorama = load("res://Textures/sky9.png")
@@ -239,13 +238,7 @@ func convert_map_to_tscn(map_ospath: String, out_folder="user://levels/_debug", 
 	world_env.set_script(load("res://Levels/sky_rotator.gd"))
 	level_root.add_child(world_env, true)
 
-	dprint("Creating Qodotmap", 'convert_map_to_tscn')
-
-	var qmap: QodotMap = (
-		load("res://addons/qodot/src/nodes/qodot_map.gd").new()
-			if OS.has_feature("release")
-		else QodotMap.new()
-	)
+	var qmap = QodotMap.new()
 	level_root.add_child(qmap, true)
 	qmap.name = "QodotMap"
 	qmap.map_file = map_ospath
@@ -312,6 +305,11 @@ func convert_map_to_tscn(map_ospath: String, out_folder="user://levels/_debug", 
 			dprint('Saving g_light.debug_time => %s' % [ dbg["time_of_day"] ], 'convert_map_to_tscn')
 
 		#endregion Bake in time of day, if configured
+	else:
+		if is_instance_valid(qmap):
+			dprint('[ERROR] build failed but qmap is valid.', 'convert_map_to_tscn')
+			# qmap.print_tree_pretty()
+			pass
 
 	var scene_ospath := ""
 	var scene_name
@@ -349,8 +347,6 @@ func convert_map_to_tscn(map_ospath: String, out_folder="user://levels/_debug", 
 					dprint("      - @%s" % [ qmap.get_child(idx) ], 'convert_map_to_tscn')
 		else:
 			dprint("    QodotEntity not valid.", 'convert_map_to_tscn')
-
-
 
 	return scene_ospath
 
@@ -455,9 +451,16 @@ func export_debug_level(map_ospath) -> bool:
 	return false
 
 func _on_map_build_fail():
+	# THIS SHOULD BE FALSE RIGHT????
 	map_built = true
 	dprint("Map failed to build", 'on:map_build_fail')
 	emit_signal("map_build_over")
+
+func _on_map_build_succeed():
+	map_built = true
+	dprint("Map successfully built",  'on:map_build_succeed')
+	emit_signal("map_build_over")
+
 
 func _on_map_build_progress(build_step, percent):
 	# Mod.mod_log(str("Build progressing, step: ", build_step, " (", percent * 100, "%)"), CMB)
@@ -466,9 +469,4 @@ func _on_map_build_progress(build_step, percent):
 				'%' if not is_equal_approx(percent, 1) else "",
 				build_step
 			],
-			 'on:map_build_progress')
-
-func _on_map_build_succeed():
-	map_built = true
-	dprint("Map successfully built",  'on:map_build_succeed')
-	emit_signal("map_build_over")
+			'on:map_build_progress')

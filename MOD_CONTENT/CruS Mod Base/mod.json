@@ -1,0 +1,7 @@
+{
+    "name": "CruS Mod Base",
+    "author": "crustyrashky",
+    "version": "0.4.0",
+    "description": "Adds useful modding things, custom map support and more.",
+    "init": "res://MOD_CONTENT/CruS Mod Base/init.gd"
+}

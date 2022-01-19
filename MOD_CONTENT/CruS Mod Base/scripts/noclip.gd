@@ -109,7 +109,7 @@ func player_use(hide_nodes = true):
 	Global.player.crush_check.disabled = true
 	Global.player.disabled = true
 	Global.player.collision_box.disabled = true
-	Global.player.reticle.force_disable_draw(true, true)
+	# Global.player.reticle.force_disable_draw(true, true)
 	last_col_layer = Global.player.collision_layer
 	Global.player.collision_layer = 0
 	speed = base_speed
@@ -139,7 +139,7 @@ func player_exit(show_nodes=true):
 		Global.player.weapon.disabled = false
 
 	Global.player.player_velocity = Vector3.ZERO
-	Global.player.reticle.force_disable_draw(false, true)
+	# Global.player.reticle.force_disable_draw(false, true)
 	Global.player.reticle.show()
 	Global.player.player_view.current = true
 	Global.player.crush_check.disabled = false
@@ -161,6 +161,7 @@ func player_exit(show_nodes=true):
 	queue_free()
 
 func _ready():
+	dprint('', 'on:ready')
 	# @NOTE: If State.fov is ever used it should replace this
 	$Pivot / Camera.fov = Global.FOV
 	fov = Global.FOV

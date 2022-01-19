@@ -56,7 +56,7 @@ func _process(delta):
 func _input(ev):
 	if not(ev is InputEventKey and ev.is_pressed()):
 		return
-	if ev.get_scancode() == KEY_ENTER and !cheated and is_instance_valid(Global.nav):
+	if ev.scancode == KEY_ENTER and not cheated and is_instance_valid(Global.nav):
 		if last_keys.find("CEOMINDSET") != -1:
 			enable_cheat_prompt()
 	elif !cheated:
@@ -67,7 +67,7 @@ func _input(ev):
 			last_keys += key
 	if (ev is InputEventWithModifiers
 			and (enabled.has("noclip") or enabled.has("debug"))
-			and ev.get_scancode() == KEY_N
+			and ev.pressed and ev.scancode == KEY_N
 			and ev.shift):
 		toggle_noclip()
 

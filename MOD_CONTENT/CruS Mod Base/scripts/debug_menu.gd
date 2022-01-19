@@ -136,6 +136,8 @@ func _ready():
 	dt.pressed = Global.death
 
 func _process(delta):
+	if hide_reticle:
+		Global.player.reticle.hide()
 	if Global.rain:
 		rain_toggle.pressed = true
 
@@ -250,16 +252,20 @@ func _on_Debug_visibility_changed():
 		nc_btn.pressed = cheats.in_noclip()
 	border_warn.visible = Global.border.texture == Global.BORDERS[3]
 
+var hide_reticle := false
+
 # doesn't really work because most weapons automatically force showing it
 # @NOTE: Hopefully it will now
 func _on_Show_Reticle_toggled(button_pressed):
+	hide_reticle = not button_pressed
 	if button_pressed:
 		# print('[on::Show_Reticle_toggled] Unblocking reticle.')
-		Global.player.reticle.force_disable_draw(false)
+		# Global.player.reticle.force_disable_draw(false)
 		Global.player.reticle.show()
 	else:
 		# print('[on::Show_Reticle_toggled] Blocking reticle.')
-		Global.player.reticle.force_disable_draw(true, true)
+		# Global.player.reticle.force_disable_draw(true, true)
+		Global.player.reticle.hide()
 
 func _on_Time_value_changed(value):
 	if "debug_time" in g_light:

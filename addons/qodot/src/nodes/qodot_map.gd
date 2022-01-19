@@ -147,6 +147,7 @@ func verify_parameters():
 		qodot_lib.set("dependency/OSX.64", ["res://addons/qodot/bin/osx/libmap.dylib"])
 		qodot_lib.set("dependency/Windows.64", ["res://addons/qodot/bin/win64/libmap.dll"])
 		qodot_lib.set("dependency/X11.64", ["res://addons/qodot/bin/x11/libmap.so"])
+		print('[qodot] qodot_lib path: <%s>' % [qodot_lib.get_current_library_path() ])
 
 		var qodot_script = NativeScript.new()
 		qodot_script.set("class_name", "Qodot")
@@ -456,7 +457,7 @@ func build_entity_nodes() -> Array:
 						# 	edit_state = PackedScene.GEN_EDIT_STATE_DISABLED
 						# node = entity_definition.scene_file.instance(PackedScene.GEN_EDIT_STATE_INSTANCE)
 						# node = entity_definition.scene_file.instance(PackedScene.GEN_EDIT_STATE_DISABLED)
-						node = entity_definition.scene_file.instance(PackedScene.GEN_EDIT_STATE_DISABLED if OS.has_feature("standalone") else PackedScene.GEN_EDIT_STATE_INSTANCE)
+						node = entity_definition.scene_file.instance(PackedScene.GEN_EDIT_STATE_DISABLED if not Engine.editor_hint else PackedScene.GEN_EDIT_STATE_INSTANCE)
 
 				if entity_definition.script_class:
 					node.set_script(entity_definition.script_class)

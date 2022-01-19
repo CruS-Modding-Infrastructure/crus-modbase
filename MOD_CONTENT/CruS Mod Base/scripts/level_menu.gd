@@ -46,7 +46,7 @@ var skybox_files = [
 var taking_preview_image = false
 var cheat_noclip_enabled = false
 var reloading_map = false
-var last_img: Image
+var last_img
 var skybox_file_path = ""
 var in_debug_lvl
 
@@ -54,6 +54,10 @@ signal settings_changed
 
 func dprint(msg: String, ctx: String = "") -> void:
 	Mod.mod_log(msg, 'CMB:level_menu' + (":" + ctx if len(ctx) > 0 else ""))
+
+# Remove this after build fixed
+func _init() -> void:
+	dprint('', 'on:init')
 
 func _ready():
 	if cheats:
@@ -205,6 +209,7 @@ func save_level_settings():
 		dprint('Saving _debug properties:\n%s' % [ var2str(debug_lvl_data["_debug"]) ], 'save_level_settings')
 
 		f.store_string(level_editor.generate_level_json(debug_lvl_data))
+		f.close()
 	else:
 		dprint('ERROR: Failed to open level.json for saving: %s' % [ lvl_dir + '/preview.png' ], 'save_level_settings')
 

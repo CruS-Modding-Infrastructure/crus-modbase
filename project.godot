@@ -1,0 +1,31 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=4
+
+_global_script_classes=[ {
+"base": "Node",
+"class": "CModBase",
+"language": "GDScript",
+"path": "res://MOD_CONTENT/CruS Mod Base/init.gd"
+}, {
+"base": "QodotSpatial",
+"class": "QodotMap",
+"language": "GDScript",
+"path": "res://addons/qodot/src/nodes/qodot_map.gd"
+}, {
+"base": "Reference",
+"class": "QodotTextureLoader",
+"language": "GDScript",
+"path": "res://addons/qodot/src/util/qodot_texture_loader.gd"
+} ]
+_global_script_class_icons={
+"CModBase": "",
+"QodotMap": "",
+"QodotTextureLoader": ""
+}

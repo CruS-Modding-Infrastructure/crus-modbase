@@ -1,0 +1,20 @@
+Godot Engine v3.3.5.rc.custom_build.1f2d146e7 - https://godotengine.org
+OpenGL ES 3.0 Renderer: NVIDIA GeForce GTX 1060 6GB/PCIe/SSE2
+OpenGL ES Batching: ON
+ 
+**ERROR**: Class 'EditorSettings' can only be instantiated by editor.
+   At: core\class_db.cpp:555:ClassDB::instance() - Class 'EditorSettings' can only be instantiated by editor.
+**ERROR**: C:\Users/disk0/AppData/Roaming/Godot/editor_settings-3.tres:3 - Parse Error: Can't create sub resource of type: EditorSettings
+   At: scene\resources\resource_format_text.cpp:565:ResourceInteractiveLoaderText::poll() - C:\Users/disk0/AppData/Roaming/Godot/editor_settings-3.tres:3 - Parse Error: Can't create sub resource of type: EditorSettings
+**ERROR**: Failed to load resource 'C:\Users/disk0/AppData/Roaming/Godot/editor_settings-3.tres'.
+   At: core\io\resource_loader.cpp:212:ResourceFormatLoader::load() - Condition "err != OK" is true. Returned: RES()
+**ERROR**: Failed loading resource: C:\Users/disk0/AppData/Roaming/Godot/editor_settings-3.tres. Make sure resources have been imported by opening the project in the editor at least once.
+   At: core\io\resource_loader.cpp:283:ResourceLoader::_load() - Condition "found" is true. Returned: RES()
+**WARNING**: Could not open config file.
+   At: editor\editor_settings.cpp:989:EditorSettings::create() - Could not open config file.
+reimport: begin: (Re)Importing Assets steps: 2
+	reimport: step 0: next.png
+	reimport: step 1: prev.png
+**ERROR**: Invalid export preset name: modbase. Make sure `export_presets.cfg` is present in the current directory.
+   At: editor\editor_node.cpp:777:EditorNode::_fs_changed() - Invalid export preset name: modbase. Make sure `export_presets.cfg` is present in the current directory.
+reimport: end
