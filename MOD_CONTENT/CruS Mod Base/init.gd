@@ -5,7 +5,7 @@ class_name CModBase
 # (Completion signal independent of success/failure)
 signal modbase_load_complete()
 
-# @NOTE: Temp flag
+# @NOTE: Temp development flag, disable to reenable immeditate map build
 const DEFER_MAP_BUILD_UNTIL_MODS_LOAD := true
 
 const MOD_NAME = "CruS Mod Base"
