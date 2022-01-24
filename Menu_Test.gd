@@ -459,15 +459,6 @@ func _ready():
 
 	# Now try to get crus modbase instance, and wait for signal
 	var cmb_init_node = cmb.get_node('Init')
-	if is_instance_valid(cmb_init_node):
-		Mod.mod_log('Pausing tree until modbase load complete.', 'Menu_Test:on:ready')
-		get_tree().paused = true
-		Mod.mod_log('Yielding until modbase load complete.', 'Menu_Test:on:ready')
-		Mod.mod_log(' -> modbase load complete, unpausing/continuing', 'Menu_Test:on:ready')
-		yield(cmb_init_node, "modbase_load_complete")
-		get_tree().paused = false
-	
-#	yield(cmb, "modbase_load_complete")
 	
 	if "debug_level" in cmb.data:
 		custom_levels = [cmb.data.debug_level]
