@@ -152,6 +152,9 @@ class Menu extends Control:
 	var elements:Array
 
 func _physics_process(delta):
+	if not is_instance_valid(hover_info):
+		return
+	
 	time += 1
 	if in_game:
 		clear_button.hide()
@@ -454,6 +457,18 @@ func _ready():
 	assert(cmb != null, "Failed to load CruS Mod Base.")
 	assert("data" in cmb, "`data` member missing from CruS Mod Base node.")
 
+	# Now try to get crus modbase instance, and wait for signal
+	var cmb_init_node = cmb.get_node('Init')
+	if is_instance_valid(cmb_init_node):
+		Mod.mod_log('Pausing tree until modbase load complete.', 'Menu_Test:on:ready')
+		get_tree().paused = true
+		Mod.mod_log('Yielding until modbase load complete.', 'Menu_Test:on:ready')
+		Mod.mod_log(' -> modbase load complete, unpausing/continuing', 'Menu_Test:on:ready')
+		yield(cmb_init_node, "modbase_load_complete")
+		get_tree().paused = false
+	
+#	yield(cmb, "modbase_load_complete")
+	
 	if "debug_level" in cmb.data:
 		custom_levels = [cmb.data.debug_level]
 	else:
@@ -477,7 +492,7 @@ func _ready():
 #			Global.full_screen_stretch_mode,
 #			Vector2(Global.resolution[0], Global.resolution[1]))
 	if Global.full_screen:
-			_on_Full_Screen_toggled(true)
+		_on_Full_Screen_toggled(true)
 
 	$ConfirmationDialog.get_cancel().connect("pressed", self, "_on_Cancel_Pressed")
 	$Settings / GridContainer / PanelContainer / VBoxContainer / InvertYAxis.pressed = Global.invert_y

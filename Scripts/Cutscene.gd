@@ -29,6 +29,13 @@ func _ready():
 	CAMERAS = $Cameras.get_children()
 
 	var cmb = Mod.get_node("CruS Mod Base")
+	
+#	var cmb_init_node = cmb.get_node('Init')
+#	if is_instance_valid(cmb_init_node):
+#		Mod.mod_log('Yielding until modbase load complete.', 'Cutscene:on:ready')
+#		yield(cmb_init_node, "modbase_load_complete")
+#		Mod.mod_log(' -> modbase load complete, unpausing/continuing', 'Cutscene:on:ready')
+	
 	var load_debug_lvl = cmb and "debug_level" in cmb.data
 	if introskip or Global.skip_intro or load_debug_lvl:
 		Global.cutscene = false

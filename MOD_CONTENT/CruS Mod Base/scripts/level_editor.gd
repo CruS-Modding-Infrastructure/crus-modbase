@@ -5,6 +5,9 @@ var debug_tab = null
 var hover_panel = null
 var CMB = Mod.get_node("CruS Mod Base")
 var LevelVerifier = load(CMB.modpath + "/scripts/level_verifier.gd").new()
+const CONFIG_FILE_PATH = 'user://cmb.cfg'
+var config: ConfigFile
+
 signal map_build_over()
 
 # ass name
@@ -16,7 +19,16 @@ func dprint(msg: String, ctx: String = "") -> void:
 	else:
 		Mod.mod_log(msg, "CMB:level_editor" + (":" + ctx if len(ctx) > 0 else ""))
 
-# func _physics_process(delta):
+var nav_cache_fmt_str := "res://Levels/%s-nav.tres" if Engine.editor_hint else "user://%s-nav.tres"
+
+func _init() -> void:
+	config = ConfigFile.new()
+	if config.load(CONFIG_FILE_PATH) != OK:
+		# Initialize
+		config.save(CONFIG_FILE_PATH)
+
+	nav_cache_fmt_str = config.get_value('build', 'verbose_log', nav_cache_fmt_str)
+
 func _process(delta):
 	# @NOTE: Could this be moved to _physics_process instead to reduce overhead?
 	# Inject the debug and level tabs into the in-game stock menu
@@ -25,8 +37,6 @@ func _process(delta):
 				and is_instance_valid(Global.player)
 				and Global.player.get_parent().get_node_or_null("Stock_Menu")):
 			add_debug_menus()
-
-#region Export Filtering
 
 # For base children of level directory only
 export (Array) var ignored_debug_subdirs   = [ "autosave" ]
@@ -39,8 +49,6 @@ func is_ignored_export_ext(fname: String) -> bool:
 	if ignored:
 		dprint(' [Ignored] %s' % [ fname ], 'export:is_ignored_ext')
 	return ignored
-
-#endregion Export Filtering
 
 func add_debug_menus():
 	dprint('Loading debug menus', 'add_debug_menus')
@@ -212,16 +220,21 @@ func convert_map_to_tscn(map_ospath: String, out_folder="user://levels/_debug", 
 	nav.set_script(load("res://Scripts/Navigation.gd"))
 
 	# Try to load cached navmesh
-	var nav_cache_path = "res://Levels/%s-nav.tres" % [ map_ospath.get_file().get_basename() ]
+	var nav_cache_path: String = nav_cache_fmt_str % [ map_ospath.get_file().get_basename() ] if nav_cache_fmt_str else null
 
 	dprint('Checking for cached copy of navigation mesh at <%s>' % [ nav_cache_path ],  'convert_map_to_tscn')
-	if ResourceLoader.exists(nav_cache_path):
+	if nav_cache_path and ResourceLoader.exists(nav_cache_path):
 		dprint('Found cached navigation mesh', 'convert_map_to_tscn')
 		# Set navmesh to copy of cached
 		var cache_res = ResourceLoader.load(nav_cache_path, "", true)
-		nav_mesh_inst.navmesh = cache_res.duplicate()
-		dprint("Loaded cached navmesh resource from <%s>" % [ nav_cache_path ], 'convert_map_to_tscn')
-		last_convert_map_to_tscn.nav_cache_loaded = true
+		var cached = cache_res.duplicate()
+		if cached is NavigationMesh:
+			nav_mesh_inst.navmesh = cache_res.duplicate()
+			dprint("Loaded cached navmesh resource from <%s>" % [ nav_cache_path ], 'convert_map_to_tscn')
+			last_convert_map_to_tscn.nav_cache_loaded = true
+		else:
+			dprint("WARNING: Resource loaded from expected nav cache path is not a NavigationMesh: <%s>" % [ nav_cache_path ], 'convert_map_to_tscn')
+			
 
 	nav.add_child(nav_mesh_inst, true)
 	level_root.add_child(nav, true)
@@ -234,6 +247,7 @@ func convert_map_to_tscn(map_ospath: String, out_folder="user://levels/_debug", 
 	env.background_sky.radiance_size = Sky.RADIANCE_SIZE_64
 	env.background_sky_rotation_degrees.x = -45
 	env.fog_enabled = true
+	env.ambient_light_energy = 0.6
 	world_env.environment = env
 	world_env.set_script(load("res://Levels/sky_rotator.gd"))
 	level_root.add_child(world_env, true)
@@ -287,7 +301,6 @@ func convert_map_to_tscn(map_ospath: String, out_folder="user://levels/_debug", 
 					Mod.path_wrap(env.background_sky.panorama) ], 'convert_map_to_tscn')
 		else:
 			dprint("WARNING: Failed to load skybox " + dbg["skybox_file_path"], 'convert_map_to_tscn')
-
 
 		env.fog_height_min  = dbg["fog_height_min"]
 		dprint('Saved env.fog_height_min    => %s' % [ dbg["fog_height_min"] ], 'convert_map_to_tscn')

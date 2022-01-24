@@ -2,8 +2,17 @@ extends Node
 
 class_name CModBase
 
+# (Completion signal independent of success/failure)
+signal modbase_load_complete()
+
+# @NOTE: Temp flag
+const DEFER_MAP_BUILD_UNTIL_MODS_LOAD := true
+
 const MOD_NAME = "CruS Mod Base"
 const MOD_PATH = "res://MOD_CONTENT/" + MOD_NAME
+
+const CONFIG_FILE_PATH = 'user://cmb.cfg'
+var config: ConfigFile
 
 const MOD_DPRINT_BASE = 'CMB'
 func dprint(msg: String, ctx: String = "") -> void:
@@ -323,9 +332,48 @@ func backup_saves():
 func _init():
 	dprint('', 'on:init')
 	Mod.get_node(MOD_NAME).add_child(LevelEditor)
+#	Mod.get_node(MOD_NAME).add_child(self)
 	backup_saves()
+	
+	if not DEFER_MAP_BUILD_UNTIL_MODS_LOAD:
+			
+		dprint('init_debug_level', 'on:init')
+		var debug_level = init_debug_level()
+		var menu = Global.get_node("Menu")
+		var showmods_btn = load(MOD_PATH + "/scenes/ShowMods.tscn").instance()
+		var vbox = menu.get_node("Settings/GridContainer/PanelContainer6/VBoxContainer3/")
+		vbox.add_child_below_node(vbox.get_node("CenterContainer"), showmods_btn)
+		var data = Mod.get_node(MOD_NAME).data
+		if !debug_level.has("error"):
+			data["debug_level"] = debug_level
+		else:
+			dprint("Loading user levels...", 'on:init')
+			data["levels"] = load_levels()
+			if data["levels"].size() > 0:
+				dprint("LEVEL LOADING COMPLETE: Successfully loaded " + str(data["levels"].size()) + " level(s)", 'on:init')
+			else:
+				dprint("LEVEL LOADING COMPLETE: No levels were loaded!", 'on:init')
 
-	dprint('init_debug_level', 'on:init')
+		get_parent().initialized = true
+		
+	else:
+		dprint('------ CONNECTING TO MODLOAD SIGNALS ------', 'on:init')
+		# Possible to just yield?
+		Mod.connect("modloading_complete", self, "init_debug_level_defer")
+		Mod.connect("modloading_failed", self, "init_fail_defer")
+		var modload_result = yield(Mod, "modloading_end")
+		
+		dprint('yield:modloading_end -> %s' % [ JSON.print(modload_result) ])
+		
+#region Deferred init signal-based functions
+func init_fail_defer() -> void:
+	dprint('Modloading failed, cancelling initialization.', 'on:modloading_failed')
+
+# Deferred version of init_debug_level that uses the new mods_loaded signal
+# (@TODO: Rename this after it works)
+func init_debug_level_defer() -> void:
+	dprint('init_debug_level', 'on:modloading_complete:init_debug_level_defer')
+	
 	var debug_level = init_debug_level()
 	var menu = Global.get_node("Menu")
 	var showmods_btn = load(MOD_PATH + "/scenes/ShowMods.tscn").instance()
@@ -334,6 +382,7 @@ func _init():
 	var data = Mod.get_node(MOD_NAME).data
 	if !debug_level.has("error"):
 		data["debug_level"] = debug_level
+		get_parent().initialized = true
 	else:
 		dprint("Loading user levels...", 'on:init')
 		data["levels"] = load_levels()
@@ -341,5 +390,8 @@ func _init():
 			dprint("LEVEL LOADING COMPLETE: Successfully loaded " + str(data["levels"].size()) + " level(s)", 'on:init')
 		else:
 			dprint("LEVEL LOADING COMPLETE: No levels were loaded!", 'on:init')
+			get_parent().initialized = false
+	
+	emit_signal("modbase_load_complete")
 
-	get_parent().initialized = true
+#endregion Deferred init signal-based functions

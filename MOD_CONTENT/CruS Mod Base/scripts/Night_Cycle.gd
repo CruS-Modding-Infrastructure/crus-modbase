@@ -53,11 +53,11 @@ func set_base_light_energy(energy: float) -> void:
 	light_energy_base = energy
 
 # Stores base light energy, should be used for configuration.
-var light_energy_base:        float = 0.0
+var light_energy_base:        float = 1.0
 # Stores modification of light energy by thunder env effect
 var light_energy_thunder_mod: float = 0.0
 var thunder_energy:           float = 90.0
-# Temp debug state tracket
+# Temp debug state tracker
 var thunder_sound_queued:     bool = false
 
 var init_sky_color
@@ -69,6 +69,7 @@ func using_custom_time() -> bool:
 class EnvCopy:
 	var fd_begin: float
 	var fd_end:   float
+	var al_nrg:   float
 	var al_color: Color
 	var bg_mode:  int
 	var init_fog: Color
@@ -78,21 +79,23 @@ class EnvCopy:
 	func _init():
 		pass
 
-	func record(g_light) -> void:
-		fd_begin = g_light.environment.fog_depth_begin
-		fd_end   = g_light.environment.fog_depth_end
-		al_color = Color(g_light.environment.ambient_light_color.to_html())
-		bg_mode  = g_light.environment.background_mode
-		init_fog = Color(g_light.environment.fog_color.to_html())
-		init_sc  = Color(g_light.environment.background_color.to_html())
+	func record(world) -> void:
+		fd_begin = world.environment.fog_depth_begin
+		fd_end   = world.environment.fog_depth_end
+		al_nrg   = world.environment.ambient_light_energy
+		al_color = Color(world.environment.ambient_light_color.to_html())
+		bg_mode  = world.environment.background_mode
+		init_fog = Color(world.environment.fog_color.to_html())
+		init_sc  = Color(world.environment.background_color.to_html())
 
 	func restore(g_light) -> void:
-		g_light.env.environment.fog_depth_begin     = fd_begin
-		g_light.env.environment.fog_depth_end       = fd_end
-		g_light.env.environment.ambient_light_color = al_color
-		g_light.init_fog                            = init_fog
-		g_light.init_sky_color                      = init_sc
-		g_light.env.environment.background_mode     = bg_mode
+		g_light.env.environment.fog_depth_begin      = fd_begin
+		g_light.env.environment.fog_depth_end        = fd_end
+		g_light.env.environment.ambient_light_color  = al_color
+		g_light.env.environment.ambient_light_energy = al_nrg
+		g_light.init_fog                             = init_fog
+		g_light.init_sky_color                       = init_sc
+		g_light.env.environment.background_mode      = bg_mode
 
 		# g_light.env.environment.fog_depth_begin = g_light.orig_env["fd_begin"]
 		# g_light.env.environment.fog_depth_end = g_light.orig_env["fd_end"]
@@ -104,7 +107,6 @@ class EnvCopy:
 onready var orig_env = EnvCopy.new()
 
 func record_orig_env() -> void:
-
 	if not toolctx:
 		orig_env.record(env)
 		dprint('Stored Original Env:\n%s' % [ JSON.print(orig_env, '\t') ], 'record_orig_env')
@@ -112,9 +114,11 @@ func record_orig_env() -> void:
 func tool_retry_get_env() -> void:
 	env = get_tree().edited_scene_root.get_node("WorldEnvironment")
 
+# @NOTE: Testing fixing the weather snapping on load - anything past the
+#        dprint statements was added and possibly causing the issue
 func _init() -> void:
 
-	dprint('<INIT> light_energy:        %s' % [ light_energy        ], 'on:init')
+	dprint('<INIT> light_energy_base:   %s' % [ light_energy_base   ], 'on:init')
 	dprint('       init_energy:         %s' % [ init_energy         ], 'on:init')
 	dprint('       init_energy_ambient: %s' % [ init_energy_ambient ], 'on:init')
 
@@ -131,7 +135,7 @@ func _ready():
 			for child in get_tree().edited_scene_root.get_children():
 				print(' - @%s' % [ child ])
 
-	dprint('<READY> light_energy:        %s' % [ light_energy        ], 'on:ready')
+	dprint('<READY> light_energy_base:   %s' % [ light_energy_base   ], 'on:ready')
 	dprint('        init_energy:         %s' % [ init_energy         ], 'on:ready')
 	dprint('        init_energy_ambient: %s' % [ init_energy_ambient ], 'on:ready')
 
@@ -162,15 +166,15 @@ func _ready():
 			return
 
 	if gamectx:
-		dprint("light_energy         => %s"       % [ light_energy ],               'on:ready')
-		dprint("init_energy          => %s => %s" % [ init_energy, light_energy  ], 'on:ready')
-		init_energy = light_energy
+		dprint("light_energy_base    => %s"       % [ light_energy_base ],               'on:ready')
+		dprint("init_energy          => %s => %s" % [ init_energy, light_energy_base  ], 'on:ready')
+		init_energy = light_energy_base
 	else:
-		light_energy = init_energy
+		light_energy_base = init_energy
 
 	if gamectx:
 		init_energy_ambient = env.environment.ambient_light_energy
-		dprint("init_energy_ambient  => %s" % [ light_energy ], 'on:ready')
+		dprint("init_energy_ambient  => %s" % [ init_energy_ambient ], 'on:ready')
 	else:
 		env.environment.ambient_light_energy = init_energy_ambient
 
@@ -194,8 +198,12 @@ func _ready():
 		dprint('Using preset debug_time (%s)' % [ debug_time ], 'on:ready')
 
 func _physics_process(delta) -> void:
-	if not env and toolctx:
-		tool_retry_get_env()
+	if not env:
+		if toolctx:
+			tool_retry_get_env()
+		# Skip process if env not initialized yet, or better yet process should be disabled until
+		# then
+		return
 
 	# @TODO: Actually check if all this isnt tool context
 	if not toolctx and not darkness:

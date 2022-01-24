@@ -5,6 +5,21 @@ const MOD_NAME = "CruS Mod Base"
 func dprint(msg: String, ctx: String = "") -> void:
 	Mod.mod_log(msg, 'CMB:LevelVerifier' + (":" + ctx if len(ctx) > 0 else ""))
 
+# TODO: load once in init.gd
+var config: ConfigFile
+var build_verbose_logging := false
+const CONFIG_FILE_PATH = 'user://cmb.cfg'
+
+func _init():
+	dprint('', 'on:init')
+	
+	config = ConfigFile.new()
+	if config.load(CONFIG_FILE_PATH) != OK:
+		# Initialize
+		config.save(CONFIG_FILE_PATH)
+
+	build_verbose_logging = config.get_value('build', 'verbose_log', false)
+
 func check_json(m: Dictionary) -> Array:
 	var errors = []
 	var missing = ""
@@ -78,11 +93,13 @@ func check_scene(path, lvl = { }) -> Array:
 	else:
 		for qm in qmaps:
 			var child_count = (qm as QodotMap).get_children().size()
-			dprint('Scanning %d children' % [ child_count ], 'check_scene')
+			if build_verbose_logging:
+				dprint('Scanning %d children' % [ child_count ], 'check_scene')
 			var node: Node
 			for idx in child_count:
 				node = (qm as QodotMap).get_child(idx)
-				dprint('  [%04d/%04d] @%s' % [ idx + 1, child_count, node ], 'check_scene')
+				if build_verbose_logging:
+					dprint('  [%04d/%04d] @%s' % [ idx + 1, child_count, node ], 'check_scene')
 				if node.get_filename() == "res://Player_Test.tscn":
 					if player:
 						dprint('Multiple Player_Test.tscn instances found, there should only be one', 'check_scene')

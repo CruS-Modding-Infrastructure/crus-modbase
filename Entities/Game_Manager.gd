@@ -225,9 +225,10 @@ func levels_completed():
 		return false
 
 func _enter_tree() -> void:
+	
 	# Should be fine when not running godot version
-	if OS.has_feature("release"):
-		Steam.steamInit()
+#	if OS.has_feature("release"):
+#		Steam.steamInit()
 	STOCKS = $Stocks
 	player = KinematicBody.new()
 	add_child(player)

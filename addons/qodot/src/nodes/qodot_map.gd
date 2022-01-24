@@ -87,12 +87,10 @@ func set_texture_wads(new_texture_wads: Array) -> void:
 # Overrides
 func _ready() -> void:
 	if not DEBUG:
-		print('------------------- SKIPPING MAP BUILD -------------------')
 		return
 
 	if not Engine.is_editor_hint():
 		if verify_parameters():
-			print('------------------- BUILDING MAP -------------------')
 			build_map()
 
 func _get_property_list() -> Array:
@@ -445,7 +443,7 @@ func build_entity_nodes() -> Array:
 						should_add_child = false
 					if entity_definition.node_class != "":
 						node = ClassDB.instance(entity_definition.node_class)
-						print('---- %s := %s' % [ node,  entity_definition.node_class ])
+						# print('---- %s := %s' % [ node,  entity_definition.node_class ])
 				elif entity_definition is QodotFGDPointClass:
 					if entity_definition.scene_file:
 						# print('[qodot_map] node_name "%s" using scene file: %s' %  [ node_name, entity_definition.scene_file ])
