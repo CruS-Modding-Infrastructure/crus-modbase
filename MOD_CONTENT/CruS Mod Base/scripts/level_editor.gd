@@ -266,14 +266,6 @@ func convert_map_to_tscn(map_ospath: String, out_folder="user://levels/_debug", 
 	qmap.connect("build_failed", self, "_on_map_build_fail")
 	qmap.connect("build_complete", self, "_on_map_build_succeed")
 	qmap.connect("build_progress", self, "_on_map_build_progress")
-	if OS.has_feature("release"):
-		dprint('qmap:', 'convert_map_to_tscn')
-		dprint("  - name:                  %s" % [ qmap.name                  ], 'convert_map_to_tscn')
-		dprint("  - map_file:              %s" % [ qmap.map_file              ], 'convert_map_to_tscn')
-		dprint("  - base_texture_dir:      %s" % [ qmap.base_texture_dir      ], 'convert_map_to_tscn')
-		dprint("  - entity_fgd:            %s" % [ qmap.entity_fgd            ], 'convert_map_to_tscn')
-		dprint("  - block_until_complete:  %s" % [ qmap.block_until_complete  ], 'convert_map_to_tscn')
-		dprint("  - external_texture_dict: %s" % [ JSON.print(qmap.external_texture_dict) ], 'convert_map_to_tscn')
 	map_built = false
 	qmap.verify_and_build(level_root)
 
@@ -286,7 +278,14 @@ func convert_map_to_tscn(map_ospath: String, out_folder="user://levels/_debug", 
 		dprint('Saved g_light.init_energy => %s' % [ dbg["g_light_energy"] ], 'convert_map_to_tscn')
 		g_light.darkness = dbg["g_light_darkness"]
 		dprint('Saved g_light.darkness    => %s' % [ dbg["g_light_darkness"] ], 'convert_map_to_tscn')
-
+		
+		if "g_init_energy_ambient" in dbg:
+			g_light.init_energy_ambient = dbg["g_init_energy_ambient"]
+		else:
+			g_light.init_energy_ambient = 1.0 # @TODO: const defaults?
+		dprint('Saved g_light.init_energy_ambient => %s' % [ g_light.init_energy_ambient ], 'convert_map_to_tscn')
+			
+			
 		var sb = load(dbg["skybox_file_path"])
 		if not sb:
 			dprint('Failed to directly load skybox resource, creating new image instance to assign path.', 'convert_map_to_tscn')

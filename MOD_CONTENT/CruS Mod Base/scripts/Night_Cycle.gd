@@ -97,13 +97,6 @@ class EnvCopy:
 		g_light.init_sky_color                       = init_sc
 		g_light.env.environment.background_mode      = bg_mode
 
-		# g_light.env.environment.fog_depth_begin = g_light.orig_env["fd_begin"]
-		# g_light.env.environment.fog_depth_end = g_light.orig_env["fd_end"]
-		# g_light.env.environment.ambient_light_color = g_light.orig_env["al_color"]
-		# g_light.init_fog = g_light.orig_env["init_fog"]
-		# g_light.init_sky_color = g_light.orig_env["init_sc"]
-		# g_light.env.environment.background_mode = g_light.orig_env["bg_mode"]
-
 onready var orig_env = EnvCopy.new()
 
 func record_orig_env() -> void:

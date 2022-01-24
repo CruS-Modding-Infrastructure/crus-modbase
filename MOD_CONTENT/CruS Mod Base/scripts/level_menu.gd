@@ -17,6 +17,8 @@ onready var gls                  = get_node("MarginContainer/VBoxContainer/Globa
 onready var border_warn          = get_node("MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer/Border_Warning")
 onready var gl_bright_label      = get_node("MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer/GL_Brightness_Slider/Label")
 onready var gl_bright_slide      = get_node("MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer/GL_Brightness_Slider/HSlider")
+onready var gl_amb_light_label   = get_node("MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer/GL_Ambient_Slider/Label")
+onready var gl_amb_light_slide   = get_node("MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer/GL_Ambient_Slider/HSlider")
 onready var gl_dark_btn          = get_node("MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer/Toggle_Darkness/HBoxContainer/CheckButton")
 onready var gl_permn_btn         = get_node("MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer/Toggle_Permanight/HBoxContainer/CheckButton")
 onready var preview_image        = get_node("MarginContainer/VBoxContainer/Preview_Image/VBoxContainer/TextureRect")
@@ -78,7 +80,13 @@ func _ready():
 			dprint('Initializing _debug level.json: %s' % [ lvl_dir + "/level.json" ], 'on:ready')
 			save_level_settings()
 		elif f.open(lvl_dir + "/level.json", File.READ) == OK:
+			
 			var ld = parse_json(f.get_as_text())
+			
+			#region DEBUG
+			dprint('Debug Data:\n%s' % [ JSON.print(ld) ], 'on:ready')
+			#endregion DEBUG
+			
 			if ld is Dictionary:
 
 				# Mod.mod_log('[level_menu:on:ready] Reading properties from debug level.json:\n%s' % [ ld ], CMB)
@@ -101,6 +109,7 @@ func _ready():
 				gl_btn.pressed        = ld["_debug"]["g_light_enabled"]
 				gl_bright_slide.value = ld["_debug"]["g_light_energy"]
 				gl_dark_btn.pressed   = ld["_debug"]["g_light_darkness"]
+				gl_amb_light_label
 
 				if "skybox_file_path" in ld["_debug"]:
 					skybox_path = ld["_debug"]["skybox_file_path"]
@@ -113,8 +122,12 @@ func _ready():
 				if "time_of_day" in ld["_debug"]:
 					dprint('Setting time of day', "on:ready")
 					g_light.debug_time = ld["_debug"]["time_of_day"]
-					# debug_menu.value = g_light.debug_time
 
+				if "g_init_energy_ambient" in ld["_debug"]:
+					dprint('Setting ambient light level', "on:ready")
+					g_light.init_energy_ambient = ld["_debug"]["g_init_energy_ambient"]
+					_on_GL_Ambient_value_changed(g_light.init_energy_ambient)
+					
 			# First guess at where to load audio?
 
 			if "music" in ld:
@@ -147,7 +160,6 @@ func _ready():
 							Global.ambience.playing = true
 					else:
 						dprint('Tried to load ambient for level, but Global.ambient is not an AudioStreamPlayer instance. (%s)' % [ str(Global.ambient) if Global.ambient != null else '<NULL>' ], 'on:ready')
-
 
 	level_container.get_node("Reload_Mapfile").visible = in_debug_lvl
 	level_container.get_node("Save_Level").visible     = in_debug_lvl
@@ -200,6 +212,11 @@ func save_level_settings():
 		dbg["fog_height_max"]   = fog_container.get_node("Height_Max/HSlider").value
 		dbg["fog_depth_begin"]  = fog_container.get_node("Depth_Begin/HSlider").value
 		dbg["fog_depth_end"]    = fog_container.get_node("Depth_End/HSlider").value
+		if "g_init_energy_ambient" in dbg:
+			dbg["g_init_energy_ambient"] = g_light.init_energy_ambient
+		else:
+			dbg["g_init_energy_ambient"] = 0.6 # @TODO: const defaults?
+			
 
 		if 'debug_time' in g_light and g_light.debug_time >= 0:
 			dprint('Adding time of day to map _debug properties. (%s)' % [ g_light.debug_time ], 'save_level_settings')
@@ -514,3 +531,17 @@ func _on_Toggle_Skybox_Settings_toggled(button_pressed):
 
 func _on_Toggle_Fog_Settings_toggled(button_pressed):
 	get_node("MarginContainer/VBoxContainer/Fog_Settings").visible = button_pressed
+
+
+func _on_GL_Ambient_value_changed(value) -> void:
+	if g_light:
+		g_light._set_init_energy_ambient(value)
+		dprint('init_energy_ambient: %s' % [ g_light.init_energy_ambient ], 'on:GL_Ambient_value_changed')
+
+		if is_instance_valid(gl_amb_light_label):
+			gl_amb_light_slide.value = g_light.init_energy_ambient
+			gl_amb_light_label.text = '%4.2f' % [ g_light.init_energy_ambient ]
+
+		emit_signal("settings_changed")
+	else:
+		dprint('Failed to read g_light object.', 'on:GL_Ambient_value_changed')
