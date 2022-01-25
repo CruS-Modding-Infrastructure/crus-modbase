@@ -106,14 +106,13 @@ func player_use(hide_nodes = true):
 	if hide_nodes:
 		hide_ui()
 
+	Global.player.reticle.hide()
 	Global.player.crush_check.disabled = true
 	Global.player.disabled = true
 	Global.player.collision_box.disabled = true
-	# Global.player.reticle.force_disable_draw(true, true)
 	last_col_layer = Global.player.collision_layer
 	Global.player.collision_layer = 0
 	speed = base_speed
-
 
 	in_use = true
 	yield (get_tree(), "idle_frame")
@@ -139,7 +138,6 @@ func player_exit(show_nodes=true):
 		Global.player.weapon.disabled = false
 
 	Global.player.player_velocity = Vector3.ZERO
-	# Global.player.reticle.force_disable_draw(false, true)
 	Global.player.reticle.show()
 	Global.player.player_view.current = true
 	Global.player.crush_check.disabled = false
