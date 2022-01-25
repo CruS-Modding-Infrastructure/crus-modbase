@@ -83,10 +83,6 @@ func _ready():
 			
 			var ld = parse_json(f.get_as_text())
 			
-			#region DEBUG
-			dprint('Debug Data:\n%s' % [ JSON.print(ld) ], 'on:ready')
-			#endregion DEBUG
-			
 			if ld is Dictionary:
 
 				# Mod.mod_log('[level_menu:on:ready] Reading properties from debug level.json:\n%s' % [ ld ], CMB)
