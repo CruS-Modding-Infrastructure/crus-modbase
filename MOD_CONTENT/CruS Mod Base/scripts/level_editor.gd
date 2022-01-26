@@ -19,7 +19,9 @@ func dprint(msg: String, ctx: String = "") -> void:
 	else:
 		Mod.mod_log(msg, "CMB:level_editor" + (":" + ctx if len(ctx) > 0 else ""))
 
-var nav_cache_fmt_str := "res://Levels/%s-nav.tres" if Engine.editor_hint else "user://%s-nav.tres"
+# Loading custom pattern should go here, for now always default to project folder for 
+# debug builds
+var nav_cache_fmt_str := "res://Levels/%s-nav.tres" if OS.has_feature("editor") else "user://%s-nav.tres"
 
 func _init() -> void:
 	config = ConfigFile.new()
@@ -282,9 +284,12 @@ func convert_map_to_tscn(map_ospath: String, out_folder="user://levels/_debug", 
 		if "g_init_energy_ambient" in dbg:
 			g_light.init_energy_ambient = dbg["g_init_energy_ambient"]
 		else:
-			g_light.init_energy_ambient = 1.0 # @TODO: const defaults?
+			g_light.init_energy_ambient= 1.0 # @TODO: const defaults?
 		dprint('Saved g_light.init_energy_ambient => %s' % [ g_light.init_energy_ambient ], 'convert_map_to_tscn')
 			
+		if "fog_height_enabled" in dbg and typeof(dbg["fog_height_enabled"]) == TYPE_BOOL:
+			world_env.environment.fog_height_enabled = dbg["fog_height_enabled"]
+		dprint('Saved Height Base Fog Enabled     => %s' % [ world_env.environment.fog_height_enabled ], 'convert_map_to_tscn')
 			
 		var sb = load(dbg["skybox_file_path"])
 		if not sb:
@@ -302,26 +307,25 @@ func convert_map_to_tscn(map_ospath: String, out_folder="user://levels/_debug", 
 			dprint("WARNING: Failed to load skybox " + dbg["skybox_file_path"], 'convert_map_to_tscn')
 
 		env.fog_height_min  = dbg["fog_height_min"]
-		dprint('Saved env.fog_height_min    => %s' % [ dbg["fog_height_min"] ], 'convert_map_to_tscn')
+		dprint('Saved env.fog_height_min     => %s' % [ dbg["fog_height_min"] ], 'convert_map_to_tscn')
 		env.fog_height_max  = dbg["fog_height_max"]
-		dprint('Saved env.fog_height_max    => %s' % [ dbg["fog_height_max"] ], 'convert_map_to_tscn')
+		dprint('Saved env.fog_height_max     => %s' % [ dbg["fog_height_max"] ], 'convert_map_to_tscn')
 		env.fog_depth_begin = dbg["fog_depth_begin"]
-		dprint('Saved env.fog_depth_begin   => %s' % [ dbg["fog_depth_begin"] ], 'convert_map_to_tscn')
+		dprint('Saved env.fog_depth_begin    => %s' % [ dbg["fog_depth_begin"] ], 'convert_map_to_tscn')
 		env.fog_depth_end   = dbg["fog_depth_end"]
-		dprint('Saved env.fog_depth_end     => %s' % [ dbg["fog_depth_end"] ], 'convert_map_to_tscn')
-
-		#region Bake in time of day, if configured
+		dprint('Saved env.fog_depth_end      => %s' % [ dbg["fog_depth_end"] ], 'convert_map_to_tscn')
 
 		if "time_of_day" in dbg and dbg["time_of_day"] >= 0:
 			g_light.debug_time = dbg["time_of_day"]
-			dprint('Saving g_light.debug_time => %s' % [ dbg["time_of_day"] ], 'convert_map_to_tscn')
+			dprint('Saving g_light.debug_time    => %s' % [ dbg["time_of_day"] ], 'convert_map_to_tscn')
 
-		#endregion Bake in time of day, if configured
+		if "fog_height_enabled" in dbg:
+			env.fog_depth_enabled = dbg["fog_height_enabled"]
+			dprint('Saving env.fog_depth_enabled => %s' % [ env.fog_depth_enabled ], 'convert_map_to_tscn')
+
 	else:
 		if is_instance_valid(qmap):
 			dprint('[ERROR] build failed but qmap is valid.', 'convert_map_to_tscn')
-			# qmap.print_tree_pretty()
-			pass
 
 	var scene_ospath := ""
 	var scene_name

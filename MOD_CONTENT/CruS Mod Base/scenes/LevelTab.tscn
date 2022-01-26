@@ -33,7 +33,7 @@ __meta__ = {
 margin_left = 3.0
 margin_top = 3.0
 margin_right = 308.0
-margin_bottom = 613.0
+margin_bottom = 790.0
 custom_constants/margin_right = 5
 custom_constants/margin_left = 5
 custom_constants/margin_bottom = 0
@@ -41,7 +41,7 @@ custom_constants/margin_bottom = 0
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 margin_left = 5.0
 margin_right = 300.0
-margin_bottom = 610.0
+margin_bottom = 787.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -75,6 +75,7 @@ margin_bottom = 32.0
 focus_mode = 0
 pressed = true
 enabled_focus_mode = 0
+flat = true
 
 [node name="Global_Light_Settings" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 margin_top = 102.0
@@ -126,6 +127,7 @@ margin_right = 64.0
 margin_bottom = 32.0
 focus_mode = 0
 enabled_focus_mode = 0
+flat = true
 
 [node name="Permanight_Label" type="Label" parent="MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer"]
 visible = false
@@ -229,9 +231,9 @@ text = "Edit skybox"
 
 [node name="Skybox_Settings" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 visible = false
-margin_top = 342.0
+margin_top = 414.0
 margin_right = 295.0
-margin_bottom = 388.0
+margin_bottom = 460.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/margin_top = 5
@@ -290,10 +292,9 @@ enabled_focus_mode = 0
 text = "Edit fog"
 
 [node name="Fog_Settings" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
-visible = false
-margin_top = 368.0
+margin_top = 440.0
 margin_right = 295.0
-margin_bottom = 539.0
+margin_bottom = 617.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/margin_top = 5
@@ -304,17 +305,78 @@ custom_constants/margin_bottom = 10
 margin_left = 10.0
 margin_top = 5.0
 margin_right = 295.0
-margin_bottom = 161.0
+margin_bottom = 167.0
 
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer"]
+[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer"]
 margin_right = 285.0
 margin_bottom = 26.0
-text = "Height"
+text = "Depth"
 
-[node name="Height_Min" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer"]
+[node name="Depth_Begin" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer"]
 margin_top = 26.0
 margin_right = 285.0
 margin_bottom = 52.0
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Depth_Begin"]
+margin_right = 60.0
+margin_bottom = 26.0
+text = "Min "
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Depth_Begin"]
+margin_left = 60.0
+margin_right = 285.0
+margin_bottom = 16.0
+size_flags_horizontal = 3
+custom_styles/slider = SubResource( 1 )
+min_value = -4000.0
+max_value = 4000.0
+
+[node name="Depth_End" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer"]
+margin_top = 52.0
+margin_right = 285.0
+margin_bottom = 78.0
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Depth_End"]
+margin_right = 60.0
+margin_bottom = 26.0
+text = "Max "
+
+[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Depth_End"]
+margin_left = 60.0
+margin_right = 285.0
+margin_bottom = 16.0
+size_flags_horizontal = 3
+custom_styles/slider = SubResource( 1 )
+min_value = -4000.0
+max_value = 4000.0
+
+[node name="HeightLabelAndToggle" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer"]
+margin_top = 78.0
+margin_right = 285.0
+margin_bottom = 110.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/HeightLabelAndToggle"]
+margin_top = 3.0
+margin_right = 105.0
+margin_bottom = 29.0
+text = "Height "
+
+[node name="CheckButton" type="CheckButton" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/HeightLabelAndToggle"]
+margin_left = 105.0
+margin_right = 169.0
+margin_bottom = 32.0
+focus_mode = 0
+theme = ExtResource( 5 )
+enabled_focus_mode = 0
+flat = true
+
+[node name="Height_Min" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer"]
+margin_top = 110.0
+margin_right = 285.0
+margin_bottom = 136.0
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Height_Min"]
 margin_right = 60.0
@@ -327,12 +389,14 @@ margin_right = 285.0
 margin_bottom = 16.0
 size_flags_horizontal = 3
 custom_styles/slider = SubResource( 1 )
-max_value = 4000.0
+min_value = -500.0
+max_value = 1000.0
+step = 2.0
 
 [node name="Height_Max" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer"]
-margin_top = 52.0
+margin_top = 136.0
 margin_right = 285.0
-margin_bottom = 78.0
+margin_bottom = 162.0
 
 [node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Height_Max"]
 margin_right = 60.0
@@ -345,57 +409,14 @@ margin_right = 285.0
 margin_bottom = 16.0
 size_flags_horizontal = 3
 custom_styles/slider = SubResource( 1 )
-max_value = 4000.0
-
-[node name="Label2" type="Label" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer"]
-margin_top = 78.0
-margin_right = 285.0
-margin_bottom = 104.0
-text = "Depth"
-
-[node name="Depth_Begin" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer"]
-margin_top = 104.0
-margin_right = 285.0
-margin_bottom = 130.0
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Depth_Begin"]
-margin_right = 90.0
-margin_bottom = 26.0
-text = "Begin "
-
-[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Depth_Begin"]
-margin_left = 90.0
-margin_right = 285.0
-margin_bottom = 16.0
-size_flags_horizontal = 3
-custom_styles/slider = SubResource( 1 )
-min_value = -4000.0
-max_value = 4000.0
-
-[node name="Depth_End" type="HBoxContainer" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer"]
-margin_top = 130.0
-margin_right = 285.0
-margin_bottom = 156.0
-
-[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Depth_End"]
-margin_right = 90.0
-margin_bottom = 26.0
-rect_min_size = Vector2( 90, 0 )
-text = "End "
-
-[node name="HSlider" type="HSlider" parent="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Depth_End"]
-margin_left = 90.0
-margin_right = 285.0
-margin_bottom = 16.0
-size_flags_horizontal = 3
-custom_styles/slider = SubResource( 1 )
-min_value = -4000.0
-max_value = 4000.0
+min_value = -500.0
+max_value = 1000.0
+step = 2.0
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
-margin_top = 440.0
+margin_top = 617.0
 margin_right = 295.0
-margin_bottom = 471.0
+margin_bottom = 648.0
 custom_constants/margin_top = 5
 __meta__ = {
 "_edit_use_anchors_": false
@@ -408,9 +429,9 @@ margin_bottom = 31.0
 text = "Preview image"
 
 [node name="Preview_Image" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
-margin_top = 471.0
+margin_top = 648.0
 margin_right = 295.0
-margin_bottom = 512.0
+margin_bottom = 689.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/margin_bottom = 10
@@ -436,9 +457,9 @@ enabled_focus_mode = 0
 text = "Take new image"
 
 [node name="Reload_Mapfile" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
-margin_top = 512.0
+margin_top = 689.0
 margin_right = 295.0
-margin_bottom = 543.0
+margin_bottom = 720.0
 custom_constants/margin_bottom = 5
 
 [node name="Button" type="Button" parent="MarginContainer/VBoxContainer/Reload_Mapfile"]
@@ -448,9 +469,9 @@ text = "Reload"
 
 [node name="Reload_Loading" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
 visible = false
-margin_top = 414.0
+margin_top = 543.0
 margin_right = 295.0
-margin_bottom = 469.0
+margin_bottom = 598.0
 custom_constants/margin_bottom = 5
 
 [node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/Reload_Loading"]
@@ -478,9 +499,9 @@ margin_bottom = 45.0
 custom_styles/bg = SubResource( 2 )
 
 [node name="Save_Level" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
-margin_top = 543.0
+margin_top = 720.0
 margin_right = 295.0
-margin_bottom = 574.0
+margin_bottom = 751.0
 custom_constants/margin_bottom = 5
 
 [node name="Button" type="Button" parent="MarginContainer/VBoxContainer/Save_Level"]
@@ -491,9 +512,9 @@ enabled_focus_mode = 0
 text = "Save"
 
 [node name="Export_Level" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
-margin_top = 574.0
+margin_top = 751.0
 margin_right = 295.0
-margin_bottom = 610.0
+margin_bottom = 787.0
 custom_constants/margin_bottom = 10
 
 [node name="Button" type="Button" parent="MarginContainer/VBoxContainer/Export_Level"]
@@ -521,7 +542,7 @@ text = "Reset all"
 visible = false
 margin_left = 5.0
 margin_right = 300.0
-margin_bottom = 610.0
+margin_bottom = 787.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 7 )
@@ -558,13 +579,13 @@ __meta__ = {
 [node name="Skybox_Popup" type="PopupMenu" parent="MarginContainer"]
 margin_left = 5.0
 margin_right = 300.0
-margin_bottom = 610.0
+margin_bottom = 787.0
 theme = ExtResource( 5 )
 
 [node name="Skybox_FileDialog" type="FileDialog" parent="MarginContainer"]
 margin_left = 5.0
 margin_right = 441.0
-margin_bottom = 610.0
+margin_bottom = 787.0
 rect_min_size = Vector2( 150, 52.5 )
 theme = ExtResource( 5 )
 window_title = "Open File(s)"
@@ -578,9 +599,9 @@ current_path = "user://C:/csquad/project/"
 
 [node name="Export_ConfirmationDialog" type="ConfirmationDialog" parent="MarginContainer"]
 margin_left = -178.0
-margin_top = 267.0
+margin_top = 355.0
 margin_right = 482.0
-margin_bottom = 343.0
+margin_bottom = 431.0
 rect_min_size = Vector2( 150, 52.5 )
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -603,10 +624,11 @@ volume_db = -8.0
 [connection signal="toggled" from="MarginContainer/VBoxContainer/Skybox_Settings/File/MarginContainer/HBoxContainer/Button" to="." method="_on_Skybox_File_Dropdown_toggled"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Skybox_Settings/File/MarginContainer/HBoxContainer/Open_Skybox_File" to="." method="_on_Open_Skybox_File_pressed"]
 [connection signal="toggled" from="MarginContainer/VBoxContainer/Toggle_Fog_Settings" to="." method="_on_Toggle_Fog_Settings_toggled"]
-[connection signal="value_changed" from="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Height_Min/HSlider" to="." method="_on_Fog_Slider_value_changed" binds= [ "height", "min" ]]
-[connection signal="value_changed" from="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Height_Max/HSlider" to="." method="_on_Fog_Slider_value_changed" binds= [ "height", "max" ]]
 [connection signal="value_changed" from="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Depth_Begin/HSlider" to="." method="_on_Fog_Slider_value_changed" binds= [ "depth", "begin" ]]
 [connection signal="value_changed" from="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Depth_End/HSlider" to="." method="_on_Fog_Slider_value_changed" binds= [ "depth", "end" ]]
+[connection signal="toggled" from="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/HeightLabelAndToggle/CheckButton" to="." method="_on_FogHeight_toggled"]
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Height_Min/HSlider" to="." method="_on_Fog_Slider_value_changed" binds= [ "height", "min" ]]
+[connection signal="value_changed" from="MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/Height_Max/HSlider" to="." method="_on_Fog_Slider_value_changed" binds= [ "height", "max" ]]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Preview_Image/VBoxContainer/MarginContainer/Button" to="." method="_on_Take_Preview_Image_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Reload_Mapfile/Button" to="." method="_on_Reload_From_TB_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/Save_Level/Button" to="." method="_on_Save_pressed"]

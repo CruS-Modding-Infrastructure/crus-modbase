@@ -203,8 +203,8 @@ func _physics_process(delta) -> void:
 		# lerp thunder energy instead of base light_energy, and then add it to base
 		light_energy = light_energy_base + light_energy_thunder_mod
 		light_energy_thunder_mod =- lerp(light_energy_thunder_mod, 0.0, clamp(delta * 30, 0, 1))
-		if thunder_sound_queued:
-			dprint("thunder_level -> %s" % [ light_energy_thunder_mod ], 'on:physics_process')
+		#if thunder_sound_queued:
+		#	dprint("thunder_level -> %s" % [ light_energy_thunder_mod ], 'on:physics_process')
 
 	if gamectx:
 		if Global.hope_discarded:

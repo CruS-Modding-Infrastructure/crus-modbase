@@ -6,13 +6,15 @@ onready var level_editor   = CMB.get_node("LevelEditor")
 
 onready var cheats  = get_tree().root.get_node("Level/Cheats")
 onready var g_light = get_tree().root.get_node("Level/Global_Light")
-onready var env = get_tree().root.get_node("Level/WorldEnvironment")
+onready var env: WorldEnvironment = get_tree().root.get_node("Level/WorldEnvironment")
 
 onready var preview_box          = get_node("MarginContainer/Preview_Box")
 onready var skybox_file_dropdown = get_node("MarginContainer/Skybox_Popup")
 onready var level_container      = get_node("MarginContainer/VBoxContainer")
 onready var export_btn           = get_node("MarginContainer/VBoxContainer/Export_Level/Button")
 onready var fog_container        = get_node("MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer")
+onready var fog_height_label:  Label       = get_node("MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/HeightLabelAndToggle/Label")
+onready var fog_height_toggle: CheckButton = get_node("MarginContainer/VBoxContainer/Fog_Settings/VBoxContainer/HeightLabelAndToggle/CheckButton")
 onready var gls                  = get_node("MarginContainer/VBoxContainer/Global_Light_Settings")
 onready var border_warn          = get_node("MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer/Border_Warning")
 onready var gl_bright_label      = get_node("MarginContainer/VBoxContainer/Global_Light_Settings/VBoxContainer/GL_Brightness_Slider/Label")
@@ -67,6 +69,9 @@ func _ready():
 
 	var skybox_path = ""
 	var cur_lvl_data = Global.LEVEL_META[Global.CURRENT_LEVEL]
+	
+	# Just hide fog settings anyway since I keep forgetting to rehide it editing
+	fog_container.get_node("..").hide()
 
 	in_debug_lvl = "level_scene" in cur_lvl_data and debug_lvl_data and debug_lvl_data.level_scene == cur_lvl_data.level_scene
 	if in_debug_lvl:
@@ -84,12 +89,9 @@ func _ready():
 			var ld = parse_json(f.get_as_text())
 			
 			if ld is Dictionary:
-
-				# Mod.mod_log('[level_menu:on:ready] Reading properties from debug level.json:\n%s' % [ ld ], CMB)
-
 				for key in ld.keys():
 					CMB.data.debug_level[key] = ld[key]
-
+					
 			else:
 				dprint("WARNING: Bad JSON file " + lvl_dir + "/level.json", 'on:ready')
 
@@ -123,6 +125,11 @@ func _ready():
 					dprint('Setting ambient light level', "on:ready")
 					g_light.init_energy_ambient = ld["_debug"]["g_init_energy_ambient"]
 					_on_GL_Ambient_value_changed(g_light.init_energy_ambient)
+					
+				if "fog_height_enabled" in ld["_debug"]:
+					_on_FogHeight_toggled(ld["_debug"]["fog_height_enabled"])
+				else:
+					_on_FogHeight_toggled(false)
 					
 			# First guess at where to load audio?
 
@@ -208,12 +215,10 @@ func save_level_settings():
 		dbg["fog_height_max"]   = fog_container.get_node("Height_Max/HSlider").value
 		dbg["fog_depth_begin"]  = fog_container.get_node("Depth_Begin/HSlider").value
 		dbg["fog_depth_end"]    = fog_container.get_node("Depth_End/HSlider").value
-		if "g_init_energy_ambient" in dbg:
-			dbg["g_init_energy_ambient"] = g_light.init_energy_ambient
-		else:
-			dbg["g_init_energy_ambient"] = 0.6 # @TODO: const defaults?
+		
+		dbg["g_init_energy_ambient"] = g_light.init_energy_ambient
+		dbg["fog_height_enabled"] = fog_height_toggle.pressed
 			
-
 		if 'debug_time' in g_light and g_light.debug_time >= 0:
 			dprint('Adding time of day to map _debug properties. (%s)' % [ g_light.debug_time ], 'save_level_settings')
 			dbg["time_of_day"] = g_light.debug_time
@@ -528,7 +533,6 @@ func _on_Toggle_Skybox_Settings_toggled(button_pressed):
 func _on_Toggle_Fog_Settings_toggled(button_pressed):
 	get_node("MarginContainer/VBoxContainer/Fog_Settings").visible = button_pressed
 
-
 func _on_GL_Ambient_value_changed(value) -> void:
 	if g_light:
 		g_light._set_init_energy_ambient(value)
@@ -541,3 +545,22 @@ func _on_GL_Ambient_value_changed(value) -> void:
 		emit_signal("settings_changed")
 	else:
 		dprint('Failed to read g_light object.', 'on:GL_Ambient_value_changed')
+
+const TOGGLEABLE_LABEL_COLOR = Color(1, 0, 0, 1)
+const TOGGLEABLE_LABEL_COLOR_OFF = Color(1, 0, 0, 0.6)
+
+func _on_FogHeight_toggled(pressed) -> void:
+	(fog_height_toggle as BaseButton).pressed = pressed
+	env.environment.fog_height_enabled = pressed
+	
+	if not is_instance_valid(fog_height_label.theme):
+		fog_height_label.theme = Theme.new()
+	
+	if env.environment.fog_height_enabled:
+		fog_height_label.add_color_override("font_color", TOGGLEABLE_LABEL_COLOR)
+		fog_container.get_node("Height_Min").show()
+		fog_container.get_node("Height_Max").show()
+	else:
+		fog_height_label.add_color_override("font_color", TOGGLEABLE_LABEL_COLOR_OFF)
+		fog_container.get_node("Height_Min").hide()
+		fog_container.get_node("Height_Max").hide()
