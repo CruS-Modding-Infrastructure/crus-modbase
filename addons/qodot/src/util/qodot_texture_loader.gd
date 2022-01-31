@@ -111,6 +111,7 @@ func load_texture(texture_name: String) -> Texture:
 			# print('[qodot]         Success')
 			var tex = ImageTexture.new()
 			tex.create_from_image(img)
+			tex.flags = Texture.FLAG_REPEAT | Texture.FLAG_ANISOTROPIC_FILTER
 			return tex as Texture
 		else:
 			# print('[qodot]         Failed')
