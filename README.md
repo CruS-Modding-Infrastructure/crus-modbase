@@ -38,6 +38,7 @@ Check out [this guide](https://hackmd.io/@OsM6oUcXSwG3mLNvTlPMZg/SkYQwbONu) if y
 - [Funko Factory](https://github.com/crustyrashky/crus-modbase/files/7240174/Funko_Factory.zip) by Ringo
    - Requires [Ringo's Mapping Enhancements for Cruelty Squad](https://github.com/Ringo5103/Ringos-Mapping-Enhancements-for-Cruelty-Squad) mod
 - [Golf Resort](https://github.com/crustyrashky/crus-modbase/files/7886469/Golf.Resort.1.1.5.zip) by Keith Mason
+- ...and more at https://cruscc.neocities.org/
 
 
 
