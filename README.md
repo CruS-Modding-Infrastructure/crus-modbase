@@ -14,7 +14,7 @@ Requires the [CRUELTY SQUAD MOD LOADER](https://github.com/crustyrashky/crus-mod
 
 ## Install
 
-1. Download the [latest release](https://github.com/crustyrashky/crus-modbase/releases/download/0.3.0/crus-modbase-0.3.0.zip)
+1. Download the [latest release](https://cdn.discordapp.com/attachments/822037225537142825/937463783457173596/CruS_Mod_Base-v0.4.0a.zip)
 2. Extract the `CruS Mod Base` folder to  `%appdata%\Godot\app_userdata\Cruelty Squad\mods`
 
 ## Adding custom levels
