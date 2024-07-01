@@ -14,7 +14,7 @@ Requires the [CRUELTY SQUAD MOD LOADER](https://github.com/crustyrashky/crus-mod
 
 ## Install
 
-1. Download the [latest release](https://cdn.discordapp.com/attachments/822037225537142825/937463783457173596/CruS_Mod_Base-v0.4.0a.zip)
+1. Download the [latest release](https://github.com/CruS-Modding-Infrastructure/crus-modbase/releases)
 2. Extract the `CruS Mod Base` folder to  `%appdata%\Godot\app_userdata\Cruelty Squad\mods`
 
 ## Adding custom levels
@@ -23,9 +23,12 @@ Requires the [CRUELTY SQUAD MOD LOADER](https://github.com/crustyrashky/crus-mod
 2. Extract its folder to `%appdata%\Godot\app_userdata\Cruelty Squad\levels`
    - This folder is created automatically if you run the game with the mod installed, or you can create it yourself
 
-## List of released levels
+## Where to find custom levels
 
-Check out [this guide](https://hackmd.io/@OsM6oUcXSwG3mLNvTlPMZg/SkYQwbONu) if you want to make your own
+Check out [CRUS.CC](https://crus.cc/maps/newest/) for all the released maps
+
+See [this guide](https://hackmd.io/@OsM6oUcXSwG3mLNvTlPMZg/SkYQwbONu) if you want to make your own
+
 
 - [Sin Space Extended](https://github.com/crustyrashky/crus-modbase/files/6559547/SinSpaceExtended.zip) by Uggo and Consumer Softproducts
 - [Belgha Festival](https://github.com/crustyrashky/crus-modbase/files/6595422/Belgha_Festival_V1.3.zip) by oldmankai and Just_Matt
@@ -38,7 +41,6 @@ Check out [this guide](https://hackmd.io/@OsM6oUcXSwG3mLNvTlPMZg/SkYQwbONu) if y
 - [Funko Factory](https://github.com/crustyrashky/crus-modbase/files/7240174/Funko_Factory.zip) by Ringo
    - Requires [Ringo's Mapping Enhancements for Cruelty Squad](https://github.com/Ringo5103/Ringos-Mapping-Enhancements-for-Cruelty-Squad) mod
 - [Golf Resort](https://github.com/crustyrashky/crus-modbase/files/7886469/Golf.Resort.1.1.5.zip) by Keith Mason
-- ...and more at https://cruscc.neocities.org/
 
 
 
