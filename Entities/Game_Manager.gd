@@ -11,6 +11,50 @@ enum {KEY_FORWARD, KEY_LEFT, KEY_RIGHT, KEY_BACK, KEY_SHOOT, KEY_JUMP, KEY_CROUC
 	KEY_TOGGLE_FULLSCREEN,}
 enum {L_HQ, L_PHARMA, L_PARADISE, L_SPACE, L_ANDROGEN, L_MALL, L_APARTMENT, L_CRUISE, L_SWAMP, L_CASINO, L_CASTLE, L_OFFICE, L_PUNISHMENT}
 
+var level_achievements = [
+	"HQ", 
+	"PHARMA", 
+	"PARADISE", 
+	"SIN_SPACE", 
+	"ANDROGEN_ASSAULT", 
+	"MALL_MADNESS", 
+	"APARTMENT", 
+	"SEASIDE_SHOCK", 
+	"BOG", 
+	"CASINO", 
+	"IDIOT", 
+	"OFFICE", 
+	"ARCHON", 
+	"DARKWORLD", 
+	"ALPINE", 
+	"MINERS", 
+	"NEURON", 
+	"HOUSE", 
+	"TRAUMA", 
+]
+
+var suit_level_achievements = [
+	"HQ_SUIT", 
+	"PHARMA_SUIT", 
+	"PARADISE_SUIT", 
+	"SIN_SPACE_SUIT", 
+	"ANDROGEN_SUIT", 
+	"MALL_SUIT", 
+	"APARTMENT_SUIT", 
+	"SEASIDE_SUIT", 
+	"BOG_SUIT", 
+	"CASINO_SUIT", 
+	"IDIOT_SUIT", 
+	"OFFICE_SUIT", 
+	"ARCHON_SUIT", 
+	"DARKWORLD_SUIT", 
+	"ALPINE_SUIT", 
+	"MINERS_SUIT", 
+	"NEURON_SUIT", 
+	"HOUSE_SUIT", 
+	"TRAUMA_SUIT", 
+]
+
 var LEVEL_META:Array
 var draw_distance = 400
 var LEVEL_TIMES:Array
@@ -47,7 +91,7 @@ var LEVELS_UNLOCKED:int = 1
 var t:float = 0
 var player
 var cutscene = false
-var nav
+var nav = null
 var active_enemies = 0
 var music
 var soul_intact = true
@@ -197,6 +241,8 @@ var red_water = preload("res://Maps/textures/base/red_water.png")
 var blue_water = preload("res://Maps/textures/base/water.png")
 var toxic_water = preload("res://Maps/textures/swamp/swampwater1.png")
 
+onready var Steam = preload("res://addons/godotsteam/godotsteam.gdns").new()
+
 func time2str(t:int):
 	var elapsed = (t) / 1000
 	var elapsed_msecs = t
@@ -225,10 +271,6 @@ func levels_completed():
 		return false
 
 func _enter_tree() -> void:
-	# Should be fine when not running godot version
-	if OS.has_feature("release"):
-		Steam.steamInit()
-
 	STOCKS = $Stocks
 	player = KinematicBody.new()
 	add_child(player)
@@ -312,7 +354,13 @@ func _backup():
 	Global.STOCKS.save_stocks("user://stock_backup.save")
 
 func _ready() -> void:
+	
 	add_child(backup_timer)
+	
+	# Should be fine when not running godot version
+	if OS.has_feature("release"):
+		Steam.steamInit()
+
 	backup_timer.one_shot = false
 	backup_timer.connect("timeout", self, "_backup")
 	backup_timer.start(120)
@@ -554,6 +602,12 @@ func level_finished() -> void:
 
 	save_game()
 	get_tree().paused = true
+
+
+	Steam.setAchievement(level_achievements[CURRENT_LEVEL])
+	if Global.implants.torso_implant.i_name == "Extravagant Suit":
+		Steam.setAchievement(suit_level_achievements[CURRENT_LEVEL])
+	Steam.storeStats()
 
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	if Global.CURRENT_LEVEL != Global.L_PUNISHMENT and Global.CURRENT_LEVEL != L_HQ and CURRENT_LEVEL != 18:
