@@ -1,9 +1,5 @@
 extends Spatial
 
-
-
-
-
 export  var next_scene = ""
 export (Array, String, MULTILINE) var LINES:Array = [""]
 export (Array, float) var DURATION:Array = [1]
@@ -17,24 +13,23 @@ onready  var SUBTITLE = $MarginContainer / CenterContainer / Subtitle
 var current_scene = 0
 var t = 0
 
-
-
 func _ready():
-	$MarginContainer / CenterContainer / Subtitle.get_font("font").size = 32 * (Global.resolution[0] / 1280)
-	
+	$MarginContainer / CenterContainer / Subtitle.get_font("font").size = 32 * (Global.resolution[0] / 720)
+
 	Global.menu.hide()
 	if music != "":
 		if music == "NO":
 			Global.music.stop()
-		else :
+		else:
 			Global.music.stream = load(music)
 			Global.music.play()
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 	Global.cutscene = true
 	Global.border.hide()
 	CAMERAS = $Cameras.get_children()
-	
+
 	var cmb = Mod.get_node("CruS Mod Base")
+	
 	var load_debug_lvl = cmb and "debug_level" in cmb.data
 	if introskip or Global.skip_intro or load_debug_lvl:
 		Global.cutscene = false
@@ -49,14 +44,12 @@ func _ready():
 			scn = cmb.data.debug_level.level_scene
 		Global.goto_scene(scn)
 
-
-
 func _process(delta):
 	if instant:
 		t += 1
 		SUBTITLE.modulate = Color((cos(t * 0.01) + 1) * 0.5, 0, 0)
 	if TIMER.is_stopped() and current_scene != LINES.size():
-		
+
 		current_scene = clamp(current_scene, 0, LINES.size() - 1)
 		TIMER.wait_time = DURATION[current_scene]
 		if CAMERAS.size() > 0:
@@ -64,7 +57,7 @@ func _process(delta):
 		SUBTITLE.text = LINES[current_scene]
 		if not instant:
 			SUBTITLE.speech()
-		else :
+		else:
 			SUBTITLE.visible_characters = - 1
 		current_scene += 1
 		TIMER.start()
@@ -72,6 +65,7 @@ func _process(delta):
 		Global.goto_scene(next_scene)
 		Global.cutscene = false
 		Global.border.show()
+
 func _input(event):
 	if event is InputEventKey:
 		if Input.is_action_just_pressed("ui_cancel") or Input.is_action_just_pressed("ui_accept"):
@@ -79,5 +73,5 @@ func _input(event):
 			Global.cutscene = false
 			Global.border.show()
 		if Input.is_action_just_pressed("movement_jump") and line_skip:
-			
+
 			TIMER.stop()

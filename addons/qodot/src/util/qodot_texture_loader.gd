@@ -99,14 +99,16 @@ func load_textures(texture_list: Array) -> Dictionary:
 func load_texture(texture_name: String) -> Texture:
 	if(texture_name == TEXTURE_EMPTY):
 		return null
-	
+
 	# Load image as texture if it's external
 	if texture_name in external_texture_dict:
+		var dict_value = external_texture_dict[texture_name]
 		var img = Image.new()
 		var err = img.load(external_texture_dict[texture_name])
 		if err == 0:
 			var tex = ImageTexture.new()
 			tex.create_from_image(img)
+			tex.flags = Texture.FLAG_REPEAT | Texture.FLAG_ANISOTROPIC_FILTER
 			return tex as Texture
 		else:
 			return null
@@ -195,7 +197,7 @@ func get_pbr_texture(texture: String, suffix: int) -> Texture:
 
 	if texture_comps.size() == 0:
 		return null
-	
+
 	for texture_extension in texture_extensions:
 		var path := "%s/%s/%s" % [
 			base_texture_path,

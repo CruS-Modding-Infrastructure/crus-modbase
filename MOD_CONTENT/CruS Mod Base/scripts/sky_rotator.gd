@@ -10,6 +10,7 @@ var helltexture2 = preload("res://Textures/sky11.png")
 export var ignore_cursed_sky = false
 
 func _ready():
+	print('[sky_rotator:on:ready]')
 	if Global.hope_discarded and Global.CURRENT_LEVEL != 18 and !ignore_cursed_sky:
 		environment.background_sky.panorama = helltexture
 		environment.fog_color = Color(1, 0, 0)
@@ -19,7 +20,7 @@ func _ready():
 		environment.background_color = environment.fog_color
 	if Global.reflections:
 		environment.ss_reflections_enabled = true
-	else :
+	else:
 		environment.ss_reflections_enabled = false
 	min_fog_end = environment.fog_depth_end
 	min_fog_begin = environment.fog_depth_begin
@@ -39,5 +40,5 @@ func _ready():
 func _physics_process(delta):
 	if z:
 		environment.background_sky_rotation.x += rotation_speed * delta
-		return 
+		return
 	environment.background_sky_rotation.y += rotation_speed * delta

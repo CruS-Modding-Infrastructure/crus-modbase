@@ -2,7 +2,7 @@ extends Node
 
 const MAX_LAST_KEYS_SIZE = 10
 
-onready var CMB = Mod.get_node("CruS Mod Base") 
+onready var CMB = Mod.get_node("CruS Mod Base")
 onready var original_melee_script = load("res://Scripts/Enemy_Melee_Weapon.gd")
 onready var new_melee_script = load(CMB.modpath + "/scripts/Enemy_Melee_Weapon.gd")
 onready var Noclip = load(CMB.modpath + "/scenes/noclip.tscn")
@@ -54,29 +54,32 @@ func _process(delta):
 			hostile_queue.remove(i)
 
 func _input(ev):
-	if ev is InputEventKey and ev.is_pressed():
-		if ev.get_scancode() == KEY_ENTER and !cheated and is_instance_valid(Global.nav):
-			if last_keys.find("CEOMINDSET") != -1:
-				Global.player.UI.notify("Cheat prompt activated", Color(1, 1, 1))
-				prompt_inst = Prompt.instance()
-				prompt_inst.cheats = self
-				get_node("/root").add_child(prompt_inst)
-				cheated = true
-		elif !cheated:
-			var key = ev.as_text()
-			if len(key) == 1:
-				if len(last_keys) == MAX_LAST_KEYS_SIZE:
-					last_keys = last_keys.substr(1)
-				last_keys += key
-		if (ev is InputEventWithModifiers &&
-			(enabled.has("noclip") or enabled.has("debug")) &&
-			ev.get_scancode() == KEY_N && 
-			ev.shift):
-			toggle_noclip()
+	if not(ev is InputEventKey and ev.is_pressed()):
+		return
+	if ev.scancode == KEY_ENTER and not cheated and is_instance_valid(Global.nav):
+		if last_keys.find("CEOMINDSET") != -1:
+			enable_cheat_prompt()
+	elif !cheated:
+		var key = ev.as_text()
+		if len(key) == 1:
+			if len(last_keys) >= MAX_LAST_KEYS_SIZE:
+				last_keys = last_keys.substr(1)
+			last_keys += key
+	if (ev is InputEventWithModifiers
+			and (enabled.has("noclip") or enabled.has("debug"))
+			and ev.pressed and ev.scancode == KEY_N
+			and ev.shift):
+		toggle_noclip()
+
+func exit_game() -> void:
+	# $SFX / Select.play()
+	get_tree().quit()
 
 func _exit_tree():
 	if is_instance_valid(prompt_inst):
-		get_node("/root").remove_child(prompt_inst)
+		# E 0:15:15.034   remove_child: Parent node is busy setting up children, remove_node() failed. Consider using call_deferred("remove_child", child) instead.
+		# get_node("/root").remove_child(prompt_inst)
+		get_node("/root").call_deferred("remove_child", prompt_inst)
 		prompt_inst.queue_free()
 
 func reset_noclip():
@@ -85,26 +88,28 @@ func reset_noclip():
 	noclip_inst = null
 
 func toggle_noclip():
-	if (is_instance_valid(Global.player) and 
-		Global.menu.in_game and 
-		(!is_instance_valid(noclip_inst) or !noclip_inst.in_use)):
+	if (is_instance_valid(Global.player) and
+			Global.menu.in_game and
+			not in_noclip()):
 		enter_noclip()
 	else:
 		exit_noclip()
 
-func in_noclip():
+func in_noclip() -> bool:
 	return is_instance_valid(noclip_inst) and noclip_inst.in_use
 
-func enter_noclip(hide_nodes=true):
+func enter_noclip(hide_nodes := true) -> void:
 	if is_instance_valid(noclip_inst):
 		noclip_inst.queue_free()
+
 	noclip_inst = Noclip.instance()
 	Global.current_scene.add_child(noclip_inst)
 	noclip_inst.player_use(hide_nodes)
 
-func exit_noclip(show_nodes=true):
-	if is_instance_valid(noclip_inst) and noclip_inst.in_use:
+func exit_noclip(show_nodes := true):
+	if in_noclip():
 		noclip_inst.player_exit(show_nodes)
+		reset_noclip()
 
 func toggle_zombie():
 	if is_instance_valid(Global.player):
@@ -165,7 +170,7 @@ func toggle_infinite_arm_aug():
 			enabled.remove(enabled.find("kitted"))
 			inf_arm_aug = false
 
-func is_npc(node):
+func is_npc(node) -> bool:
 	if node.get_script():
 		var spath = node.get_script().get_path()
 		match spath:
@@ -180,20 +185,24 @@ func is_npc(node):
 	return false
 
 func get_npc_list(parent):
-	var npcs = []
-	if !parent or !is_instance_valid(parent):
+	if not (parent and is_instance_valid(parent)):
 		return []
+
+	var npcs = []
 	for node in parent.get_children():
 		if node is Area:
 			npcs += get_npc_list(node)
+
 		if is_npc(node):
 			var body = node.get_node_or_null("Body")
+
 			if body:
 				body = body[0] if body is Array else body
 				if body.get_script():
 					npcs.append(body)
 			else:
 				npcs.append(node)
+
 			if node.name == "abraxas":
 				npcs.append(node.get_node("Armature/Skeleton/BoneAttachment 3/Left_Tail"))
 				npcs.append(node.get_node("Armature/Skeleton/BoneAttachment 4/Right_Tail"))
@@ -237,7 +246,7 @@ func toggle_death():
 		if Global.death:
 			Global.player.UI.notify("Reverting to normal soul", Color(0, 1, 0))
 			Global.death = false
-			
+
 			Global.UI.health_texture.texture = Global.UI.HEALTH
 		else:
 			Global.player.UI.notify("Changing to emulated soul", Color(1, 0, 1))
@@ -274,7 +283,7 @@ func toggle_npc_ffa():
 	if !enabled.has("friday"):
 		Global.player.UI.notify("Accidentally releasing mind-altering gas", Color(1, 1, 1))
 		enabled.append("friday")
-		npc_ffa = true 
+		npc_ffa = true
 		populate_npc_list()
 	else:
 		Global.player.UI.notify("Dissipating mind-altering gas", Color(0.7, 0.7, 0.7))
@@ -290,3 +299,19 @@ func enable_debug_menus():
 	if is_instance_valid(Global.player) and Global.player.get_parent().get_node_or_null("Stock_Menu"):
 		Global.player.UI.notify("Enabled debug menus", Color(1, 1, 1))
 		Mod.get_node("CruS Mod Base/LevelEditor").add_debug_menus()
+
+# Moved to separate function to allow initialization from context other than _input
+func enable_cheat_prompt(silent = false) -> void:
+
+	if cheated == true:
+		return
+
+	if not silent:
+		Global.player.UI.notify("Cheat prompt activated", Color(1, 1, 1))
+
+	prompt_inst = Prompt.instance()
+	prompt_inst.cheats = self
+
+	get_node("/root").add_child(prompt_inst)
+
+	cheated = true

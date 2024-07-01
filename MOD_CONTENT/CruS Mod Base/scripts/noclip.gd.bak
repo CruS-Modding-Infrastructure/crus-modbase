@@ -1,0 +1,539 @@
+class_name NoclipCamera
+extends KinematicBody
+
+var in_use = false
+var dir = Vector3()
+var velocity = Vector3.ZERO
+var show_on_exit = true
+var keep_weapon_disabled = false
+var last_col_layer
+
+# FOV increment modifier for holding base key
+export (float) var fov_inc = 0.5
+# FOV increment modifier for holding both keys
+export (float) var fov_inc_mod             = 5.0
+export (float) var fov_max                 = 130
+export (float) var fov_min                 = 20
+
+export (float) var pov_max_yaw               = 80
+
+export (bool)  var filter_reload_key_combo = true
+export (float) var noclip_speed_accel_mod  = 1.1
+export (float) var base_speed              = 200
+export (float) var max_speed_mult          = 15
+# Modifier for speed when called through _process
+export (float) var noclip_speed_process_scale = 16.0
+
+# Manually setting this for my own screen
+const const_target_fps := 120.0
+# Try to read fps, update target_fps if found, and return target_fps. On failure, retain existing
+# (or set to const_target_fps if no previous value)
+func poll_target_fps() -> float:
+	# Doesn't work, proper support for querying monitor refresh rate not coming until 4.0
+	# var engine_fps = Performance.get_monitor(Performance.TIME_FPS)
+	var engine_fps = Engine.get_frames_per_second()
+	if engine_fps and engine_fps > 0:
+		target_fps = engine_fps
+	elif not target_fps:
+		target_fps = const_target_fps
+	return target_fps
+var target_fps = const_target_fps
+
+const max_process_delta_factor := 5
+# Used to limit noclip movement through _process when frames get choppy, avoids jumping across
+# the entire map when viewing remote scene, etc.
+onready var max_process_delta := (1.0 / const_target_fps) * max_process_delta_factor
+
+onready var in_debug_map = Mod.get_node("CruS Mod Base").data.has("debug_level")
+
+var speed     = base_speed
+var speed_cap = base_speed * max_speed_mult
+
+func dprint(msg: String, ctx: String = "") -> void:
+	Mod.mod_log('%s' % [ msg ],
+			"noclip:" + ctx if len(ctx) > 0 else "noclip")
+
+func _ready():
+	# dprint('Detected target fps: %s' % [ Engine.get_frames_per_second() ], 'on:ready')
+	$Pivot / Camera.fov = Global.FOV
+
+var delta_max = -1
+func debug_log_high_delta(delta: float) -> void:
+	if delta <= delta_max: return
+
+	# If new delta is now max, log it
+	delta_max = delta
+	# dprint('New max delta -> %s' % [ delta_max ], 'delta')
+
+func _process(delta):
+	transform.basis = Global.player.transform.basis
+	Global.player.weapon.disabled = true
+
+	if in_use:
+		debug_log_high_delta(delta)
+		move(delta, true)
+	else:
+		set_process(false)
+
+# For context when checking key presses
+enum RELOAD_KEY {
+	SHIFT = KEY_SHIFT,
+	ALT   = KEY_ALT,
+	R     = KEY_R,
+}
+
+var MOVE_ACTION  = {
+	UP   = "movement_jump",
+	DOWN = "crouch",
+}
+
+func should_move_down() -> bool:
+	# Handle normally if not in a debug map (read: not actually reloadable)
+	if not in_debug_map:
+		return Input.is_action_pressed(MOVE_ACTION.DOWN)
+
+	if Input.is_action_just_pressed("zoom"):
+		return false
+
+	if Input.is_action_just_pressed(MOVE_ACTION.DOWN):
+		return not Input.is_key_pressed(RELOAD_KEY.SHIFT)
+	else:
+		return Input.is_key_pressed(RELOAD_KEY.ALT) and not Input.is_key_pressed(RELOAD_KEY.SHIFT)
+
+#region New movement members
+
+var motion := Vector3.ZERO
+
+#endregion New movement members
+
+func move_process_new(delta: float) -> void:
+
+
+	if Input.is_action_pressed("move_forward"):
+		motion.x = -1
+	elif Input.is_action_pressed("move_backward"):
+		motion.x = 1
+	else:
+		motion.x = 0
+
+	if Input.is_action_pressed("move_left"):
+		motion.z = 1
+	elif Input.is_action_pressed("move_right"):
+		motion.z = -1
+	else:
+		motion.z = 0
+
+	if Input.is_action_pressed("move_up"):
+		motion.y = 1
+	elif Input.is_action_pressed("move_down"):
+		motion.y = -1
+	else:
+		motion.y = 0
+
+	# Normalize motion
+	# (prevents diagonal movement from being `sqrt(2)` times faster than straight movement)
+	motion = motion.normalized()
+
+	# Speed modifier
+	if Input.is_action_pressed("move_speed"):
+		motion *= 2
+
+	# Guessing this is the correct value to work off of
+	var rotation = $Pivot.rotation_degrees
+	# Rotate the motion based on the camera angle
+	motion = motion \
+		.rotated(Vector3(0, 1, 0), rotation.y - initial_rotation) \
+		.rotated(Vector3(1, 0, 0), cos(rotation.y) * rotation.x) \
+		.rotated(Vector3(0, 0, 1), -sin(rotation.y) * rotation.x)
+
+	# Add motion
+	velocity += motion * move_speed
+
+	# Friction
+	velocity *= 0.9
+
+	# Apply velocity
+	position += velocity * delta
+
+
+# @NOTE: Moved `in_use` check to caller
+func move(delta: float, in_process: bool = false) -> void:
+	var gxf = get_global_transform()
+	dir = Vector3()
+
+	# @NOTE: Started adding checks to check for reload map inputs, not thought
+	#        out fully and probably more annoying than problem for most ppl
+
+	if Input.is_action_pressed(MOVE_ACTION.UP):
+		dir += gxf.basis.y
+	# Filter out alt presses if shift held (for possible map reload)
+	# @TODO: Cancel movement iff one of:
+	#  - Crouch [Held] && SHIFT [Just Pressed]
+	#  - Crouch [Just Pressed] && NOT SHIFT [Held]
+	if should_move_down():
+		if Input.is_action_pressed(MOVE_ACTION.DOWN):
+			dir -= gxf.basis.y
+
+	if Input.is_action_pressed("movement_forward"):
+		dir += gxf.basis.z
+	if Input.is_action_pressed("movement_backward"):
+		dir -= gxf.basis.z
+	if Input.is_action_pressed("movement_left"):
+		dir += gxf.basis.x
+	if Input.is_action_pressed("movement_right"):
+		dir -= gxf.basis.x
+
+	dir = dir.normalized()
+
+	if in_process:
+		translate_object_local(dir * speed * delta)
+		#global_transform.origin = global_transform.origin.slide(
+		#	global_transform.origin + (dir * speed) * delta) #noclip_speed_process_scale, delta) #
+		Global.player.global_transform.origin = $Pivot.global_transform.origin
+	else:
+		Global.player.global_transform.origin = $Pivot.global_transform.origin
+		# @TODO: The issue with running this in _process is using move_and_slide, move it to a transform
+		velocity = move_and_slide(
+				# Limit movement when delta goes out of defined range when in_process
+				dir * delta *
+				clamp(speed, -speed_cap, speed_cap))
+
+#region Retain FPS counter in noclip
+
+# Toggle Key
+export (int) var NOCLIP_PROFILE_VIEW_TOGGLE = KEY_F
+
+# Set to default to fps view
+var fps_view_preferred = false
+# Set to true if current noclip instance is using alternative hiding method
+# (Setting it to true to test out new mode for now)
+var fps_view_mode = fps_view_preferred and fps_view_implemented()
+
+# Quick check to see if fps counter actually added in active build
+func fps_view_implemented() -> bool:
+	return is_instance_valid(Global.UI.get_node("UI_UPS_CONTAINER/FPS"))
+
+# @NOTE: Lowered indent by flipping condition check and returning early
+func player_use(hide_nodes = true):
+	if in_use or Global.player.dead:
+		return
+
+	# If noclip used in level pre-start
+	if Global.player.start_flag == false:
+		Global.player.start_flag = true
+		# Clear `intro` parameter in case called at the start of a level
+		Global.player.amp = 0
+		Global.player.shader_screen.material.set_shader_param("amplitude", Global.player.amp)
+		Global.player.shader_screen.material.set_shader_param("intro",     false)
+		Global.player.set_process_input(true)
+		Global.player.start_flag = true
+
+	reset_keymod_player_states()
+
+	$Pivot / Camera.current = true
+	var player_head = Global.player.get_parent().get_node("Position3D/Rotation_Helper")
+	global_transform.origin = player_head.global_transform.origin
+	$Pivot / Camera.transform.basis = player_head.get_node("Camera").transform.basis
+	# $Pivot / Camera.rotation        = player_head.get_node("Camera").rotation
+	$Pivot.rotation.x = player_head.rotation.x
+	$Pivot / Camera.rotation.y = player_head.get_node("Camera").rotation.y
+	$Pivot / Camera.rotation.z = player_head.get_node("Camera").rotation.z
+
+	set_process(true)
+
+	if hide_nodes:
+		if fps_view_mode:
+			hide_ui_retain_fps()
+		else:
+			hide_ui()
+
+	Global.player.crush_check.disabled = true
+	Global.player.disabled = true
+	Global.player.collision_box.disabled = true
+	last_col_layer = Global.player.collision_layer
+	Global.player.collision_layer = 0
+	speed = base_speed
+
+	Global.player.reticle.force_disable_draw(true, true)
+
+	yield (get_tree(), "idle_frame")
+	in_use = true
+
+# @NOTE: Lowered indent by flipping condition check and returning early
+func player_exit(show_nodes=true):
+	if Global.player.dead:
+		return
+
+	show_on_exit = show_nodes
+
+	$Pivot / Camera.current = false
+	Global.player.player_velocity = Vector3.ZERO
+	in_use = false
+	Global.player.crush_check.disabled = false
+
+	var bc = Global.get_node("BorderContainer")
+	var preview_box = bc.get_node("Preview_Box") if bc.has_node("Preview_Box") else null
+	var preview_off = !preview_box or (preview_box and !preview_box.visible)
+
+	if show_nodes and preview_off:
+		if fps_view_mode:
+			restore_ui_from_retained_fps()
+		else:
+			restore_ui()
+
+	if !keep_weapon_disabled:
+		Global.player.weapon.disabled = false
+
+	Global.player.reticle.force_disable_draw(false, true)
+	Global.player.reticle.show()
+	Global.player.player_view.current = true
+	Global.player.crush_check.disabled = false
+	Global.player.disabled = false
+	Global.player.collision_box.disabled = false
+	Global.player.collision_layer = last_col_layer
+
+	reset_keymod_player_states()
+	var player_head = Global.player.get_parent().get_node("Position3D/Rotation_Helper/Camera")
+	player_head.transform.basis = $Pivot / Camera.transform.basis
+	player_head.rotation_degrees = $Pivot / Camera.rotation_degrees
+
+	set_process(false)
+
+	queue_free()
+
+
+#region Hide - Toggle
+
+func try_toggle_hide_mode() -> void:
+	# Don't toggle if not implemented, obs
+	if not fps_view_implemented():
+		return
+
+	# Flip state, check inverse for original value
+	fps_view_mode = not fps_view_mode
+	if not fps_view_mode:
+		restore_ui_from_retained_fps()
+		hide_ui()
+	else:
+		restore_ui()
+		hide_ui_retain_fps()
+
+#endregion Hide - Toggle
+
+#region Hide - Common
+
+func hide_ui_common() -> void:
+	Global.border.hide()
+	Global.player.get_parent().hide()
+	Global.player.hide()
+	Global.player.grab_hand.hide()
+	Global.player.weapon.disabled = true
+
+func restore_ui_common() -> void:
+	Global.border.show()
+	Global.player.get_parent().show()
+	Global.player.show()
+	Global.player.grab_hand.show()
+
+#endregion Hide - Common
+
+#region Hide - FPS label retain
+
+func hide_ui_retain_fps() -> void:
+	var ui = Global.UI
+	ui.get_node('UI_HBOX').hide()
+	ui.get_node('Notification_Box').hide()
+	ui.get_node('UI_COMMS_CONTAINER').hide()
+	ui.get_node('Ammovbox').hide()
+	ui.get_node('UI_UPS_CONTAINER/WishView').hide()
+	ui.get_node('UI_UPS_CONTAINER/Rotation').hide()
+	ui.get_node('UI_UPS_CONTAINER/Velocity').hide()
+	ui.get_node('UI_UPS_CONTAINER/MaxVelocity').hide()
+	# ui.get_node('UI_UPS_CONTAINER/FPS').hide()
+
+	# Clear reload color
+	Global.UI.reload_color = Color(0, 0, 0, 0)
+
+	hide_ui_common()
+
+func restore_ui_from_retained_fps() -> void:
+	var ui = Global.UI
+	ui.get_node('UI_HBOX').show()
+	ui.get_node('Notification_Box').show()
+	ui.get_node('UI_COMMS_CONTAINER').show()
+	ui.get_node('Ammovbox').show()
+	ui.get_node('UI_UPS_CONTAINER/WishView').show()
+	ui.get_node('UI_UPS_CONTAINER/Rotation').show()
+	ui.get_node('UI_UPS_CONTAINER/Velocity').show()
+	ui.get_node('UI_UPS_CONTAINER/MaxVelocity').show()
+
+	restore_ui_common()
+
+#endregion Hide - FPS label retain
+
+#region Hide - Base
+
+func hide_ui() -> void:
+	Global.UI.hide()
+	hide_ui_common()
+
+func restore_ui() -> void:
+	Global.UI.show()
+	restore_ui_common()
+
+#endregion Hide - Base
+
+#endregion Hide - Retain FPS counter in noclip
+
+func _exit_tree():
+	# hopefully fix border remaining gone if you die in noclip
+	if Global.player.died:
+		Global.border.show()
+	player_exit(show_on_exit)
+
+func _on_Vehicle_body_entered(body):
+	if body.has_method("physics_object"):
+		body.queue_free()
+
+# Normalizes any player input related state for noclip
+# - Crouch
+# - Zoom
+# - Movement Tilt
+func reset_keymod_player_states() -> void:
+	# Unset crouch flag, and simulate release
+	Global.player.crouch_flag = false
+	if Input.is_action_pressed("crouch"):
+		# dprint('Uncrouching', 'reset_keymod_player_states')
+		Input.action_release("crouch")
+
+	# Unset zoom flag, and simulate release
+	Global.player.weapon.zoom_flag = false
+	if Input.is_action_pressed("zoom"):
+		# dprint('Unzooming', 'reset_keymod_player_states')
+		Input.action_release("zoom")
+
+	# Reset lean
+	Global.player.get_parent().get_node("Position3D/Rotation_Helper").get_node("Camera").transform.basis.x = Vector3(-1, 0, 0)
+
+func _input(event: InputEvent):
+	if not in_use:
+		return
+
+	if event is InputEventKey:
+		if (event.pressed
+				and (not event.echo)
+				and event.get_scancode_with_modifiers() == NOCLIP_PROFILE_VIEW_TOGGLE):
+			try_toggle_hide_mode()
+
+	if event is InputEventMouseMotion:
+		if Input.get_mouse_mode() == Input.MOUSE_MODE_CAPTURED:
+
+			var sensitivity = Global.mouse_sensitivity * Global.player.player_view.fov / Global.FOV
+			# Will break on non-modified player.gd
+			#var sensitivity = Global.mouse_sensitivity_normalized * Global.player.player_view.fov / Global.FOV
+
+			var rot_deg_y = deg2rad(event.relative.y * sensitivity)
+			if Global.invert_y:
+				rot_deg_y *= - 1
+			$Pivot.rotate_x(rot_deg_y)
+			if Global.player.max_gravity > 0:
+				rotate_y(deg2rad(event.relative.x * sensitivity * - 1))
+			else:
+				rotate_y(deg2rad(event.relative.x * sensitivity))
+			var camera_rot = $Pivot.rotation_degrees
+			camera_rot.x = clamp(camera_rot.x, -pov_max_yaw, pov_max_yaw)
+			$Pivot.rotation_degrees = camera_rot
+
+	if event is InputEventMouseButton:
+		# Also checks shift key, so has exclusive priority over speed control
+		if Input.is_key_pressed(KEY_CONTROL):
+			if Input.is_key_pressed(KEY_SHIFT):
+				match event.button_index:
+					BUTTON_WHEEL_UP:
+						$Pivot / Camera.fov = clamp(
+							$Pivot / Camera.fov - (fov_inc * fov_inc_mod),
+							fov_min, fov_max)
+					BUTTON_WHEEL_DOWN:
+						$Pivot / Camera.fov = clamp(
+							$Pivot / Camera.fov + (fov_inc * fov_inc_mod),
+							fov_min, fov_max)
+			else:
+				match event.button_index:
+					BUTTON_WHEEL_UP:
+						$Pivot / Camera.fov = clamp(
+							$Pivot / Camera.fov - fov_inc,
+							fov_min, fov_max)
+					BUTTON_WHEEL_DOWN:
+						$Pivot / Camera.fov = clamp(
+							$Pivot / Camera.fov + fov_inc,
+							fov_min, fov_max)
+
+		elif Input.is_key_pressed(KEY_SHIFT):
+			match event.button_index:
+				BUTTON_WHEEL_UP:
+					# Original clamp that doesn't seem to work for some reason
+					# (one in actual move function works tho)
+					speed = clamp(speed * noclip_speed_accel_mod, 0.0, speed_cap)
+				BUTTON_WHEEL_DOWN:
+					speed /= noclip_speed_accel_mod
+
+# (Keeping this from the new version, not from backed up script above)
+
+
+func _move_process_broken(delta: float) -> void:
+	# if Input.is_action_pressed(MOVE_ACTION.FORWARD):
+	# 	motion.x = -1
+	# elif Input.is_action_pressed(MOVE_ACTION.BACK):
+	# 	motion.x = 1
+	# else:
+	# 	motion.x = 0
+
+	# if Input.is_action_pressed(MOVE_ACTION.LEFT):
+	# 	motion.z = 1
+	# elif Input.is_action_pressed(MOVE_ACTION.RIGHT):
+	# 	motion.z = -1
+	# else:
+	# 	motion.z = 0
+
+	# if Input.is_action_pressed(MOVE_ACTION.UP):
+	# 	motion.y = 1
+	# elif Input.is_action_pressed(MOVE_ACTION.DOWN):
+	# 	motion.y = -1
+	# else:
+	# 	motion.y = 0
+
+	# Normalize motion
+	# (prevents diagonal movement from being `sqrt(2)` times faster than straight movement)
+	motion = motion.normalized()
+
+	# Speed modifier
+		# if Input.is_action_pressed("movement_speed"):
+		# 	motion *= 2
+
+	# Guessing this is the correct value to work off of
+
+	#	$Pivot / Camera.transform.basis
+	#	$Pivot.rotation.x
+	#	$Pivot / Camera.rotation.y
+	#	$Pivot / Camera.rotation.z
+
+	var rot = Vector3(
+		$Pivot.rotation.x,
+		$Pivot / Camera.rotation.y,
+		$Pivot / Camera.rotation.z)
+
+	var cam = $Pivot / Camera
+
+	# Rotate the motion based on the camera angle
+	motion = motion.rotated(Vector3(0, 1, 0), rot.y - initial_rotation) \
+				   .rotated(Vector3(1, 0, 0), cos(rot.y) * rot.x)       \
+				   .rotated(Vector3(0, 0, 1), -sin(rot.y) * rot.x)
+
+	# Add motion
+	velocity = velocity + (motion * speed)
+
+	# Friction
+	velocity *= 0.9
+
+	# Apply velocity
+	translate_object_local(transform.origin + (velocity * delta))

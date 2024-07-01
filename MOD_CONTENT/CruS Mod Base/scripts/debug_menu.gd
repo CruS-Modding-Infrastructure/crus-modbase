@@ -33,34 +33,34 @@ const WEP_NAMES = [
 ]
 
 var WEP_ICONS = [
-	load("res://Textures/Menu/Weapon_Buttons/Pistol.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/SMG.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/tranq.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/baton.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/Shotgun.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/RL.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/Sniper.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/AR.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/S_SMG.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/Nambu.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/Gas_Launcher.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/MG3.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/Autoshotgun.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/Mauser.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/Bore.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/MKR.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/radgun.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/flashlight.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/zippy.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/AN94.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/vag72.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/steyr.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/dna.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/rod.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/flamethrower.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/SKS.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/nailer.png"), 
-	load("res://Textures/Menu/Weapon_Buttons/shockwave.png"), 
+	load("res://Textures/Menu/Weapon_Buttons/Pistol.png"),
+	load("res://Textures/Menu/Weapon_Buttons/SMG.png"),
+	load("res://Textures/Menu/Weapon_Buttons/tranq.png"),
+	load("res://Textures/Menu/Weapon_Buttons/baton.png"),
+	load("res://Textures/Menu/Weapon_Buttons/Shotgun.png"),
+	load("res://Textures/Menu/Weapon_Buttons/RL.png"),
+	load("res://Textures/Menu/Weapon_Buttons/Sniper.png"),
+	load("res://Textures/Menu/Weapon_Buttons/AR.png"),
+	load("res://Textures/Menu/Weapon_Buttons/S_SMG.png"),
+	load("res://Textures/Menu/Weapon_Buttons/Nambu.png"),
+	load("res://Textures/Menu/Weapon_Buttons/Gas_Launcher.png"),
+	load("res://Textures/Menu/Weapon_Buttons/MG3.png"),
+	load("res://Textures/Menu/Weapon_Buttons/Autoshotgun.png"),
+	load("res://Textures/Menu/Weapon_Buttons/Mauser.png"),
+	load("res://Textures/Menu/Weapon_Buttons/Bore.png"),
+	load("res://Textures/Menu/Weapon_Buttons/MKR.png"),
+	load("res://Textures/Menu/Weapon_Buttons/radgun.png"),
+	load("res://Textures/Menu/Weapon_Buttons/flashlight.png"),
+	load("res://Textures/Menu/Weapon_Buttons/zippy.png"),
+	load("res://Textures/Menu/Weapon_Buttons/AN94.png"),
+	load("res://Textures/Menu/Weapon_Buttons/vag72.png"),
+	load("res://Textures/Menu/Weapon_Buttons/steyr.png"),
+	load("res://Textures/Menu/Weapon_Buttons/dna.png"),
+	load("res://Textures/Menu/Weapon_Buttons/rod.png"),
+	load("res://Textures/Menu/Weapon_Buttons/flamethrower.png"),
+	load("res://Textures/Menu/Weapon_Buttons/SKS.png"),
+	load("res://Textures/Menu/Weapon_Buttons/nailer.png"),
+	load("res://Textures/Menu/Weapon_Buttons/shockwave.png"),
 	load("res://Textures/Menu/Weapon_Buttons/light.png"),
 	load("res://Textures/rank_letters/N.png")
 ]
@@ -68,7 +68,7 @@ var WEP_ICONS = [
 onready var wep_img_rects = [
 	get_node("MarginContainer/VBoxContainer/Weapon_Select/HBoxContainer3/Weapon1/TextureRect"),
 	get_node("MarginContainer/VBoxContainer/Weapon_Select/HBoxContainer3/Weapon2/TextureRect")
-]
+]		
 
 onready var dropdowns = [
 	get_node("MarginContainer/VBoxContainer/Weapon_Select/HBoxContainer3/Weapon1/MenuButton"),
@@ -85,7 +85,6 @@ onready var g_light = get_tree().root.get_node("Level/Global_Light")
 enum Dropdowns { D_WEAPON1, D_WEAPON2 }
 
 var last_dropdown_id: int
-var orig_env := {}
 
 func _ready():
 	#for i in range(0, len(WEP_ICONS)):
@@ -94,11 +93,14 @@ func _ready():
 	#	var nt = ImageTexture.new()
 	#	nt.create_from_image(img)
 	#	WEP_ICONS[i] = nt
-	
+
 	# hide level debug settings if level doesn't have custom Night_Cycle.gd
 	if !("orig_env" in g_light) or !("debug_time" in g_light):
 		temp_lvl_settings.visible = false
-	
+	# Fire update if custom time
+	if "debug_time" in g_light:
+		_on_Time_value_changed(g_light.debug_time)
+
 	# init weapons
 	if Global.implants.torso_implant != Global.implants.IMPLANTS[8]:
 		Global.implants.torso_implant.orbsuit = false
@@ -113,7 +115,7 @@ func _ready():
 	var play_ready = is_instance_valid(Global.player.weapon)
 	if play_ready:
 		update_weapons()
-	
+
 	# init border
 	var bm = get_node("MarginContainer/VBoxContainer/Player_Border/Border_Menu")
 	if Global.soul_intact:
@@ -125,15 +127,17 @@ func _ready():
 	elif Global.hope_discarded:
 		Global.border.texture = Global.BORDERS[3]
 		bm.selected = 3
-	else :
+	else:
 		Global.border.texture = Global.BORDERS[0]
 		bm.selected = 1
-		
+
 	# init death health
 	var dt = get_node("MarginContainer/VBoxContainer/Toggle_Death/HBoxContainer/CheckButton")
 	dt.pressed = Global.death
-	
+
 func _process(delta):
+	if hide_reticle:
+		Global.player.reticle.hide()
 	if Global.rain:
 		rain_toggle.pressed = true
 
@@ -179,12 +183,10 @@ func _on_TextureRect_gui_input(event, id):
 	if event is InputEventMouseButton and event.button_index == BUTTON_LEFT and event.pressed:
 		dropdowns[id].pressed = true
 
-
 func _on_Select_Implants_toggled(button_pressed):
 	get_parent().get_parent().get_node("Implant_Menu").visible = button_pressed
 	get_parent().get_parent().get_node("VBoxContainer").visible = !button_pressed
 	get_parent().get_parent().get_parent().rect_size.x *= 1.6 if button_pressed else 0.625
-
 
 func _on_Death_Toggle_toggled(button_pressed):
 	Global.death = button_pressed
@@ -196,7 +198,6 @@ func _on_Death_Toggle_toggled(button_pressed):
 
 func _on_Weapon_Menu_popup_hide():
 	dropdowns[last_dropdown_id].pressed = false
-
 
 func _on_Border_Menu_item_selected(index):
 	match index:
@@ -229,17 +230,18 @@ func _on_Border_Menu_item_selected(index):
 			Global.set_hope()
 	border_warn.visible = Global.border.texture == Global.BORDERS[3]
 
-
 func _on_Noclip_toggled(button_pressed):
 	var taking_preview_image = false
 	if get_node("../Level"):
 		taking_preview_image = get_node("../Level").taking_preview_image
 	if is_instance_valid(cheats):
 		if button_pressed:
-			cheats.enter_noclip(!taking_preview_image)
-		elif is_instance_valid(cheats.noclip_inst):
-			cheats.noclip_inst.keep_weapon_disabled = true
-			cheats.exit_noclip(!taking_preview_image)
+			if not cheats.in_noclip():
+				cheats.enter_noclip() # !taking_preview_image)
+		else:
+			if is_instance_valid(cheats.noclip_inst):
+				cheats.noclip_inst.keep_weapon_disabled = true
+				cheats.exit_noclip(!taking_preview_image)
 
 func _on_Debug_visibility_changed():
 	update_weapons()
@@ -250,34 +252,48 @@ func _on_Debug_visibility_changed():
 		nc_btn.pressed = cheats.in_noclip()
 	border_warn.visible = Global.border.texture == Global.BORDERS[3]
 
+var hide_reticle := false
+
 # doesn't really work because most weapons automatically force showing it
+# @NOTE: Hopefully it will now
 func _on_Show_Reticle_toggled(button_pressed):
+	hide_reticle = not button_pressed
 	if button_pressed:
+		# print('[on::Show_Reticle_toggled] Unblocking reticle.')
+		# Global.player.reticle.force_disable_draw(false)
 		Global.player.reticle.show()
 	else:
+		# print('[on::Show_Reticle_toggled] Blocking reticle.')
+		# Global.player.reticle.force_disable_draw(true, true)
 		Global.player.reticle.hide()
-
 
 func _on_Time_value_changed(value):
 	if "debug_time" in g_light:
 		g_light.debug_time = value
 		if value == -1:
 			time_slider_box.get_node("Label").text = " NOW  "
+			time_slider_box.get_node("HSlider").value = -1
 		elif value == 0:
 			time_slider_box.get_node("Label").text = " 12 AM"
+			time_slider_box.get_node("HSlider").value = 0
 		elif value == 12:
 			time_slider_box.get_node("Label").text = " 12 PM"
+			time_slider_box.get_node("HSlider").value = 12
 		else:
 			var pad = "  " if value < 10 else " "
 			var xm = " AM" if value < 12 else " PM"
 			time_slider_box.get_node("Label").text = pad + str(int(value) % 12) + xm
+			time_slider_box.get_node("HSlider").value = int(value)
 
 func _on_Rain_toggled(button_pressed):
+	Mod.mod_log('Handling new rain state: %s' % [ button_pressed ], 'Crus Mod Base:debug_menu:on:Rain_toggled')
 	Global.rain = button_pressed
 	Global.player.shader_screen.material.set_shader_param("rain", Global.rain)
 	var has_isc = false
+
 	if is_instance_valid(g_light.init_sky_color):
 		has_isc = true
+
 	if Global.rain:
 		if Global.CURRENT_LEVEL != Global.L_SWAMP:
 			g_light.env.environment.fog_depth_begin = 0
@@ -287,12 +303,15 @@ func _on_Rain_toggled(button_pressed):
 		g_light.init_sky_color = Color(0.6, 0.6, 0.6)
 		g_light.env.environment.background_mode = 1
 	else:
-		g_light.env.environment.fog_depth_begin = g_light.orig_env["fd_begin"]
-		g_light.env.environment.fog_depth_end = g_light.orig_env["fd_end"]
-		g_light.env.environment.ambient_light_color = g_light.orig_env["al_color"]
-		g_light.init_fog = g_light.orig_env["init_fog"]
-		g_light.init_sky_color = g_light.orig_env["init_sc"]
-		g_light.env.environment.background_mode = g_light.orig_env["bg_mode"]
+		if "orig_env" in g_light:
+			g_light.orig_env.restore(g_light)
+		# g_light.env.environment.fog_depth_begin = g_light.orig_env.fd_begin
+		# g_light.env.environment.fog_depth_end = g_light.orig_env.fd_end
+		# g_light.env`.environment.ambient_light_color = g_light.orig_env.al_color
+		# g_light.init_fog = g_light.orig_env.init_fog
+		# g_light.init_sky_color = g_light.orig_env.init_sc
+		# g_light.env.environment.background_mode = g_light.orig_env.bg_mode
+
 	var wep = Global.player.weapon
 	if Global.rain and (wep.weapon1 == wep.W_ROD or wep.weapon2 == wep.W_ROD):
 		Global.music.stop()
