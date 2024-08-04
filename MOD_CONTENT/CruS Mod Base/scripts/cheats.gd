@@ -28,6 +28,9 @@ var last_col_layer := 2
 var scene_npcs := []
 var hostile_queue := []
 
+func _ready():
+	print("CHEATS LOADED")
+
 func _process(delta):
 	if inf_mag:
 		var wep = Global.player.weapon
@@ -53,10 +56,16 @@ func _process(delta):
 		for i in remove:
 			hostile_queue.remove(i)
 
+var PlayerClass = preload("res://Scripts/Player.gd")
+
 func _input(ev):
 	if not(ev is InputEventKey and ev.is_pressed()):
 		return
-	if ev.scancode == KEY_ENTER and not cheated and is_instance_valid(Global.nav):
+	if ev.scancode == KEY_ENTER and not cheated:# and is_instance_valid(Global.nav):
+		if not is_instance_valid(Global.player):
+			return
+		if not (Global.player is PlayerClass):
+			return
 		if last_keys.find("CEOMINDSET") != -1:
 			enable_cheat_prompt()
 	elif !cheated:
