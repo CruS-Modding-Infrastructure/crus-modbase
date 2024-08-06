@@ -28,10 +28,17 @@ var last_col_layer := 2
 var scene_npcs := []
 var hostile_queue := []
 
-func _ready():
-	print("CHEATS LOADED")
+var PlayerClass = preload("res://Scripts/Player.gd")
 
 func _process(delta):
+	
+	if not is_instance_valid(Global.player):
+		return
+	if not (Global.player is PlayerClass):
+		return
+	if not cheated:
+		enable_cheat_prompt(true)
+
 	if inf_mag:
 		var wep = Global.player.weapon
 		var cur_wep = wep.weapon1 if wep.held_weapon == 1 else wep.weapon2
@@ -56,18 +63,14 @@ func _process(delta):
 		for i in remove:
 			hostile_queue.remove(i)
 
-var PlayerClass = preload("res://Scripts/Player.gd")
 
 func _input(ev):
 	if not(ev is InputEventKey and ev.is_pressed()):
 		return
 	if ev.scancode == KEY_ENTER and not cheated:# and is_instance_valid(Global.nav):
-		if not is_instance_valid(Global.player):
-			return
-		if not (Global.player is PlayerClass):
-			return
-		if last_keys.find("CEOMINDSET") != -1:
-			enable_cheat_prompt()
+		pass
+#		if last_keys.find("CEOMINDSET") != -1:
+#			enable_cheat_prompt()
 	elif !cheated:
 		var key = ev.as_text()
 		if len(key) == 1:
@@ -76,8 +79,8 @@ func _input(ev):
 			last_keys += key
 	if (ev is InputEventWithModifiers
 			and (enabled.has("noclip") or enabled.has("debug"))
-			and ev.pressed and ev.scancode == KEY_N
-			and ev.shift):
+			and ev.pressed and ev.scancode == KEY_V):
+			#and ev.shift):
 		toggle_noclip()
 
 func exit_game() -> void:

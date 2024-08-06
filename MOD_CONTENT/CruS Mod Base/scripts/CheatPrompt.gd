@@ -27,17 +27,17 @@ enum COMMANDS {
 	
 	EXIT
 	QUIT
-
-	FRIDAY
-	HOPTOIT
-	KITTED
-	LIGHTSOUT
-	MAGPUMP
+	
+	FFA
+	JUMP
+	INFIMPLANT
+	AI
+	INFAMMO
 	NOCLIP
-	PLEROMA
-	PSYCHOPASS
-	SOULSWAP
-	ZOMBIE
+	DEBUGMENU
+	INVISIBLE
+	DEATHMODE
+	GOD
 }
 
 #region new compstate impl
@@ -201,7 +201,7 @@ func _input(ev: InputEvent):
 			self.hide()
 			get_tree().paused = true
 		else:
-			if ev.get_scancode() == KEY_QUOTELEFT:
+			if ev.get_scancode() == KEY_QUOTELEFT or ev.get_scancode() == KEY_F1:
 				reset_comp_state()
 				raise()
 				active = !active
@@ -212,26 +212,26 @@ func _input(ev: InputEvent):
 				self.hide()
 				match strip_prefix(text):
 					"NOCLIP":
-						Global.player.UI.notify("Noclip activated, press Shift-N to toggle", Color(1, 1, 1))
+						Global.player.UI.notify("Noclip activated, press V to toggle", Color(1, 1, 1))
 						cheats.enabled.append("noclip")
 						cheats.reset_noclip()
-					"ZOMBIE":
+					"GOD":
 						cheats.toggle_zombie()
-					"PSYCHOPASS":
+					"INVISIBLE":
 						cheats.toggle_vanish()
-					"MAGPUMP":
+					"INFAMMO":
 						cheats.toggle_infinite_magazine()
-					"HOPTOIT":
+					"JUMP":
 						cheats.toggle_infinite_jump()
-					"KITTED":
+					"INFIMPLANT":
 						cheats.toggle_infinite_arm_aug()
-					"LIGHTSOUT":
+					"AI":
 						cheats.toggle_disable_ai()
-					"SOULSWAP":
+					"DEATHMODE":
 						cheats.toggle_death()
-					"FRIDAY":
+					"FFA":
 						cheats.toggle_npc_ffa()
-					"PLEROMA":
+					"DEBUGMENU":
 						cheats.enable_debug_menus()
 					"QUIT", "EXIT":
 						cheats.exit_game()

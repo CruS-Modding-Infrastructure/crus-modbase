@@ -1,0 +1,790 @@
+[gd_scene load_steps=36 format=2]
+
+[ext_resource path="res://Maps/textures/base/plain_wall_dark_cracked.png" type="Texture" id=1]
+[ext_resource path="res://Fonts/MingLiU-ExtB-01.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://Fonts/mingliutsmall.tres" type="DynamicFont" id=3]
+[ext_resource path="res://Fonts/mingliut.tres" type="DynamicFont" id=4]
+[ext_resource path="res://Textures/Menu/background_1.png" type="Texture" id=5]
+[ext_resource path="res://MOD_CONTENT/CruS Mod Base/assets/next.png" type="Texture" id=6]
+[ext_resource path="res://Textures/Menu/hover.png" type="Texture" id=7]
+[ext_resource path="res://Textures/UI/AMMO2.png" type="Texture" id=8]
+[ext_resource path="res://Fonts/gamefont(1).ttf" type="DynamicFontData" id=9]
+[ext_resource path="res://Maps/textures/base/Stone2.png" type="Texture" id=10]
+
+[sub_resource type="DynamicFont" id=20]
+outline_color = Color( 0, 0, 0, 1 )
+use_mipmaps = true
+use_filter = true
+extra_spacing_top = 5
+extra_spacing_bottom = 5
+extra_spacing_char = 1
+font_data = ExtResource( 9 )
+
+[sub_resource type="StyleBoxTexture" id=1]
+texture = ExtResource( 10 )
+region_rect = Rect2( 0, 0, 128, 128 )
+modulate_color = Color( 0.152941, 0.290196, 0.376471, 1 )
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0.6, 0.6, 0.6, 0 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 0.0745098, 0.6, 0, 1 )
+
+[sub_resource type="StyleBoxTexture" id=3]
+texture = ExtResource( 10 )
+region_rect = Rect2( 0, 0, 128, 128 )
+modulate_color = Color( 0.415686, 0.0980392, 0.0980392, 1 )
+
+[sub_resource type="StyleBoxTexture" id=27]
+texture = ExtResource( 1 )
+region_rect = Rect2( 0, 0, 128, 128 )
+
+[sub_resource type="StyleBoxEmpty" id=5]
+
+[sub_resource type="StyleBoxTexture" id=6]
+texture = ExtResource( 5 )
+region_rect = Rect2( 0, 0, 256, 256 )
+modulate_color = Color( 0.372549, 0.0823529, 0.0823529, 1 )
+
+[sub_resource type="StyleBoxTexture" id=7]
+content_margin_left = 3.0
+content_margin_right = 3.0
+content_margin_top = 3.0
+content_margin_bottom = 3.0
+texture = ExtResource( 5 )
+region_rect = Rect2( 0, 0, 256, 256 )
+modulate_color = Color( 0.709804, 1, 0, 0.533333 )
+
+[sub_resource type="StyleBoxFlat" id=8]
+bg_color = Color( 0.258824, 0, 0, 1 )
+expand_margin_left = 6.0
+expand_margin_right = 6.0
+expand_margin_top = 6.0
+expand_margin_bottom = 6.0
+shadow_color = Color( 1, 0, 0, 0.8 )
+shadow_size = 11
+shadow_offset = Vector2( 0, 8.109 )
+
+[sub_resource type="StyleBoxFlat" id=9]
+bg_color = Color( 0.14902, 1, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=10]
+content_margin_left = 5.0
+content_margin_right = 5.0
+content_margin_top = 5.0
+content_margin_bottom = 5.0
+bg_color = Color( 0.203922, 0.317647, 0.0588235, 0.776471 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 1, 0, 0, 1 )
+corner_detail = 2
+shadow_color = Color( 1, 0, 0, 0 )
+shadow_size = 18
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id=11]
+content_margin_left = 7.0
+content_margin_right = 7.0
+content_margin_top = 7.0
+content_margin_bottom = 7.0
+bg_color = Color( 0.235294, 0.243137, 0.129412, 1 )
+
+[sub_resource type="StyleBoxFlat" id=12]
+content_margin_left = 7.0
+content_margin_right = 7.0
+content_margin_top = 3.0
+content_margin_bottom = 3.0
+bg_color = Color( 0.215686, 0.0823529, 0.0823529, 1 )
+
+[sub_resource type="StyleBoxFlat" id=13]
+bg_color = Color( 0.156863, 0.129412, 0.129412, 1 )
+
+[sub_resource type="StyleBoxFlat" id=14]
+content_margin_left = 7.0
+content_margin_right = 7.0
+content_margin_top = 3.0
+content_margin_bottom = 3.0
+bg_color = Color( 0.321569, 0.360784, 0.258824, 1 )
+
+[sub_resource type="StyleBoxFlat" id=15]
+bg_color = Color( 1, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=16]
+bg_color = Color( 1, 0, 0, 1 )
+
+[sub_resource type="StyleBoxFlat" id=17]
+bg_color = Color( 0, 1, 0.0627451, 1 )
+
+[sub_resource type="StyleBoxFlat" id=18]
+bg_color = Color( 0.572549, 0.25098, 0.25098, 1 )
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color( 0.188235, 0.211765, 0.105882, 1 )
+
+[sub_resource type="StyleBoxFlat" id=19]
+bg_color = Color( 0.360784, 0.145098, 0.145098, 1 )
+
+[sub_resource type="StyleBoxTexture" id=28]
+texture = ExtResource( 5 )
+region_rect = Rect2( 0, 0, 256, 256 )
+expand_margin_left = 10.0
+expand_margin_right = 10.0
+expand_margin_top = 20.0
+modulate_color = Color( 0, 0.227451, 0.368627, 1 )
+
+[sub_resource type="Theme" id=26]
+default_font = SubResource( 20 )
+Button/colors/font_color = Color( 1, 0, 0, 1 )
+Button/colors/font_color_disabled = Color( 0, 0, 0, 1 )
+Button/colors/font_color_hover = Color( 0.101961, 1, 0, 1 )
+Button/colors/font_color_pressed = Color( 0.156863, 0.294118, 0.0431373, 1 )
+Button/constants/hseparation = 2
+Button/fonts/font = SubResource( 20 )
+Button/styles/disabled = SubResource( 1 )
+Button/styles/focus = SubResource( 2 )
+Button/styles/hover = SubResource( 3 )
+Button/styles/normal = SubResource( 27 )
+Button/styles/pressed = SubResource( 3 )
+CheckBox/colors/font_color = Color( 1, 0, 0, 1 )
+CheckBox/colors/font_color_disabled = Color( 0, 0, 0, 1 )
+CheckBox/colors/font_color_hover = Color( 1, 0, 0, 1 )
+CheckBox/colors/font_color_hover_pressed = Color( 1, 0, 0, 1 )
+CheckBox/colors/font_color_pressed = Color( 1, 0, 0, 1 )
+CheckBox/constants/check_vadjust = 0
+CheckBox/constants/hseparation = 4
+CheckBox/fonts/font = SubResource( 20 )
+CheckBox/icons/checked = null
+CheckBox/icons/radio_checked = null
+CheckBox/icons/radio_unchecked = null
+CheckBox/icons/unchecked = null
+CheckBox/styles/disabled = SubResource( 5 )
+CheckBox/styles/focus = SubResource( 5 )
+CheckBox/styles/hover = SubResource( 5 )
+CheckBox/styles/hover_pressed = SubResource( 5 )
+CheckBox/styles/normal = SubResource( 5 )
+CheckBox/styles/pressed = SubResource( 5 )
+CheckButton/colors/font_color = Color( 1, 0, 0, 1 )
+CheckButton/colors/font_color_disabled = Color( 0, 0, 0, 1 )
+CheckButton/colors/font_color_hover = Color( 0, 0, 0, 1 )
+CheckButton/colors/font_color_hover_pressed = Color( 0, 0, 0, 1 )
+CheckButton/colors/font_color_pressed = Color( 0, 0, 0, 1 )
+CheckButton/constants/check_vadjust = 0
+CheckButton/constants/hseparation = 4
+CheckButton/fonts/font = SubResource( 20 )
+CheckButton/icons/off = null
+CheckButton/icons/off_disabled = null
+CheckButton/icons/on = null
+CheckButton/icons/on_disabled = null
+CheckButton/styles/disabled = null
+CheckButton/styles/focus = null
+CheckButton/styles/hover = null
+CheckButton/styles/hover_pressed = null
+CheckButton/styles/normal = null
+CheckButton/styles/pressed = null
+ColorPicker/constants/h_width = 10
+ColorPicker/constants/label_width = 10
+ColorPicker/constants/margin = 0
+ColorPicker/constants/sv_height = 100
+ColorPicker/constants/sv_width = 100
+ColorPicker/icons/add_preset = null
+ColorPicker/icons/color_hue = null
+ColorPicker/icons/color_sample = null
+ColorPicker/icons/overbright_indicator = null
+ColorPicker/icons/preset_bg = null
+ColorPicker/icons/screen_picker = null
+ColorPickerButton/colors/font_color = Color( 0, 0, 0, 1 )
+ColorPickerButton/colors/font_color_disabled = Color( 0, 0, 0, 1 )
+ColorPickerButton/colors/font_color_hover = Color( 0, 0, 0, 1 )
+ColorPickerButton/colors/font_color_pressed = Color( 0, 0, 0, 1 )
+ColorPickerButton/constants/hseparation = 2
+ColorPickerButton/fonts/font = SubResource( 20 )
+ColorPickerButton/icons/bg = null
+ColorPickerButton/styles/disabled = null
+ColorPickerButton/styles/focus = null
+ColorPickerButton/styles/hover = null
+ColorPickerButton/styles/normal = null
+ColorPickerButton/styles/pressed = null
+Dialogs/constants/button_margin = 32
+Dialogs/constants/margin = 8
+FileDialog/colors/files_disabled = Color( 0, 0, 0, 1 )
+FileDialog/colors/folder_icon_modulate = Color( 0, 0, 0, 1 )
+FileDialog/icons/folder = null
+FileDialog/icons/parent_folder = null
+FileDialog/icons/reload = null
+FileDialog/icons/toggle_hidden = null
+Fonts/fonts/large = SubResource( 20 )
+Fonts/fonts/normal = SubResource( 20 )
+GraphEdit/colors/activity = Color( 0, 0, 0, 1 )
+GraphEdit/colors/grid_major = Color( 0, 0, 0, 1 )
+GraphEdit/colors/grid_minor = Color( 0, 0, 0, 1 )
+GraphEdit/colors/selection_fill = Color( 0, 0, 0, 1 )
+GraphEdit/colors/selection_stroke = Color( 0, 0, 0, 1 )
+GraphEdit/constants/bezier_len_neg = 160
+GraphEdit/constants/bezier_len_pos = 80
+GraphEdit/constants/port_grab_distance_horizontal = 48
+GraphEdit/constants/port_grab_distance_vertical = 6
+GraphEdit/icons/minus = null
+GraphEdit/icons/more = null
+GraphEdit/icons/reset = null
+GraphEdit/icons/snap = null
+GraphEdit/styles/bg = null
+GraphNode/colors/close_color = Color( 0, 0, 0, 1 )
+GraphNode/colors/resizer_color = Color( 0, 0, 0, 1 )
+GraphNode/colors/title_color = Color( 0, 0, 0, 1 )
+GraphNode/constants/close_offset = 18
+GraphNode/constants/port_offset = 3
+GraphNode/constants/separation = 1
+GraphNode/constants/title_offset = 20
+GraphNode/fonts/title_font = SubResource( 20 )
+GraphNode/icons/close = null
+GraphNode/icons/port = null
+GraphNode/icons/resizer = null
+GraphNode/styles/breakpoint = null
+GraphNode/styles/comment = null
+GraphNode/styles/commentfocus = null
+GraphNode/styles/defaultfocus = null
+GraphNode/styles/defaultframe = null
+GraphNode/styles/frame = null
+GraphNode/styles/position = null
+GraphNode/styles/selectedframe = null
+GridContainer/constants/hseparation = 0
+GridContainer/constants/vseparation = 0
+HBoxContainer/constants/separation = 0
+HScrollBar/icons/decrement = null
+HScrollBar/icons/decrement_highlight = null
+HScrollBar/icons/increment = null
+HScrollBar/icons/increment_highlight = null
+HScrollBar/styles/grabber = null
+HScrollBar/styles/grabber_highlight = null
+HScrollBar/styles/grabber_pressed = null
+HScrollBar/styles/scroll = null
+HScrollBar/styles/scroll_focus = null
+HSeparator/constants/separation = 0
+HSeparator/styles/separator = null
+HSlider/icons/grabber = null
+HSlider/icons/grabber_disabled = null
+HSlider/icons/grabber_highlight = null
+HSlider/icons/tick = null
+HSlider/styles/grabber_area = null
+HSlider/styles/slider = null
+HSplitContainer/constants/autohide = 1
+HSplitContainer/constants/separation = 0
+HSplitContainer/icons/grabber = null
+HSplitContainer/styles/bg = null
+Icons/icons/close = null
+ItemList/colors/font_color = Color( 1, 0, 0, 1 )
+ItemList/colors/font_color_selected = Color( 0, 1, 0.0392157, 1 )
+ItemList/colors/guide_color = Color( 0.184314, 0.25098, 0, 1 )
+ItemList/constants/hseparation = 4
+ItemList/constants/icon_margin = 4
+ItemList/constants/line_separation = 2
+ItemList/constants/vseparation = 2
+ItemList/fonts/font = SubResource( 20 )
+ItemList/styles/bg = SubResource( 6 )
+ItemList/styles/bg_focus = null
+ItemList/styles/cursor = null
+ItemList/styles/cursor_unfocused = null
+ItemList/styles/selected = null
+ItemList/styles/selected_focus = null
+Label/colors/font_color = Color( 1, 0, 0, 1 )
+Label/colors/font_color_shadow = Color( 0, 0, 0, 1 )
+Label/colors/font_outline_modulate = Color( 0, 0, 0, 1 )
+Label/constants/line_spacing = 3
+Label/constants/shadow_as_outline = 0
+Label/constants/shadow_offset_x = 1
+Label/constants/shadow_offset_y = 1
+Label/fonts/font = SubResource( 20 )
+Label/styles/normal = null
+LineEdit/colors/clear_button_color = Color( 0, 0, 0, 1 )
+LineEdit/colors/clear_button_color_pressed = Color( 0, 0, 0, 1 )
+LineEdit/colors/cursor_color = Color( 0, 0, 0, 1 )
+LineEdit/colors/font_color = Color( 0, 0, 0, 1 )
+LineEdit/colors/font_color_selected = Color( 0, 0, 0, 1 )
+LineEdit/colors/font_color_uneditable = Color( 0, 0, 0, 1 )
+LineEdit/colors/selection_color = Color( 0, 0, 0, 1 )
+LineEdit/constants/minimum_spaces = 12
+LineEdit/fonts/font = SubResource( 20 )
+LineEdit/icons/clear = null
+LineEdit/styles/focus = null
+LineEdit/styles/normal = null
+LineEdit/styles/read_only = null
+LinkButton/colors/font_color = Color( 0, 0, 0, 1 )
+LinkButton/colors/font_color_hover = Color( 0, 0, 0, 1 )
+LinkButton/colors/font_color_pressed = Color( 0, 0, 0, 1 )
+LinkButton/constants/underline_spacing = 2
+LinkButton/fonts/font = SubResource( 20 )
+LinkButton/styles/focus = null
+MarginContainer/constants/margin_bottom = 0
+MarginContainer/constants/margin_left = 0
+MarginContainer/constants/margin_right = 0
+MarginContainer/constants/margin_top = 0
+MenuButton/colors/font_color = Color( 0, 0, 0, 1 )
+MenuButton/colors/font_color_disabled = Color( 0, 0, 0, 1 )
+MenuButton/colors/font_color_hover = Color( 0, 0, 0, 1 )
+MenuButton/colors/font_color_pressed = Color( 0, 0, 0, 1 )
+MenuButton/constants/hseparation = 3
+MenuButton/fonts/font = SubResource( 20 )
+MenuButton/styles/disabled = null
+MenuButton/styles/focus = null
+MenuButton/styles/hover = null
+MenuButton/styles/normal = null
+MenuButton/styles/pressed = null
+OptionButton/colors/font_color = Color( 0, 0, 0, 1 )
+OptionButton/colors/font_color_disabled = Color( 0, 0, 0, 1 )
+OptionButton/colors/font_color_hover = Color( 0, 0, 0, 1 )
+OptionButton/colors/font_color_pressed = Color( 0, 0, 0, 1 )
+OptionButton/constants/arrow_margin = 2
+OptionButton/constants/hseparation = 2
+OptionButton/fonts/font = SubResource( 20 )
+OptionButton/icons/arrow = null
+OptionButton/styles/disabled = null
+OptionButton/styles/focus = null
+OptionButton/styles/hover = null
+OptionButton/styles/normal = null
+OptionButton/styles/pressed = null
+Panel/styles/panel = null
+PanelContainer/styles/panel = SubResource( 7 )
+PopupDialog/styles/panel = null
+PopupMenu/colors/font_color = Color( 0, 0, 0, 1 )
+PopupMenu/colors/font_color_accel = Color( 0, 0, 0, 1 )
+PopupMenu/colors/font_color_disabled = Color( 0, 0, 0, 1 )
+PopupMenu/colors/font_color_hover = Color( 0, 0, 0, 1 )
+PopupMenu/constants/hseparation = 4
+PopupMenu/constants/vseparation = 4
+PopupMenu/fonts/font = SubResource( 20 )
+PopupMenu/icons/checked = null
+PopupMenu/icons/radio_checked = null
+PopupMenu/icons/radio_unchecked = null
+PopupMenu/icons/submenu = null
+PopupMenu/icons/unchecked = null
+PopupMenu/styles/hover = null
+PopupMenu/styles/labeled_separator_left = null
+PopupMenu/styles/labeled_separator_right = null
+PopupMenu/styles/panel = null
+PopupMenu/styles/panel_disabled = null
+PopupMenu/styles/separator = null
+PopupPanel/styles/panel = null
+ProgressBar/colors/font_color = Color( 1, 0, 0, 1 )
+ProgressBar/colors/font_color_shadow = Color( 0, 0, 0, 1 )
+ProgressBar/fonts/font = SubResource( 20 )
+ProgressBar/styles/bg = SubResource( 8 )
+ProgressBar/styles/fg = SubResource( 9 )
+RichTextLabel/colors/default_color = Color( 1, 0, 0, 1 )
+RichTextLabel/colors/font_color_selected = Color( 0, 0, 0, 1 )
+RichTextLabel/colors/font_color_shadow = Color( 0, 0, 0, 1 )
+RichTextLabel/colors/selection_color = Color( 0, 0, 0, 1 )
+RichTextLabel/constants/line_separation = 1
+RichTextLabel/constants/shadow_as_outline = 0
+RichTextLabel/constants/shadow_offset_x = 1
+RichTextLabel/constants/shadow_offset_y = 1
+RichTextLabel/constants/table_hseparation = 3
+RichTextLabel/constants/table_vseparation = 3
+RichTextLabel/fonts/bold_font = SubResource( 20 )
+RichTextLabel/fonts/bold_italics_font = SubResource( 20 )
+RichTextLabel/fonts/italics_font = SubResource( 20 )
+RichTextLabel/fonts/mono_font = SubResource( 20 )
+RichTextLabel/fonts/normal_font = SubResource( 20 )
+RichTextLabel/styles/focus = null
+RichTextLabel/styles/normal = null
+ScrollContainer/styles/bg = SubResource( 10 )
+SpinBox/icons/updown = null
+TabContainer/colors/font_color_bg = Color( 0.207843, 0.254902, 0.0745098, 1 )
+TabContainer/colors/font_color_disabled = Color( 0, 0, 0, 1 )
+TabContainer/colors/font_color_fg = Color( 1, 0, 0, 1 )
+TabContainer/constants/hseparation = 4
+TabContainer/constants/label_valign_bg = 2
+TabContainer/constants/label_valign_fg = 0
+TabContainer/constants/side_margin = 8
+TabContainer/constants/top_margin = 24
+TabContainer/fonts/font = SubResource( 20 )
+TabContainer/icons/decrement = null
+TabContainer/icons/decrement_highlight = null
+TabContainer/icons/increment = null
+TabContainer/icons/increment_highlight = null
+TabContainer/icons/menu = null
+TabContainer/icons/menu_highlight = null
+TabContainer/styles/panel = SubResource( 11 )
+TabContainer/styles/tab_bg = SubResource( 12 )
+TabContainer/styles/tab_disabled = SubResource( 13 )
+TabContainer/styles/tab_fg = SubResource( 14 )
+Tabs/colors/font_color_bg = Color( 1, 0, 0, 1 )
+Tabs/colors/font_color_disabled = Color( 0, 0, 0, 1 )
+Tabs/colors/font_color_fg = Color( 1, 0, 0, 1 )
+Tabs/constants/hseparation = 4
+Tabs/constants/label_valign_bg = 2
+Tabs/constants/label_valign_fg = 0
+Tabs/constants/top_margin = 24
+Tabs/fonts/font = SubResource( 20 )
+Tabs/icons/close = null
+Tabs/icons/decrement = null
+Tabs/icons/decrement_highlight = null
+Tabs/icons/increment = null
+Tabs/icons/increment_highlight = null
+Tabs/styles/button = null
+Tabs/styles/button_pressed = null
+Tabs/styles/panel = null
+Tabs/styles/tab_bg = null
+Tabs/styles/tab_disabled = null
+Tabs/styles/tab_fg = null
+TextEdit/colors/background_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/bookmark_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/brace_mismatch_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/breakpoint_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/caret_background_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/caret_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/code_folding_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/completion_background_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/completion_existing_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/completion_font_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/completion_scroll_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/completion_selected_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/current_line_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/executing_line_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/font_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/font_color_readonly = Color( 0, 0, 0, 1 )
+TextEdit/colors/font_color_selected = Color( 0, 0, 0, 1 )
+TextEdit/colors/function_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/line_number_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/mark_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/member_variable_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/number_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/safe_line_number_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/selection_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/symbol_color = Color( 0, 0, 0, 1 )
+TextEdit/colors/word_highlighted_color = Color( 0, 0, 0, 1 )
+TextEdit/constants/completion_lines = 7
+TextEdit/constants/completion_max_width = 50
+TextEdit/constants/completion_scroll_width = 3
+TextEdit/constants/line_spacing = 4
+TextEdit/fonts/font = SubResource( 20 )
+TextEdit/icons/fold = null
+TextEdit/icons/folded = null
+TextEdit/icons/space = null
+TextEdit/icons/tab = null
+TextEdit/styles/completion = null
+TextEdit/styles/focus = null
+TextEdit/styles/normal = null
+TextEdit/styles/read_only = null
+ToolButton/colors/font_color = Color( 0, 0, 0, 1 )
+ToolButton/colors/font_color_disabled = Color( 0, 0, 0, 1 )
+ToolButton/colors/font_color_hover = Color( 0, 0, 0, 1 )
+ToolButton/colors/font_color_pressed = Color( 0, 0, 0, 1 )
+ToolButton/constants/hseparation = 3
+ToolButton/fonts/font = SubResource( 20 )
+ToolButton/styles/disabled = null
+ToolButton/styles/focus = null
+ToolButton/styles/hover = null
+ToolButton/styles/normal = null
+ToolButton/styles/pressed = null
+TooltipLabel/colors/font_color = Color( 0, 0, 0, 1 )
+TooltipLabel/colors/font_color_shadow = Color( 0, 0, 0, 1 )
+TooltipLabel/constants/shadow_offset_x = 1
+TooltipLabel/constants/shadow_offset_y = 1
+TooltipLabel/fonts/font = SubResource( 20 )
+TooltipPanel/styles/panel = null
+Tree/colors/custom_button_font_highlight = Color( 0, 0, 0, 1 )
+Tree/colors/drop_position_color = Color( 0, 0, 0, 1 )
+Tree/colors/font_color = Color( 0, 0, 0, 1 )
+Tree/colors/font_color_selected = Color( 0, 0, 0, 1 )
+Tree/colors/guide_color = Color( 0, 0, 0, 1 )
+Tree/colors/relationship_line_color = Color( 0, 0, 0, 1 )
+Tree/colors/title_button_color = Color( 0, 0, 0, 1 )
+Tree/constants/button_margin = 4
+Tree/constants/draw_guides = 1
+Tree/constants/draw_relationship_lines = 0
+Tree/constants/hseparation = 4
+Tree/constants/item_margin = 12
+Tree/constants/scroll_border = 4
+Tree/constants/scroll_speed = 12
+Tree/constants/vseparation = 4
+Tree/fonts/font = SubResource( 20 )
+Tree/fonts/title_button_font = SubResource( 20 )
+Tree/icons/arrow = null
+Tree/icons/arrow_collapsed = null
+Tree/icons/checked = null
+Tree/icons/select_arrow = null
+Tree/icons/unchecked = null
+Tree/icons/updown = null
+Tree/styles/bg = null
+Tree/styles/bg_focus = null
+Tree/styles/button_pressed = null
+Tree/styles/cursor = null
+Tree/styles/cursor_unfocused = null
+Tree/styles/custom_button = null
+Tree/styles/custom_button_hover = null
+Tree/styles/custom_button_pressed = null
+Tree/styles/selected = null
+Tree/styles/selected_focus = null
+Tree/styles/title_button_hover = null
+Tree/styles/title_button_normal = null
+Tree/styles/title_button_pressed = null
+VBoxContainer/constants/separation = 0
+VScrollBar/icons/decrement = null
+VScrollBar/icons/decrement_highlight = null
+VScrollBar/icons/increment = null
+VScrollBar/icons/increment_highlight = null
+VScrollBar/styles/grabber = SubResource( 15 )
+VScrollBar/styles/grabber_highlight = SubResource( 16 )
+VScrollBar/styles/grabber_pressed = SubResource( 17 )
+VScrollBar/styles/scroll = SubResource( 18 )
+VScrollBar/styles/scroll_focus = SubResource( 19 )
+VSeparator/constants/separation = 0
+VSeparator/styles/separator = null
+VSlider/icons/grabber = null
+VSlider/icons/grabber_disabled = null
+VSlider/icons/grabber_highlight = null
+VSlider/icons/tick = null
+VSlider/styles/grabber_area = null
+VSlider/styles/slider = null
+VSplitContainer/constants/autohide = 1
+VSplitContainer/constants/separation = 0
+VSplitContainer/icons/grabber = null
+VSplitContainer/styles/bg = null
+WindowDialog/colors/title_color = Color( 1, 0, 0, 1 )
+WindowDialog/constants/close_h_ofs = 18
+WindowDialog/constants/close_v_ofs = 18
+WindowDialog/constants/scaleborder_size = 4
+WindowDialog/constants/title_height = 20
+WindowDialog/fonts/title_font = SubResource( 20 )
+WindowDialog/icons/close = null
+WindowDialog/icons/close_highlight = null
+WindowDialog/styles/panel = SubResource( 28 )
+
+[sub_resource type="DynamicFont" id=23]
+font_data = ExtResource( 2 )
+
+[sub_resource type="GDScript" id=24]
+script/source = "extends TextureButton
+
+func _on_Update_pressed():
+	OS.shell_open(\"https://github.com/CruS-Modding-Infrastructure/crus-modloader/releases\")
+"
+
+[sub_resource type="GDScript" id=25]
+script/source = "extends TextureButton
+
+func _on_Update_pressed():
+	OS.shell_open(\"https://github.com/CruS-Modding-Infrastructure/crus-modbase/releases\")
+"
+
+[node name="ModPopupNew" type="AcceptDialog"]
+visible = true
+margin_right = 200.0
+margin_bottom = 70.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = SubResource( 26 )
+window_title = "Mods"
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 8.0
+margin_top = 8.0
+margin_right = -8.0
+margin_bottom = -42.0
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="MarginContainer"]
+margin_right = 696.0
+margin_bottom = 235.0
+
+[node name="ModloaderVersion" type="Label" parent="MarginContainer/VBoxContainer2"]
+margin_right = 696.0
+margin_bottom = 33.0
+custom_colors/font_color = Color( 0.780392, 0, 1, 1 )
+custom_fonts/font = ExtResource( 4 )
+text = "Modloader version"
+
+[node name="ModloaderUpdate" type="HBoxContainer" parent="MarginContainer/VBoxContainer2"]
+margin_top = 33.0
+margin_right = 696.0
+margin_bottom = 65.0
+
+[node name="TextureRect" type="TextureRect" parent="MarginContainer/VBoxContainer2/ModloaderUpdate"]
+self_modulate = Color( 0, 1, 1, 1 )
+margin_right = 32.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 32, 32 )
+texture = ExtResource( 8 )
+expand = true
+
+[node name="ModloaderUpdateText" type="Label" parent="MarginContainer/VBoxContainer2/ModloaderUpdate"]
+margin_left = 32.0
+margin_top = 7.0
+margin_right = 360.0
+margin_bottom = 24.0
+custom_colors/font_color = Color( 0, 1, 1, 1 )
+custom_fonts/font = SubResource( 23 )
+text = " A new version of modloader is available."
+
+[node name="Update" type="TextureButton" parent="MarginContainer/VBoxContainer2/ModloaderUpdate"]
+margin_left = 360.0
+margin_right = 392.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 32, 32 )
+texture_normal = ExtResource( 6 )
+texture_hover = ExtResource( 7 )
+expand = true
+script = SubResource( 24 )
+
+[node name="ModbaseUpdate" type="HBoxContainer" parent="MarginContainer/VBoxContainer2"]
+margin_top = 65.0
+margin_right = 696.0
+margin_bottom = 97.0
+
+[node name="TextureRect2" type="TextureRect" parent="MarginContainer/VBoxContainer2/ModbaseUpdate"]
+self_modulate = Color( 0, 1, 1, 1 )
+margin_right = 32.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 32, 32 )
+texture = ExtResource( 8 )
+expand = true
+
+[node name="ModbaseUpdateText" type="Label" parent="MarginContainer/VBoxContainer2/ModbaseUpdate"]
+margin_left = 32.0
+margin_top = 7.0
+margin_right = 344.0
+margin_bottom = 24.0
+custom_colors/font_color = Color( 0, 1, 1, 1 )
+custom_fonts/font = SubResource( 23 )
+text = " A new version of modbase is available."
+
+[node name="Update" type="TextureButton" parent="MarginContainer/VBoxContainer2/ModbaseUpdate"]
+margin_left = 344.0
+margin_right = 376.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 32, 32 )
+texture_normal = ExtResource( 6 )
+texture_hover = ExtResource( 7 )
+expand = true
+script = SubResource( 25 )
+
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer2"]
+margin_top = 97.0
+margin_right = 696.0
+margin_bottom = 117.0
+rect_min_size = Vector2( 0, 20 )
+
+[node name="List" type="VBoxContainer" parent="MarginContainer/VBoxContainer2"]
+margin_top = 117.0
+margin_right = 696.0
+margin_bottom = 117.0
+
+[node name="OpenMods" type="Button" parent="MarginContainer/VBoxContainer2"]
+margin_left = 228.0
+margin_top = 117.0
+margin_right = 467.0
+margin_bottom = 143.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+text = "Open Mods Folder"
+
+[node name="Restart" type="Label" parent="MarginContainer/VBoxContainer2"]
+margin_top = 143.0
+margin_right = 696.0
+margin_bottom = 160.0
+custom_colors/font_color = Color( 1, 1, 0, 1 )
+custom_fonts/font = SubResource( 23 )
+text = "Restart"
+align = 1
+
+[node name="MoreInfo" type="AcceptDialog" parent="."]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 704.0
+margin_bottom = 243.0
+window_title = "More Info"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MoreInfo"]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 688.0
+margin_bottom = 193.0
+
+[node name="Info" type="Label" parent="MoreInfo/VBoxContainer"]
+margin_right = 640.0
+margin_bottom = 19.0
+rect_min_size = Vector2( 640, 0 )
+custom_fonts/font = ExtResource( 3 )
+text = "Main info"
+autowrap = true
+
+[node name="HSeparator" type="HSeparator" parent="MoreInfo/VBoxContainer"]
+margin_top = 19.0
+margin_right = 640.0
+margin_bottom = 19.0
+
+[node name="Info2" type="Label" parent="MoreInfo/VBoxContainer"]
+margin_top = 19.0
+margin_right = 640.0
+margin_bottom = 38.0
+custom_fonts/font = ExtResource( 3 )
+text = "More info"
+autowrap = true
+
+[node name="Warn" type="AcceptDialog" parent="."]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 704.0
+margin_bottom = 243.0
+window_title = "!!!"
+
+[node name="MarginContainer" type="MarginContainer" parent="Warn"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 8.0
+margin_top = 8.0
+margin_right = -8.0
+margin_bottom = -42.0
+custom_constants/margin_right = 20
+custom_constants/margin_top = 20
+custom_constants/margin_left = 20
+custom_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Warn/MarginContainer"]
+margin_left = 20.0
+margin_top = 20.0
+margin_right = 660.0
+margin_bottom = 165.0
+
+[node name="Info" type="Label" parent="Warn/MarginContainer/VBoxContainer"]
+margin_right = 640.0
+margin_bottom = 107.0
+rect_min_size = Vector2( 640, 0 )
+custom_colors/font_color = Color( 1, 1, 0, 1 )
+custom_fonts/font = ExtResource( 3 )
+text = "Warning: This version of Mod Base was designed for a more recent version of Mod Loader. Some functionality, such as toggling mods on or off has been disabled :(
+
+Get the latest version of Modloader: "
+align = 1
+autowrap = true
+
+[node name="Info2" type="Label" parent="Warn/MarginContainer/VBoxContainer"]
+margin_top = 107.0
+margin_right = 640.0
+margin_bottom = 126.0
+rect_min_size = Vector2( 640, 0 )
+custom_colors/font_color = Color( 1, 1, 0, 1 )
+custom_fonts/font = ExtResource( 3 )
+text = " "
+align = 1
+autowrap = true
+
+[node name="LinkButton" type="LinkButton" parent="Warn/MarginContainer/VBoxContainer"]
+margin_top = 126.0
+margin_right = 640.0
+margin_bottom = 145.0
+custom_colors/font_color = Color( 0, 1, 1, 1 )
+custom_fonts/font = ExtResource( 3 )
+text = "https://github.com/CruS-Modding-Infrastructure/crus-modbase/releases"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer2/ModloaderUpdate/Update" to="MarginContainer/VBoxContainer2/ModloaderUpdate/Update" method="_on_Update_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer2/ModbaseUpdate/Update" to="MarginContainer/VBoxContainer2/ModbaseUpdate/Update" method="_on_Update_pressed"]
+[connection signal="pressed" from="Warn/MarginContainer/VBoxContainer/LinkButton" to="MarginContainer/VBoxContainer2/ModloaderUpdate/Update" method="_on_Update_pressed"]

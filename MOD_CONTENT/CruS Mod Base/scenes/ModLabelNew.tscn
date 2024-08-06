@@ -1,0 +1,50 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Textures/Menu/mystery.png" type="Texture" id=1]
+[ext_resource path="res://Textures/Menu/hover.png" type="Texture" id=2]
+[ext_resource path="res://Menu/menu_theme.tres" type="Theme" id=3]
+[ext_resource path="res://Fonts/mingliutsmall.tres" type="DynamicFont" id=4]
+
+[node name="ModLabel" type="HBoxContainer"]
+margin_right = 605.0
+margin_bottom = 32.0
+theme = ExtResource( 3 )
+
+[node name="Label" type="Label" parent="."]
+margin_top = 6.0
+margin_right = 126.0
+margin_bottom = 25.0
+custom_colors/font_color = Color( 0, 1, 0, 1 )
+custom_fonts/font = ExtResource( 4 )
+text = "Test mod 0.0.1"
+
+[node name="Space" type="Label" parent="."]
+margin_left = 126.0
+margin_top = 3.0
+margin_right = 216.0
+margin_bottom = 29.0
+text = "      "
+
+[node name="More" type="TextureButton" parent="."]
+margin_left = 505.0
+margin_right = 537.0
+margin_bottom = 32.0
+rect_min_size = Vector2( 32, 32 )
+size_flags_horizontal = 10
+texture_normal = ExtResource( 1 )
+texture_hover = ExtResource( 2 )
+expand = true
+
+[node name="Space2" type="Label" parent="."]
+margin_left = 537.0
+margin_top = 3.0
+margin_right = 541.0
+margin_bottom = 29.0
+rect_min_size = Vector2( 4, 0 )
+
+[node name="Toggle" type="CheckButton" parent="."]
+margin_left = 541.0
+margin_right = 605.0
+margin_bottom = 32.0
+align = 2
+icon_align = 2
