@@ -8,8 +8,10 @@ Requires the [CRUELTY SQUAD MOD LOADER](https://github.com/crustyrashky/crus-mod
 
 - Custom level support
 - Button in settings that tells you what mods you have installed
+- Disable mods from in game and view details about them
 - Build custom levels right from TrenchBroom with minimal Godot use
-- Cheats
+- Automatic update checking
+- Cheats/Commands
 - Take fun little snapshots of levels
 
 ## Install
@@ -45,31 +47,31 @@ See [this guide](https://hackmd.io/@OsM6oUcXSwG3mLNvTlPMZg/SkYQwbONu) if you wan
 
 
 
-## Cheats
+## Cheats/Commands
 
-When in-game, type `ceomindset` and hit enter to enable the cheat prompt, which can be activated by pressing `/~ ('/@ on UK layout keyboards, for whatever reason).
+When in-game, activate the command input by pressing the key under escape on US keyboards or ['/@] on UK layout keyboards. You can also use the F1 key.
 
 `NOCLIP` - Enable noclip
 
-- Shift-N to toggle noclip, Ctrl to fly downwards, Space to fly upwards, Shift-scroll to change flyspeed
+- V to toggle noclip, Ctrl to fly downwards, Space to fly upwards, Shift-scroll to change flyspeed
 
-`ZOMBIE` - Zombie mode (no longer lose health when hit)
+`GOD` - God mode (no longer lose health when hit)
 
-`PSYCHOPASS` - Hostile enemies will no longer target and/or damage you
+`INVISIBLE` - Hostile enemies will no longer target and/or damage you
 
-`MAGPUMP` - Infinite magazine
+`INFAMMO` - Infinite magazine
 
-`HOPTOIT` - Infinite gunkboost jumps, whether you have them equipped or not
+`JUMP` - Infinite gunkboost jumps, whether you have them equipped or not
 
-`KITTED` - Infinite arm implant uses
+`INFIMPLANT` - Infinite arm implant uses
 
-`LIGHTSOUT` - Toggle AI on/off 
+`AI` - Toggle AI on/off 
 
-`SOULSWAP` - Toggle life/death health
+`DEATHMODE` - Toggle life/death health
 
-`FRIDAY` - Toggle hostile AI going berserk
+`FFA` - Toggle hostile AI going berserk
 
-`PLEROMA` - Enable level debug menu
+`DEBUGMENU` - Enable level debug menu
 
 ## Level config JSON properties
 
