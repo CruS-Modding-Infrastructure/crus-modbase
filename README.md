@@ -8,8 +8,10 @@ Requires the [CRUELTY SQUAD MOD LOADER](https://github.com/crustyrashky/crus-mod
 
 - Custom level support
 - Button in settings that tells you what mods you have installed
+- Disable mods from in game and view details about them
 - Build custom levels right from TrenchBroom with minimal Godot use
-- Cheats
+- Automatic update checking
+- Cheats/Commands
 - Take fun little snapshots of levels
 
 ## Install
