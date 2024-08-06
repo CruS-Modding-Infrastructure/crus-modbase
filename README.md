@@ -45,9 +45,9 @@ See [this guide](https://hackmd.io/@OsM6oUcXSwG3mLNvTlPMZg/SkYQwbONu) if you wan
 
 
 
-## Cheats
+## Cheats/Commands
 
-When in-game, type `ceomindset` and hit enter to enable the cheat prompt, which can be activated by pressing `/~ ('/@ on UK layout keyboards, for whatever reason).
+When in-game, activate the command input by pressing the key under escape on US keyboards or ['/@] on UK layout keyboards. You can also use the F1 key.
 
 `NOCLIP` - Enable noclip
 
